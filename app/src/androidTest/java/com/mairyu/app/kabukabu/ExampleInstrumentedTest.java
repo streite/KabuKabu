@@ -1,4 +1,4 @@
-package com.example.roberts.kabukabu;
+package com.mairyu.app.kabukabu;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorBlue1">#4863A0</color>
+    <color name="colorBlue2">#728FCE</color>
+    <color name="colorBlue3">#B7CEEC</color>
+    <color name="colorBlue4">#B7CEEC</color>
+
+    <color name="colorGreen1">#008080</color>
+    <color name="colorGreen2">#3EA99F</color>
+    <color name="colorGreen3">#7BCCB5</color>
+    <color name="colorGreen4">#7BCCB5</color>
+
+    <color name="colorRed1">#7D0552</color>
+    <color name="colorRed2">#B38481</color>
+    <color name="colorRed3">#E8ADAA</color>
+    <color name="colorRed4">#E8ADAA</color>
+
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#ff4081</color>
+    <color name="colorCardView">#af2756</color>
+
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
 </resources>

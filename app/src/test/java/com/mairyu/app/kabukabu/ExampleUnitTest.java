@@ -1,4 +1,4 @@
-package com.example.roberts.kabukabu;
+package com.mairyu.app.kabukabu;
 
 import org.junit.Test;
 

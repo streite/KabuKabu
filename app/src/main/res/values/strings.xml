@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">KabuKabu</string>
+
+    <string-array name="categories">
+        <item>REGION ETF</item>
+        <item>COMMODITY ETF</item>
+    </string-array>
+
 </resources>
