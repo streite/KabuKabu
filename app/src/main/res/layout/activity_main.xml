@@ -10,10 +10,28 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.mairyu.app.kabukabu.MainActivity">
 
-    <Button
-        android:id="@+id/btnPortfolio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnPortfolio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Portfolio" />
+
+        <Button
+            android:id="@+id/btnGoogleSheets"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Google Sheets" />
+
+        <Button
+            android:id="@+id/btnYahoo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Yahoo" />
+    </LinearLayout>
 
 </RelativeLayout>

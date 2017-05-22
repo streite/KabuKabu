@@ -2,8 +2,13 @@
     <string name="app_name">KabuKabu</string>
 
     <string-array name="categories">
+        <item>TECH</item>
         <item>REGION ETF</item>
         <item>COMMODITY ETF</item>
+    </string-array>
+
+    <string-array name="google_sheets">
+        <item>TECH</item>
     </string-array>
 
 </resources>

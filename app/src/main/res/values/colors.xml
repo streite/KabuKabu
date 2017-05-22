@@ -15,6 +15,11 @@
     <color name="colorRed3">#E8ADAA</color>
     <color name="colorRed4">#E8ADAA</color>
 
+    <color name="colorYellow1">#E2A76F</color>
+    <color name="colorYellow2">#FFE5B4</color>
+    <color name="colorYellow3">#FFFFCC</color>
+    <color name="colorYellow4">#FFFFF0</color>
+
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#ff4081</color>

@@ -2,6 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mairyu.app.kabukabu">
 
+    <uses-sdk
+        android:minSdkVersion="23"
+        android:targetSdkVersion="24" />
+
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,6 +32,10 @@
         </activity>
         <activity android:name="com.mairyu.app.kabukabu.Stock" />
         <activity android:name="com.mairyu.app.kabukabu.CategoryView"></activity>
+        <activity android:name="com.mairyu.app.kabukabu.PortfolioView"></activity>
+        <activity android:name="com.mairyu.app.kabukabu.GoogleSheets"></activity>
+        <activity android:name="com.mairyu.app.kabukabu.YahooAPI"></activity>
+
     </application>
 
 </manifest>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@drawable/gradient_green"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/portfolioListViewTicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="TICKER"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/portfolioListViewPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/portfolioListViewTicker"
+        android:ellipsize="end"
+        android:maxLines="10"
+        android:text="PRICE"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="italic" />
+
+</RelativeLayout>
