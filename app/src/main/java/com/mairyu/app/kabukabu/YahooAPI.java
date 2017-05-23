@@ -111,7 +111,7 @@ public class YahooAPI extends AppCompatActivity {
             HTTPClient dictHTTPClient = new HTTPClient();
 
             dictHTTPClient.setBASE_URL("http://query.yahooapis.com/v1/public/yql?"+
-                    "q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20%28%22GOOG%22%29"+
+                    "q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20%28%22GOOG,AAPL,NVDA%22%29"+
                     "&env=store://datatables.org/alltableswithkeys&format=json");
             //--------------------------------------------------------------------------------------
             //---   Retrieve JSON response from websites API (full string)
