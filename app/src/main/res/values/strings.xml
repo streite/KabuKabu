@@ -3,6 +3,7 @@
 
     <string-array name="categories">
         <item>TECH</item>
+        <item>HEALTH</item>
         <item>REGION ETF</item>
         <item>COMMODITY ETF</item>
     </string-array>

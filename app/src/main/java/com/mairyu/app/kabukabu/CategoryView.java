@@ -52,14 +52,16 @@ public class CategoryView extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
 
+                Intent intentTraining = new Intent(CategoryView.this, PortfolioView.class);
+                intentTraining.putExtra("PORTFOLIO_CATEGORY", CategoryArray[position]);
+                startActivity(intentTraining);
+
                 switch (position) {
 
                     // Training
                     case 0:
 
-                        Intent intentTraining = new Intent(CategoryView.this, PortfolioView.class);
-                        startActivity(intentTraining);
-                        break;
+                      break;
 
                 }
             }

@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 //==================================================================================================
 //===   YahooAPI
 //==================================================================================================
@@ -20,6 +22,8 @@ public class YahooAPI extends AppCompatActivity {
     String Kanji;
 
     private PreferenceSettings _appPrefs;
+
+    ArrayList<Stock> allStockItems = new ArrayList<>();
 
     SQLhandler sqlHandler;
 
@@ -72,7 +76,7 @@ public class YahooAPI extends AppCompatActivity {
     //**********************************************************************************************
     //***   Pull Data from website, call Parser etc.
     //**********************************************************************************************
-    private class YahooAsyncTask extends AsyncTask <String, Void, Stock> {
+    private class YahooAsyncTask extends AsyncTask <String, Void, ArrayList<Stock>> {
 
         Context context;
 
@@ -100,7 +104,7 @@ public class YahooAPI extends AppCompatActivity {
         //---   AsyncTask: doInBackground
         //------------------------------------------------------------------------------------------
         @Override
-        protected Stock doInBackground(String... params) {
+        protected ArrayList<Stock> doInBackground(String... params) {
 
             Stock stock = new Stock();
 
@@ -113,6 +117,7 @@ public class YahooAPI extends AppCompatActivity {
             dictHTTPClient.setBASE_URL("http://query.yahooapis.com/v1/public/yql?"+
                     "q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20%28%22GOOG,AAPL,NVDA%22%29"+
                     "&env=store://datatables.org/alltableswithkeys&format=json");
+
             //--------------------------------------------------------------------------------------
             //---   Retrieve JSON response from websites API (full string)
             //--------------------------------------------------------------------------------------
@@ -125,9 +130,9 @@ public class YahooAPI extends AppCompatActivity {
 
             try {
 
-                stock = YahooJSONParser.getYahooStuff(data);
+                allStockItems = YahooJSONParser.getYahooStuff(data);
 
-                return stock;
+                return allStockItems;
 
             } catch (Throwable t) {
 
@@ -136,22 +141,21 @@ public class YahooAPI extends AppCompatActivity {
                 Log.i("LOG: (DLU) BACKGROUND", "CATCH " + t);
             }
 
-            return stock;
+            return allStockItems;
         }
 
         //------------------------------------------------------------------------------------------
         //---   AsyncTask: onPostExecute - Display in ListView
         //------------------------------------------------------------------------------------------
         @Override
-        protected void onPostExecute(Stock stock) {
+        protected void onPostExecute(ArrayList<Stock> allStockItems) {
 
-            super.onPostExecute(stock);
+            super.onPostExecute(allStockItems);
 
-            Stock tmpStock = new Stock();
+            for (Stock tmpStock: allStockItems) {
 
-            tmpStock.setPrice(stock.getPrice());
-
-            sqlHandler.updateStock(tmpStock);
+                sqlHandler.updateStock(tmpStock);
+            }
 
             //------------------------------------------------------------------------------------------
             //---   Close progress dialog

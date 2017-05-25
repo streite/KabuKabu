@@ -2,8 +2,11 @@ package com.mairyu.app.kabukabu;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 //==================================================================================================
 //===   YahooAPI
@@ -14,7 +17,9 @@ public class YahooJSONParser {
     //***
     //**********************************************************************************************
 
-    public static Stock getYahooStuff(String HTTP_Response) throws JSONException {
+    public static ArrayList<Stock> getYahooStuff(String HTTP_Response) throws JSONException {
+
+        ArrayList<Stock> allStockItems = new ArrayList<>();
 
         JSONObject yahooJsonObject = new JSONObject(HTTP_Response);
 
@@ -26,24 +31,43 @@ public class YahooJSONParser {
 
         Log.i("LOG: (DJP) PARSER", "resultsJsonObject "+resultsJsonObject);
 
-        JSONObject quoteJsonObject = resultsJsonObject.getJSONObject("quote");
+        JSONArray quoteJsonArray = resultsJsonObject.getJSONArray("quote");
 
-        Log.i("LOG: (DJP) PARSER", "quoteJsonObject "+quoteJsonObject);
+        Log.i("LOG: (DJP) PARSER", "quoteJsonObject "+quoteJsonArray);
 
-        Stock currentStock = new Stock();
+        //--------------------------------------------------------------------------------------
+        //---   Loop over all JSON Objects and collect them in ArrayList
+        //--------------------------------------------------------------------------------------
+        for(int i=0; i < quoteJsonArray.length(); i++) {
 
-        try {
-            currentStock.setPrice(Float.parseFloat(getString("LastTradePriceOnly", quoteJsonObject)));
-            Log.i("LOG: (DJP) TRY", "LastTradePriceOnly " + getString("LastTradePriceOnly", quoteJsonObject));
+            Stock currentStock = new Stock();
 
-        } catch (Exception e) {
+            try {
+                currentStock.setPrice(Float.parseFloat(getString("LastTradePriceOnly", quoteJsonArray.getJSONObject(i))));
+                Log.i("LOG: (DJP) TRY", "LastTradePriceOnly " + getString("LastTradePriceOnly", quoteJsonArray.getJSONObject(i)));
 
-            currentStock.setPrice(0);
+            } catch (Exception e) {
 
-            Log.i("LOG: (DJP) CATCH", "LastTradePriceOnly");
+                currentStock.setPrice(0);
+
+                Log.i("LOG: (DJP) CATCH", "LastTradePriceOnly");
+            }
         }
 
-        return currentStock;
+        Log.i("LOG: (DJP) TRY", "SIZE "+allStockItems.size());
+
+        if (allStockItems.size() > 0) {
+
+            for (int i = 0; i < allStockItems.size(); i++) {
+
+                Stock currentItem = allStockItems.get(i);
+
+                Log.i("LOG: (DJP) Index---", i+"");
+                Log.i("LOG: (DJP) Foreign", currentItem.getPrice()+"");
+            }
+        }
+
+        return allStockItems;
     }
 
     //**********************************************************************************************

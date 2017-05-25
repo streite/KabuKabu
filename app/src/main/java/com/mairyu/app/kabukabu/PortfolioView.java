@@ -2,9 +2,13 @@ package com.mairyu.app.kabukabu;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -13,12 +17,17 @@ import java.util.ArrayList;
 //==================================================================================================
 //===   PortfolioView
 //==================================================================================================
-public class PortfolioView extends AppCompatActivity {
+public class PortfolioView extends AppCompatActivity implements View.OnClickListener {
 
     private ArrayList<Stock> allStocks = new ArrayList<>();
     private ArrayAdapter<Stock> adapterStocks;
 
     private ListView listViewAllStocks;
+
+    Button btnDatabaseLoad;
+    Button btnDatabaseSave;
+    Button btnDatabaseShow;
+    Button btnDatabasePurge;
 
     private String[] CategoryArray;
 
@@ -27,6 +36,7 @@ public class PortfolioView extends AppCompatActivity {
     SQLhandler sqlHandler;
     String SQL_Filename;
     int SQLDBSize;
+    String Category;
 
     //**********************************************************************************************
     //***   onCreate
@@ -37,11 +47,30 @@ public class PortfolioView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.portfolio_view);
 
+        Bundle extras = getIntent().getExtras();
+        Category = extras.getString("PORTFOLIO_CATEGORY");
+
         //------------------------------------------------------------------------------------------
         //---   Preference/Settings
         //------------------------------------------------------------------------------------------
 
         _appPrefs = new PreferenceSettings(getApplicationContext());
+
+        //------------------------------------------------------------------------------------------
+        //---   Layout
+        //------------------------------------------------------------------------------------------
+
+        btnDatabaseLoad = (Button) findViewById(R.id.btnDatabaseLoad);
+        btnDatabaseLoad.setOnClickListener(PortfolioView.this);
+
+        btnDatabaseSave = (Button) findViewById(R.id.btnDatabaseSave);
+        btnDatabaseSave.setOnClickListener(PortfolioView.this);
+
+        btnDatabaseShow = (Button) findViewById(R.id.btnDatabaseShow);
+        btnDatabaseShow.setOnClickListener(PortfolioView.this);
+
+        btnDatabasePurge = (Button) findViewById(R.id.btnDatabasePurge);
+        btnDatabasePurge.setOnClickListener(PortfolioView.this);
 
         //------------------------------------------------------------------------------------------
         //---   ListView Setup
@@ -55,7 +84,7 @@ public class PortfolioView extends AppCompatActivity {
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(PortfolioView.this,_appPrefs.getSQLDBName(),Integer.parseInt(_appPrefs.getSQLDBVersion()));
+        sqlHandler = new SQLhandler(PortfolioView.this, _appPrefs.getSQLDBName(), Integer.parseInt(_appPrefs.getSQLDBVersion()));
 
         //------------------------------------------------------------------------------------------
         //---   If cards are already loaded, show right away (wait until activity is stable)
@@ -65,7 +94,7 @@ public class PortfolioView extends AppCompatActivity {
 
             public void run() {
 
-                allStocks = sqlHandler.getAllStocks(false);
+                allStocks = sqlHandler.getStocksByTicker(Category);
 
                 adapterStocks = new CustomDatabaseAdapter();
                 listViewAllStocks.setAdapter(adapterStocks);
@@ -76,13 +105,13 @@ public class PortfolioView extends AppCompatActivity {
     }
 
     //**********************************************************************************************
-    //***   Custom Array Adapter for DatabasePage
+    //***   Custom Array Adapter for PortfolioPage
     //**********************************************************************************************
     private class CustomDatabaseAdapter extends ArrayAdapter<Stock> {
 
         public CustomDatabaseAdapter() {
 
-            super(PortfolioView.this, R.layout.portfolio_list_view_item,allStocks);
+            super(PortfolioView.this, R.layout.portfolio_list_view_item, allStocks);
         }
 
         @Override
@@ -100,7 +129,82 @@ public class PortfolioView extends AppCompatActivity {
             TextView menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewTicker);
             menuOption.setText(currentStock.getTicker());
 
+            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewPrice);
+            menuOption.setText(currentStock.getPrice() + "");
+
             return itemView;
         }
     }
+
+    //**********************************************************************************************
+    //***   Control of bottom set of Buttons
+    //**********************************************************************************************
+    @Override
+    public void onClick(View view) {
+
+        //------------------------------------------------------------------------------------------
+        //---   Setup Layout
+        //------------------------------------------------------------------------------------------
+
+        switch (view.getId()) {
+
+            //--------------------------------------------------------------------------------------
+            //---   SAVE
+            //--------------------------------------------------------------------------------------
+            case R.id.btnDatabaseSave:
+
+                break;
+        }
+    }
+
+    //**********************************************************************************************
+    //***   onCreateContextMenu (Context Menu)
+    //**********************************************************************************************
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        menu.setHeaderTitle("Select The Action");
+
+        menu.add(0, v.getId(), 0, "Add");
+        menu.add(0, v.getId(), 0, "Edit");
+        menu.add(0, v.getId(), 0, "Delete");
+    }
+
+    //**********************************************************************************************
+    //***   onContextItemSelected (Context Menu)
+    //**********************************************************************************************
+    @Override
+    public boolean onContextItemSelected(MenuItem item){
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        CharSequence Title = item.getTitle();
+        View view;
+
+        switch (Title.toString()) {
+
+        }
+
+        return true;
+    }
+
+    //**********************************************************************************************
+    //***   CustomOnItemSelectedListener (for Spinner)
+    //**********************************************************************************************
+//    public class CustomOnItemSelectedListener implements OnItemSelectedListener {
+//
+//        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+//            Toast.makeText(parent.getContext(),
+//                    "OnItemSelectedListener : " + parent.getItemAtPosition(pos).toString(),
+//                    Toast.LENGTH_SHORT).show();
+//
+//            Google_Sheet = parent.getItemAtPosition(pos).toString();
+//        }
+//
+//        @Override
+//        public void onNothingSelected(AdapterView<?> arg0) {
+//            // TODO Auto-generated method stub
+//        }
+//    }
 }

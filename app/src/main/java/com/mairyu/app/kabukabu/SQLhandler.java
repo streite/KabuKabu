@@ -91,49 +91,91 @@ public class SQLhandler extends SQLiteOpenHelper {
         return (ID);
     }
 
-//    /
-//*********************************************************************************************
-//    /
-//**   METHOD: Retrieve single flashcard from SQL
-//    /
-//*********************************************************************************************
-//    public Flashcard getFlashcard(int id) {
-//
-//        SQLiteDatabase database = this.getReadableDatabase();
-//
-//        //------------------------------------------------------------------------------------------
-//        //---   Query from SQL
-//        //------------------------------------------------------------------------------------------
-//        Cursor cursor = database.query(TABLE_NAME, new String[]
-//                {COLUMN_ID, COLUMN_FOREIGN_CHAR,COLUMN_FOREIGN_ALT,COLUMN_FOREIGN_WORD,COLUMN_ENGLISH_WORD,
-//                        COLUMN_KNOW_FOREIGN_CHAR,COLUMN_KNOW_FOREIGN_ALT,COLUMN_KNOW_ENGLISH_WORD,
-//                        COLUMN_SLEEP_DATE,COLUMN_PRIORITY_TAG},COLUMN_ID + "=?",
-//                new String [] {String.valueOf(id)},null,null,null);
-//
-//        if (cursor != null) {
-//            cursor.moveToFirst();
-//        }
-//
-//        //------------------------------------------------------------------------------------------
-//        //---   Copy SQL to flashcard
-//        //------------------------------------------------------------------------------------------
-//
-//        Flashcard flashcard = new Flashcard();
-//
-//        flashcard.setId(Integer.parseInt(cursor.getString(0)));
-//        flashcard.setForeignChar(cursor.getString(1));
-//        flashcard.setForeignAlt(cursor.getString(2));
-//        flashcard.setForeignWord(cursor.getString(3));
-//        flashcard.setEnglishWord(cursor.getString(4));
-//        flashcard.setKnowForeignCharLevel(Integer.parseInt(cursor.getString(5)));
-//        flashcard.setKnowForeignAltLevel(Integer.parseInt(cursor.getString(6)));
-//        flashcard.setKnowEnglishWordLevel(Integer.parseInt(cursor.getString(7)));
-//        flashcard.setSleepDate(cursor.getString(8));
-//        flashcard.setPriorityTag(Boolean.parseBoolean(cursor.getString(9)));
-//
-//        return flashcard;
-//    }
-//
+    //**********************************************************************************************
+    //***   METHOD: Retrieve single flashcard from SQL
+    //**********************************************************************************************
+    public Stock getStockByID(int id) {
+
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        //------------------------------------------------------------------------------------------
+        //---   Query from SQL
+        //------------------------------------------------------------------------------------------
+        Cursor cursor = database.query(TABLE_NAME, new String[]
+                {COLUMN_ID, COLUMN_COMPANY,COLUMN_TICKER,COLUMN_PRICE,COLUMN_CATEGORY,
+                        COLUMN_SHARES,COLUMN_BASIS,COLUMN_DATE,
+                        COLUMN_COMMISSION},COLUMN_ID + "=?",
+                new String [] {String.valueOf(id)},null,null,null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        //------------------------------------------------------------------------------------------
+        //---   Copy SQL to flashcard
+        //------------------------------------------------------------------------------------------
+
+        Stock stock = new Stock();
+
+        stock.setId(Integer.parseInt(cursor.getString(0)));
+        stock.setCompany(cursor.getString(1));
+        stock.setTicker(cursor.getString(2));
+        stock.setPrice(Float.parseFloat(cursor.getString(3)));
+        stock.setGroup(cursor.getString(4));
+        stock.setShares(Integer.parseInt(cursor.getString(5)));
+        stock.setBasis(Float.parseFloat(cursor.getString(6)));
+        stock.setDate(cursor.getString(7));
+        stock.setCommission(Integer.parseInt(cursor.getString(8)));
+
+        return stock;
+    }
+
+    //**********************************************************************************************
+    //***   METHOD: Retrieve single flashcard from SQL
+    //**********************************************************************************************
+    public ArrayList<Stock> getStocksByTicker(String ticker) {
+
+        String selectAllQuery;
+
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        ArrayList<Stock> stockArrayList = new ArrayList<>();
+
+        selectAllQuery = "Select * FROM " + TABLE_NAME + " WHERE " + COLUMN_CATEGORY + " =  \"" + ticker + "\"";
+
+//        selectAllQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_TICKER  + " = " + ticker;
+
+//        Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_TICKER  + " = TECH ", null);
+
+        Cursor cursor = database.rawQuery(selectAllQuery, null);
+
+        if (cursor.moveToFirst()) {
+
+            do {
+
+                Stock stock = new Stock();
+
+                //----------------------------------------------------------------------------------
+                //---   Copy SQL to flashcard
+                //----------------------------------------------------------------------------------
+                stock.setId(Integer.parseInt(cursor.getString(0)));
+                stock.setCompany(cursor.getString(1));
+                stock.setTicker(cursor.getString(2));
+                stock.setPrice(Float.parseFloat(cursor.getString(3)));
+                stock.setGroup(cursor.getString(4));
+                stock.setShares(Integer.parseInt(cursor.getString(5)));
+                stock.setBasis(Float.parseFloat(cursor.getString(6)));
+                stock.setDate(cursor.getString(7));
+                stock.setCommission(Integer.parseInt(cursor.getString(8)));
+
+                stockArrayList.add(stock);
+
+            } while (cursor.moveToNext());
+        }
+
+        return stockArrayList;
+    }
+
     //**********************************************************************************************
     //***   METHOD: Retrieve all flashcards from SQL
     //**********************************************************************************************
@@ -141,7 +183,7 @@ public class SQLhandler extends SQLiteOpenHelper {
 
         String selectAllQuery;
 
-        ArrayList<Stock> stockList = new ArrayList<>();
+        ArrayList<Stock> stockArrayList = new ArrayList<>();
 
         SQLiteDatabase database = this.getReadableDatabase();
 
@@ -172,12 +214,12 @@ public class SQLhandler extends SQLiteOpenHelper {
                 stock.setDate(cursor.getString(7));
                 stock.setCommission(Integer.parseInt(cursor.getString(8)));
 
-                stockList.add(stock);
+                stockArrayList.add(stock);
 
             } while (cursor.moveToNext());
         }
 
-        return stockList;
+        return stockArrayList;
     }
 
     //**********************************************************************************************

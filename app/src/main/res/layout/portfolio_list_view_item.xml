@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:background="@drawable/gradient_green"
+    android:background="@drawable/gradient_light_yellow_bg"
     android:layout_height="match_parent">
 
     <TextView
@@ -10,20 +10,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:text="TICKER"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
+        android:textColor="@color/colorYellow1"
+        android:textSize="24sp"
         android:textStyle="italic" />
 
     <TextView
         android:id="@+id/portfolioListViewPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/portfolioListViewTicker"
+        android:layout_alignParentEnd="true"
         android:ellipsize="end"
-        android:maxLines="10"
         android:text="PRICE"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
+        android:textColor="@color/colorYellow1"
+        android:textSize="18sp"
         android:textStyle="italic" />
 
 </RelativeLayout>
