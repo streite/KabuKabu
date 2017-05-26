@@ -1,5 +1,7 @@
 package com.mairyu.app.kabukabu;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +44,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     String SQL_Filename;
     int SQLDBSize;
     String Category;
+
+    static final int REQUEST_YAHOO = 1000;
 
     //**********************************************************************************************
     //***   onCreate
@@ -213,6 +217,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         String SQLFileName = "0";
 
+//        ImageView ivVectorImage = (ImageView) findViewById(R.id.action_refresh);
+//        ImageButton ivVectorImage = (ImageButton) menu.findItem(R.id.action_refresh).getActionView();
+
+//        ivVectorImage.setColorFilter(getResources().getColor(R.color.colorYellow1));
+
         //------------------------------------------------------------------------------------------
         //---   Show active SQL DB
         //------------------------------------------------------------------------------------------
@@ -236,16 +245,59 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
         //---   Pull down 'Settings' Menu
         //------------------------------------------------------------------------------------------
-//        if (id == R.id.action_settings) {
-//
-//            Intent intentSettings = new Intent(DatabasePage.this, SettingsPage.class);
-//            startActivityForResult(intentSettings,REQUEST_PREFERENCE);
-//        }
+        if (id == R.id.action_refresh) {
+
+            Intent intentYahoo = new Intent(PortfolioView.this, YahooAPI.class);
+            ArrayList<String> TickerList = grabTickers();
+            intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerList);
+            startActivityForResult(intentYahoo,REQUEST_YAHOO);
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
     //**********************************************************************************************
+    //***
+    //**********************************************************************************************
+    private ArrayList<String> grabTickers() {
+
+        ArrayList<String> TickerList = new ArrayList<>();
+
+        int index = 0;
+
+        for (Stock tmpStock: allStocks) {
+
+            TickerList.add(index++,tmpStock.getTicker());
+        }
+
+        return TickerList;
+    }
+
+    //**********************************************************************************************
+    //***   onActivityResult (returning from Preferences)
+    //**********************************************************************************************
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        //------------------------------------------------------------------------------------------
+        //---   Return from CardView
+        //------------------------------------------------------------------------------------------
+        if (requestCode == REQUEST_YAHOO) {
+
+            //--------------------------------------------------------------------------------------
+            //---   Return via finish()
+            //--------------------------------------------------------------------------------------
+            if (resultCode == Activity.RESULT_OK) {
+
+                allStocks = sqlHandler.getStocksByTicker(Category);
+
+                adapterStocks = new CustomDatabaseAdapter();
+                listViewAllStocks.setAdapter(adapterStocks);
+                adapterStocks.notifyDataSetChanged();
+            }
+        }
+    }
+                //**********************************************************************************************
     //***   CustomOnItemSelectedListener (for Spinner)
     //**********************************************************************************************
 //    public class CustomOnItemSelectedListener implements OnItemSelectedListener {

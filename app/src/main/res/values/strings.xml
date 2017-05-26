@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">KabuKabu</string>
 
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+
     <string-array name="categories">
         <item>TECH</item>
         <item>HEALTH</item>

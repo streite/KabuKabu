@@ -45,6 +45,7 @@ public class YahooJSONParser {
             try {
                 currentStock.setPrice(Float.parseFloat(getString("LastTradePriceOnly", quoteJsonArray.getJSONObject(i))));
                 Log.i("LOG: (DJP) TRY", "LastTradePriceOnly " + getString("LastTradePriceOnly", quoteJsonArray.getJSONObject(i)));
+                allStockItems.add(currentStock);
 
             } catch (Exception e) {
 
@@ -53,6 +54,7 @@ public class YahooJSONParser {
                 Log.i("LOG: (DJP) CATCH", "LastTradePriceOnly");
             }
         }
+
 
         Log.i("LOG: (DJP) TRY", "SIZE "+allStockItems.size());
 

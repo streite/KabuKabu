@@ -3,4 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
+    <item
+        android:id="@+id/action_refresh"
+        android:title="Add"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_refresh_black"
+        app:showAsAction="ifRoom" />
+
 </menu>

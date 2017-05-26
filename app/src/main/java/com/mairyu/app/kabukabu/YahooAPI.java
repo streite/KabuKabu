@@ -1,5 +1,6 @@
 package com.mairyu.app.kabukabu;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -24,6 +25,7 @@ public class YahooAPI extends AppCompatActivity {
     private PreferenceSettings _appPrefs;
 
     ArrayList<Stock> allStockItems = new ArrayList<>();
+    ArrayList<String> TickerList = new ArrayList<>();
 
     SQLhandler sqlHandler;
 
@@ -48,10 +50,7 @@ public class YahooAPI extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
-//        sheetsID = extras.getString("SHEETS_ID");
-//        sheetsTab = extras.getString("SHEETS_TAB");
-//        sheetsRange = extras.getString("SHEETS_RANGE");
-//        sheetsMode = extras.getString("SHEETS_MODE");
+        TickerList = getIntent().getStringArrayListExtra("TICKER_INDEX_ARRAY");
 
         //------------------------------------------------------------------------------------------
         //---   Preference/Settings
@@ -96,7 +95,7 @@ public class YahooAPI extends AppCompatActivity {
 
             super.onPreExecute();
 
-            progressDialog.setTitle("Downloading Info From Kanji API ... Please Wait");
+            progressDialog.setTitle("Downloading Info From YAHOO API ... Please Wait");
             progressDialog.show();
         }
 
@@ -114,9 +113,18 @@ public class YahooAPI extends AppCompatActivity {
 
             HTTPClient dictHTTPClient = new HTTPClient();
 
+            String TickerConcat = "";
+
+            for(String tmp: TickerList) {
+
+                TickerConcat = TickerConcat + tmp + ",";
+            }
+            TickerConcat.replaceAll(",$","");
+
             dictHTTPClient.setBASE_URL("http://query.yahooapis.com/v1/public/yql?"+
-                    "q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20%28%22GOOG,AAPL,NVDA%22%29"+
-                    "&env=store://datatables.org/alltableswithkeys&format=json");
+                    "q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20%28%22"+
+                    TickerConcat+
+                    "%22%29&env=store://datatables.org/alltableswithkeys&format=json");
 
             //--------------------------------------------------------------------------------------
             //---   Retrieve JSON response from websites API (full string)
@@ -164,6 +172,10 @@ public class YahooAPI extends AppCompatActivity {
 
                 progressDialog.dismiss();
             }
+
+            setResult(Activity.RESULT_OK);
+
+            finish();
         }
     }
 }
