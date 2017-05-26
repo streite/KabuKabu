@@ -1,8 +1,11 @@
 package com.mairyu.app.kabukabu;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +31,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     Button btnDatabaseSave;
     Button btnDatabaseShow;
     Button btnDatabasePurge;
+
+    private Toolbar mToolbar;
 
     private String[] CategoryArray;
 
@@ -55,6 +60,15 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
 
         _appPrefs = new PreferenceSettings(getApplicationContext());
+
+        //------------------------------------------------------------------------------------------
+        //---   Toolbar
+        //------------------------------------------------------------------------------------------
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         //------------------------------------------------------------------------------------------
         //---   Layout
@@ -90,7 +104,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   If cards are already loaded, show right away (wait until activity is stable)
         //------------------------------------------------------------------------------------------
 
-        findViewById(R.id.llv_portfolio_view).post(new Runnable() {
+        findViewById(R.id.rlv_portfolio_view).post(new Runnable() {
 
             public void run() {
 
@@ -187,6 +201,48 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         }
 
         return true;
+    }
+
+    //**********************************************************************************************
+    //***   onCreateOptionsMenu (Toolbar)
+    //**********************************************************************************************
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        String SQLFileName = "0";
+
+        //------------------------------------------------------------------------------------------
+        //---   Show active SQL DB
+        //------------------------------------------------------------------------------------------
+
+        TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
+        txtCategory.setText(Category+" ("+SQLDBSize+")");
+//        txtCategory.setTextColor(getResources().getColor(R.color.colorYellow1));
+        txtCategory.setTextColor(ContextCompat.getColor(this, R.color.colorYellow1));
+
+        return true;
+    }
+
+    //**********************************************************************************************
+    //***   onOptionsItemSelected (Toolbar)
+    //**********************************************************************************************
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        //------------------------------------------------------------------------------------------
+        //---   Pull down 'Settings' Menu
+        //------------------------------------------------------------------------------------------
+//        if (id == R.id.action_settings) {
+//
+//            Intent intentSettings = new Intent(DatabasePage.this, SettingsPage.class);
+//            startActivityForResult(intentSettings,REQUEST_PREFERENCE);
+//        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     //**********************************************************************************************

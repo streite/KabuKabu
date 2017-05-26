@@ -32,9 +32,12 @@
         </activity>
         <activity android:name="com.mairyu.app.kabukabu.Stock" />
         <activity android:name="com.mairyu.app.kabukabu.CategoryView"></activity>
-        <activity android:name="com.mairyu.app.kabukabu.PortfolioView"></activity>
         <activity android:name="com.mairyu.app.kabukabu.GoogleSheets"></activity>
         <activity android:name="com.mairyu.app.kabukabu.YahooAPI"></activity>
+        <activity
+            android:name=".PortfolioView"
+            android:label=""
+            android:theme="@style/MyMaterialTheme" />
 
     </application>
 

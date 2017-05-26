@@ -6,11 +6,15 @@
 
     <TextView
         android:id="@+id/portfolioListViewTicker"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="15dp"
         android:text="TICKER"
         android:textColor="@color/colorYellow1"
+        android:background="@drawable/gradient_yellow_bg"
         android:textSize="24sp"
         android:textStyle="italic" />
 
@@ -19,6 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_margin="5dp"
         android:ellipsize="end"
         android:text="PRICE"
         android:textColor="@color/colorYellow1"
