@@ -9,12 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="15dp"
+        android:background="@drawable/gradient_yellow_bg"
+        android:paddingBottom="5dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="5dp"
         android:text="TICKER"
         android:textColor="@color/colorYellow1"
-        android:background="@drawable/gradient_yellow_bg"
         android:textSize="24sp"
         android:textStyle="italic" />
 
@@ -23,11 +23,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_margin="5dp"
-        android:ellipsize="end"
+        android:paddingRight="15dp"
         android:text="PRICE"
         android:textColor="@color/colorYellow1"
         android:textSize="18sp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/portfolioListViewPercChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/portfolioListViewPrice"
+        android:paddingRight="15dp"
+        android:text="PERC"
+        android:textColor="@color/colorYellow1"
+        android:textSize="14sp"
         android:textStyle="italic" />
 
 </RelativeLayout>

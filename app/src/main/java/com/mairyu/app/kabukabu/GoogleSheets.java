@@ -582,6 +582,8 @@ public class GoogleSheets extends AppCompatActivity {
     //**********************************************************************************************
     public void purgeDB(){
 
+//        this.deleteDatabase(_appPrefs.getSQLDBName());
+
         ArrayList<Stock> tmpFlashcards = new ArrayList<>();
         tmpFlashcards = sqlHandler.getAllStocks(false);
 

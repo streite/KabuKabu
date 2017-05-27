@@ -19,44 +19,62 @@ public class YahooJSONParser {
 
     public static ArrayList<Stock> getYahooStuff(String HTTP_Response) throws JSONException {
 
+//        HashMap<String,Float> TickerPriceHash = new HashMap<String,Float>();
+
         ArrayList<Stock> allStockItems = new ArrayList<>();
 
         JSONObject yahooJsonObject = new JSONObject(HTTP_Response);
 
         JSONObject queryJsonObject = yahooJsonObject.getJSONObject("query");
 
-        Log.i("LOG: (DJP) PARSER", "queryJsonObject "+queryJsonObject);
+        Log.i("LOG: (YJP) PARSER", "queryJsonObject "+queryJsonObject);
+
+        int JSONCount = Integer.parseInt(getString("count", queryJsonObject));
+
+        Log.i("LOG: (YJP) PARSER", "JSONCount "+JSONCount);
 
         JSONObject resultsJsonObject = queryJsonObject.getJSONObject("results");
 
-        Log.i("LOG: (DJP) PARSER", "resultsJsonObject "+resultsJsonObject);
+        Log.i("LOG: (YJP) PARSER", "resultsJsonObject "+resultsJsonObject);
 
-        JSONArray quoteJsonArray = resultsJsonObject.getJSONArray("quote");
+        if (JSONCount > 1) {
 
-        Log.i("LOG: (DJP) PARSER", "quoteJsonObject "+quoteJsonArray);
+            JSONArray quoteJsonArray = resultsJsonObject.getJSONArray("quote");
 
-        //--------------------------------------------------------------------------------------
-        //---   Loop over all JSON Objects and collect them in ArrayList
-        //--------------------------------------------------------------------------------------
-        for(int i=0; i < quoteJsonArray.length(); i++) {
+            Log.i("LOG: (YJP) PARSER", "quoteJsonObject " + quoteJsonArray);
+
+            //--------------------------------------------------------------------------------------
+            //---   Loop over all JSON Objects and collect them in ArrayList
+            //--------------------------------------------------------------------------------------
+            for (int i = 0; i < quoteJsonArray.length(); i++) {
+
+                Stock currentStock = new Stock();
+
+                currentStock.setTicker(getString("symbol", quoteJsonArray.getJSONObject(i)));
+                currentStock.setPrice(Float.parseFloat(getString("LastTradePriceOnly", quoteJsonArray.getJSONObject(i))));
+                currentStock.setChange(getString("Change", quoteJsonArray.getJSONObject(i)));
+                currentStock.setPercChange(getString("PercentChange", quoteJsonArray.getJSONObject(i)));
+
+                allStockItems.add(currentStock);
+            }
+
+        } else {
+
+            JSONObject quoteJsonObject = resultsJsonObject.getJSONObject("quote");
+
+            Log.i("LOG: (YJP) PARSER", "quoteJsonObject " + quoteJsonObject);
 
             Stock currentStock = new Stock();
 
-            try {
-                currentStock.setPrice(Float.parseFloat(getString("LastTradePriceOnly", quoteJsonArray.getJSONObject(i))));
-                Log.i("LOG: (DJP) TRY", "LastTradePriceOnly " + getString("LastTradePriceOnly", quoteJsonArray.getJSONObject(i)));
-                allStockItems.add(currentStock);
+            currentStock.setTicker(getString("symbol", quoteJsonObject));
+            currentStock.setPrice(Float.parseFloat(getString("LastTradePriceOnly", quoteJsonObject)));
+            currentStock.setChange(getString("Change", quoteJsonObject));
+            currentStock.setPercChange(getString("PercentChange", quoteJsonObject));
 
-            } catch (Exception e) {
-
-                currentStock.setPrice(0);
-
-                Log.i("LOG: (DJP) CATCH", "LastTradePriceOnly");
-            }
+            allStockItems.add(currentStock);
         }
 
-
-        Log.i("LOG: (DJP) TRY", "SIZE "+allStockItems.size());
+        Log.i("LOG: (YJP) TRY", "SIZE "+allStockItems.size());
 
         if (allStockItems.size() > 0) {
 
@@ -64,8 +82,8 @@ public class YahooJSONParser {
 
                 Stock currentItem = allStockItems.get(i);
 
-                Log.i("LOG: (DJP) Index---", i+"");
-                Log.i("LOG: (DJP) Foreign", currentItem.getPrice()+"");
+                Log.i("LOG: (YJP) Index---", i+"");
+                Log.i("LOG: (YJP) Foreign", currentItem.getPrice()+"");
             }
         }
 

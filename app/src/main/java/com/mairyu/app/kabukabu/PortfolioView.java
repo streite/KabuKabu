@@ -112,7 +112,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             public void run() {
 
-                allStocks = sqlHandler.getStocksByTicker(Category);
+                allStocks = sqlHandler.getStocksByCategory(Category);
 
                 adapterStocks = new CustomDatabaseAdapter();
                 listViewAllStocks.setAdapter(adapterStocks);
@@ -149,6 +149,15 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewPrice);
             menuOption.setText(currentStock.getPrice() + "");
+
+            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewPercChange);
+            menuOption.setText(currentStock.getPercChange());
+
+            if (currentStock.getPercChange().indexOf("+") >= 0) {
+                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreen1));
+            } else {
+                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRed1));
+            }
 
             return itemView;
         }
@@ -289,7 +298,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //--------------------------------------------------------------------------------------
             if (resultCode == Activity.RESULT_OK) {
 
-                allStocks = sqlHandler.getStocksByTicker(Category);
+                allStocks = sqlHandler.getStocksByCategory(Category);
 
                 adapterStocks = new CustomDatabaseAdapter();
                 listViewAllStocks.setAdapter(adapterStocks);

@@ -6,6 +6,8 @@ public class Stock  {
     private String Company;
     private String Ticker;
     private float Price;
+    private String Change;
+    private String PercChange;
     private String Group;
     private int Shares;
     private float Basis;
@@ -31,6 +33,8 @@ public class Stock  {
         Company = "";
         Ticker = "";
         Price = 0;
+        Change = "";
+        PercChange = "";
         Group = "";
         Shares = 0;
         Basis = 0;
@@ -38,18 +42,18 @@ public class Stock  {
         Commission = 0;
     }
 
-    public Stock(String company, String ticker, float price, String group, int shares, float basis, String date, int commission) {
-
-        id = 0;
-        Company = company;
-        Ticker = ticker;
-        Price = price;
-        Group = group;
-        Shares = shares;
-        Basis = basis;
-        Date = date;
-        Commission = commission;
-    }
+//    public Stock(String company, String ticker, float price, String group, int shares, float basis, String date, int commission) {
+//
+//        id = 0;
+//        Company = company;
+//        Ticker = ticker;
+//        Price = price;
+//        Group = group;
+//        Shares = shares;
+//        Basis = basis;
+//        Date = date;
+//        Commission = commission;
+//    }
 
     public int getId() {
         return id;
@@ -81,6 +85,22 @@ public class Stock  {
 
     public void setPrice(float price) {
         Price = price;
+    }
+
+    public String getChange() {
+        return Change;
+    }
+
+    public void setChange(String change) {
+        Change = change;
+    }
+
+    public String getPercChange() {
+        return PercChange;
+    }
+
+    public void setPercChange(String percChange) {
+        PercChange = percChange;
     }
 
     public String getGroup() {

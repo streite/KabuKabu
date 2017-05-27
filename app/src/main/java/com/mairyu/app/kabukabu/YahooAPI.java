@@ -146,7 +146,7 @@ public class YahooAPI extends AppCompatActivity {
 
                 t.printStackTrace();
 
-                Log.i("LOG: (DLU) BACKGROUND", "CATCH " + t);
+                Log.i("LOG: (YAH) BACKGROUND", "CATCH " + t);
             }
 
             return allStockItems;
@@ -162,7 +162,13 @@ public class YahooAPI extends AppCompatActivity {
 
             for (Stock tmpStock: allStockItems) {
 
-                sqlHandler.updateStock(tmpStock);
+                String Ticker = tmpStock.getTicker();
+                Stock sqlStock = sqlHandler.getStocksByTicker(Ticker);
+                sqlStock.setPrice(tmpStock.getPrice());
+                sqlStock.setChange(tmpStock.getChange());
+                sqlStock.setPercChange(tmpStock.getPercChange());
+
+                sqlHandler.updateStock(sqlStock);
             }
 
             //------------------------------------------------------------------------------------------
