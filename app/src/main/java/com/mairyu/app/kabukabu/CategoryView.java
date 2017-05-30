@@ -37,8 +37,11 @@ public class CategoryView extends AppCompatActivity {
         //------------------------------------------------------------------------------------------
 
         CategoryArray = getResources().getStringArray(R.array.categories);
+//        List<String> Lines = Arrays.asList(getResources().getStringArray(R.array.Lines));
 
-        adapterCategory = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,CategoryArray);
+//        adapterCategory = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,CategoryArray);
+        adapterCategory = new CustomDatabaseAdapter();
+
         categoryListView = (ListView) findViewById(R.id.categoryListView);
         categoryListView.setAdapter(adapterCategory);
 
@@ -90,7 +93,7 @@ public class CategoryView extends AppCompatActivity {
             }
 
             // Find the current card to work with
-            String currentString = CategoryMenu.get(position);
+            String currentString = CategoryArray[position];
 
             TextView menuOption = (TextView) itemView.findViewById(R.id.txtStockGroup);
             menuOption.setText(currentString);

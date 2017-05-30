@@ -6,13 +6,26 @@
 
     <string-array name="categories">
         <item>TECH</item>
+        <item>FINANCE</item>
+        <item>CONSUME</item>
+        <item>TECH</item>
+        <item>DEFENSE</item>
         <item>HEALTH</item>
+        <item>TRANSPORTATION</item>
+        <item>INDEX ETF</item>
         <item>REGION ETF</item>
         <item>COMMODITY ETF</item>
+        <item>OTHER ETF</item>
+        <item>MUTUAL</item>
+        <item>401K NVDA</item>
+        <item>401K SUN</item>
+        <item>HSA</item>
     </string-array>
 
+<!--
     <string-array name="google_sheets">
         <item>TECH</item>
     </string-array>
+-->
 
 </resources>

@@ -29,13 +29,13 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnDatabaseLoad"
+            android:id="@+id/btnPortfolioAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="1dp"
             android:layout_weight="1"
-            android:text="Load"/>
+            android:text="ADD"/>
 
         <Button
             android:id="@+id/btnDatabaseSave"

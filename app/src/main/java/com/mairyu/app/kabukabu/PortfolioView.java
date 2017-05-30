@@ -7,6 +7,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,10 +16,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import static com.mairyu.app.kabukabu.R.id.portfolioListViewPrice;
 
 //==================================================================================================
 //===   PortfolioView
@@ -29,12 +38,19 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     private ListView listViewAllStocks;
 
-    Button btnDatabaseLoad;
+    EditText edtPortfolioTicker;
+    EditText edtPortfolioShares;
+    EditText edtPortfolioBasis;
+    EditText edtPortfolioComission;
+
+    Button btnPortfolioAdd;
     Button btnDatabaseSave;
     Button btnDatabaseShow;
     Button btnDatabasePurge;
 
     private Toolbar mToolbar;
+
+    private Spinner Portfolio_Spinner;
 
     private String[] CategoryArray;
 
@@ -44,6 +60,22 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     String SQL_Filename;
     int SQLDBSize;
     String Category;
+    String PortfolioCategory;
+
+    float Price;
+    int Shares;
+    float GainLoss;
+    float GainLossPerc;
+    String ChangePerc;
+    float Basis;
+    int Comission;
+
+    static final int SQL_POPUP_WIDTH = 1000;
+    static final int SQL_POPUP_HEIGHT = 1500;
+    static final int SQL_POPUP_GRAVITY_X = 0;
+    static final int SQL_POPUP_GRAVITY_Y = 0;
+
+    private PopupWindow popupWindow;
 
     static final int REQUEST_YAHOO = 1000;
 
@@ -78,8 +110,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   Layout
         //------------------------------------------------------------------------------------------
 
-        btnDatabaseLoad = (Button) findViewById(R.id.btnDatabaseLoad);
-        btnDatabaseLoad.setOnClickListener(PortfolioView.this);
+        btnPortfolioAdd = (Button) findViewById(R.id.btnPortfolioAdd);
+        btnPortfolioAdd.setOnClickListener(PortfolioView.this);
 
         btnDatabaseSave = (Button) findViewById(R.id.btnDatabaseSave);
         btnDatabaseSave.setOnClickListener(PortfolioView.this);
@@ -144,20 +176,52 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             Stock currentStock = allStocks.get(position);
 
+            DecimalFormat df1 = new DecimalFormat("#.#");
+            DecimalFormat df2 = new DecimalFormat("#.##");
+
+            Price = currentStock.getPrice();
+            Shares = currentStock.getShares();
+            ChangePerc = currentStock.getPercChange();
+            Basis = currentStock.getBasis();
+            Comission = currentStock.getCommission();
+
+            //------------------------------------------------------------------------------------------
             TextView menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewTicker);
             menuOption.setText(currentStock.getTicker());
-
-            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewPrice);
-            menuOption.setText(currentStock.getPrice() + "");
-
+            //------------------------------------------------------------------------------------------
+            menuOption = (TextView) itemView.findViewById(portfolioListViewPrice);
+            menuOption.setText(df1.format(currentStock.getPrice()));
+            //------------------------------------------------------------------------------------------
             menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewPercChange);
-            menuOption.setText(currentStock.getPercChange());
-
-            if (currentStock.getPercChange().indexOf("+") >= 0) {
-                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreen1));
+            if (currentStock.getPercChange().contains("+")) {
+                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
             } else {
-                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRed1));
+                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
             }
+            ChangePerc = ChangePerc.replace("%","");
+            if (ChangePerc.equals("")) {
+//                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
+            } else {
+                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
+            }
+            //------------------------------------------------------------------------------------------
+            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLoss);
+            GainLoss = ((Price - Basis) * Shares) - Comission;
+            if (GainLoss >= 0) {
+                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
+            } else {
+                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+            }
+            menuOption.setText(df1.format(GainLoss));
+            //------------------------------------------------------------------------------------------
+            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLossPerc);
+            GainLossPerc = (GainLoss*100)/(Basis*Shares);
+            if (GainLossPerc >= 0) {
+                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
+            } else {
+                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+            }
+            menuOption.setText(df1.format(GainLossPerc) + "%");
 
             return itemView;
         }
@@ -178,9 +242,89 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //--------------------------------------------------------------------------------------
             //---   SAVE
             //--------------------------------------------------------------------------------------
-            case R.id.btnDatabaseSave:
+            case R.id.btnPortfolioAdd:
+
+                //----------------------------------------------------------------------------------
+                //---   SQL File Selection Popup
+                //----------------------------------------------------------------------------------
+
+                LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+
+                View popupView = layoutInflater.inflate(R.layout.add_portfolio_popup, null);
+
+                popupWindow = new PopupWindow(popupView, SQL_POPUP_WIDTH, SQL_POPUP_HEIGHT);
+
+                // otherwise Keyboard doesn't pop up
+                popupWindow.setFocusable(true);
+
+                popupWindow.showAtLocation(findViewById(R.id.rlv_portfolio_view), Gravity.CENTER, SQL_POPUP_GRAVITY_X, SQL_POPUP_GRAVITY_Y);
+
+                edtPortfolioTicker = (EditText) popupView.findViewById(R.id.edtPortfolioTicker);
+//                edtPortfolioTicker.setFocusableInTouchMode(true);
+//                edtPortfolioTicker.setFocusable(true);
+//                edtPortfolioTicker.setCursorVisible(true);
+//                edtPortfolioTicker.setClickable(true);
+                edtPortfolioShares = (EditText) popupView.findViewById(R.id.edtPortfolioShares);
+                edtPortfolioBasis = (EditText) popupView.findViewById(R.id.edtPortfolioBasis);
+                edtPortfolioComission = (EditText) popupView.findViewById(R.id.edtPortfolioComission);
+
+                btnPortfolioAdd = (Button) popupView.findViewById(R.id.btnPortfolioAdd);
+
+                //----------------------------------------------------------------------------------
+                //---   Spinner
+                //----------------------------------------------------------------------------------
+                Portfolio_Spinner = (Spinner) popupView.findViewById(R.id.spnPortfolioCategory);
+                Portfolio_Spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                        R.array.categories, android.R.layout.simple_spinner_item);
+// Specify the layout to use when the list of choices appears
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+                Portfolio_Spinner.setAdapter(adapter);
+
+                //----------------------------------------------------------------------------------
+                //---
+                //----------------------------------------------------------------------------------
+                btnPortfolioAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Stock newStock = new Stock();
+
+                        newStock.setTicker(edtPortfolioTicker.getText().toString());
+                        newStock.setGroup(PortfolioCategory);
+                        newStock.setShares(Integer.parseInt(edtPortfolioShares.getText().toString()));
+                        newStock.setBasis(Float.parseFloat(edtPortfolioBasis.getText().toString()));
+                        newStock.setCommission(Integer.parseInt(edtPortfolioComission.getText().toString()));
+
+                        sqlHandler.addStock(newStock);
+
+                        popupWindow.dismiss();
+                    }
+                });
 
                 break;
+
+        }
+    }
+
+    //**********************************************************************************************
+    //***   CustomOnItemSelectedListener (for Spinner)
+    //**********************************************************************************************
+    public class CustomOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
+            Toast.makeText(parent.getContext(),
+                    "OnItemSelectedListener : " + parent.getItemAtPosition(pos).toString(),
+                    Toast.LENGTH_SHORT).show();
+
+            PortfolioCategory = parent.getItemAtPosition(pos).toString();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+            // TODO Auto-generated method stub
         }
     }
 
@@ -306,7 +450,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             }
         }
     }
-                //**********************************************************************************************
+
+
+    //**********************************************************************************************
     //***   CustomOnItemSelectedListener (for Spinner)
     //**********************************************************************************************
 //    public class CustomOnItemSelectedListener implements OnItemSelectedListener {
