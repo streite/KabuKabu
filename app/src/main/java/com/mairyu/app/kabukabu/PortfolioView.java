@@ -240,7 +240,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         switch (view.getId()) {
 
             //--------------------------------------------------------------------------------------
-            //---   SAVE
+            //---   ADD
             //--------------------------------------------------------------------------------------
             case R.id.btnPortfolioAdd:
 
@@ -352,9 +352,23 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         CharSequence Title = item.getTitle();
         View view;
+        Stock currentStock = allStocks.get(info.position);
 
         switch (Title.toString()) {
 
+            //--------------------------------------------------------------------------------------
+            //---   EDIT
+            //--------------------------------------------------------------------------------------
+            case "Edit":
+
+                Intent intent2Info = new Intent(PortfolioView.this, StockInfo.class);
+
+                intent2Info.putExtra("SQL_STOCK_ID", currentStock.getId());
+
+                //---   ==> CardView
+                startActivity(intent2Info);
+
+                break;
         }
 
         return true;

@@ -23,22 +23,25 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.mairyu.app.kabukabu.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mairyu.app.kabukabu.Stock" />
-        <activity android:name="com.mairyu.app.kabukabu.CategoryView"></activity>
-        <activity android:name="com.mairyu.app.kabukabu.GoogleSheets"></activity>
-        <activity android:name="com.mairyu.app.kabukabu.YahooAPI"></activity>
+        <activity android:name=".Stock" />
+        <activity android:name=".CategoryView" />
+        <activity android:name=".GoogleSheets" />
+        <activity android:name=".YahooAPI" />
         <activity
             android:name=".PortfolioView"
             android:label=""
             android:theme="@style/MyMaterialTheme" />
-
+        <activity
+            android:name=".StockInfo"
+            android:label=""
+            android:theme="@style/MyMaterialTheme" />
     </application>
 
 </manifest>
