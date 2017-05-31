@@ -8,7 +8,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnPortfolio,btnGoogleSheets,btnYahoo;
+    Button btnPortfolio,btnGoogleSheets,btnYahoo,btnWSJ;
 
     String Google_Sheet = "TECH";
 
@@ -120,7 +120,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btnWSJ = (Button) findViewById(R.id.btnWSJ);
+        btnWSJ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //------------------------------------------------------------------------------------------
+                //---   Setup Layout
+                //------------------------------------------------------------------------------------------
+
+                switch (v.getId()) {
+
+                    //--------------------------------------------------------------------------------------
+                    //---   SAVE
+                    //--------------------------------------------------------------------------------------
+                    case R.id.btnWSJ:
+
+                        Intent intentSheet = new Intent(MainActivity.this, WSJ.class);
+                        intentSheet.putExtra("SHEETS_ID", "1nISn67Vft5ncSsnNfTRmFM2okQO8ttCrBtmWhFTu4bM");
+                        intentSheet.putExtra("SHEETS_TAB", Google_Sheet);
+                        intentSheet.putExtra("SHEETS_RANGE", Google_Sheet);
+                        intentSheet.putExtra("SHEETS_MODE", "READ");
+
+                        startActivityForResult(intentSheet,REQUEST_SHEETS);
+
+//                        Intent intentGoogle = new Intent(MainActivity.this, GoogleSheets.class);
+//                        startActivity(intentGoogle);
+
+                        break;
+
+                }
+            }
+        });
     }
-
-
 }

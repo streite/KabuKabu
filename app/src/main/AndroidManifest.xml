@@ -31,6 +31,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Stock" />
+        <activity android:name=".WSJ" />
         <activity android:name=".CategoryView" />
         <activity android:name=".GoogleSheets" />
         <activity android:name=".YahooAPI" />

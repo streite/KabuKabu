@@ -113,6 +113,21 @@ public class StockInfo extends AppCompatActivity {
 //            startActivityForResult(intentYahoo,REQUEST_YAHOO);
         }
 
+        //------------------------------------------------------------------------------------------
+        //---   Pull down 'Settings' Menu
+        //------------------------------------------------------------------------------------------
+        if (id == R.id.action_edit) {
+
+            Stock tmpStock = sqlHandler.getStockByID(SQL_Stock_ID);
+
+            tmpStock.setTicker(edtStockInfoTicker.getText().toString());
+            tmpStock.setShares(Integer.parseInt(edtStockInfoShares.getText().toString()));
+            tmpStock.setBasis(Float.parseFloat(edtStockInfoBasis.getText().toString()));
+            tmpStock.setCommission(Integer.parseInt(edtStockInfoComission.getText().toString()));
+
+            sqlHandler.updateStock(tmpStock);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

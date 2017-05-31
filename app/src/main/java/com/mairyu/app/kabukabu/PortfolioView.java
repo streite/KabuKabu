@@ -77,7 +77,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     private PopupWindow popupWindow;
 
-    static final int REQUEST_YAHOO = 1000;
+    static final int REQUEST_INFO = 1000;
+    static final int REQUEST_YAHOO = 2000;
 
     //**********************************************************************************************
     //***   onCreate
@@ -190,7 +191,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             menuOption.setText(currentStock.getTicker());
             //------------------------------------------------------------------------------------------
             menuOption = (TextView) itemView.findViewById(portfolioListViewPrice);
-            menuOption.setText(df1.format(currentStock.getPrice()));
+            menuOption.setText(df2.format(currentStock.getPrice()));
             //------------------------------------------------------------------------------------------
             menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewPercChange);
             if (currentStock.getPercChange().contains("+")) {
@@ -204,7 +205,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             } else {
                 menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
             }
-            //------------------------------------------------------------------------------------------
+            //--------------------------------------------------------------------------------------
+            //---   Gain/Loss
+            //--------------------------------------------------------------------------------------
             menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLoss);
             GainLoss = ((Price - Basis) * Shares) - Comission;
             if (GainLoss >= 0) {
@@ -212,7 +215,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             } else {
                 menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
             }
-            menuOption.setText(df1.format(GainLoss));
+            menuOption.setText(df2.format(GainLoss));
             //------------------------------------------------------------------------------------------
             menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLossPerc);
             GainLossPerc = (GainLoss*100)/(Basis*Shares);
@@ -366,7 +369,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 intent2Info.putExtra("SQL_STOCK_ID", currentStock.getId());
 
                 //---   ==> CardView
-                startActivity(intent2Info);
+                startActivityForResult(intent2Info,REQUEST_INFO);
 
                 break;
         }
@@ -446,15 +449,27 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        //------------------------------------------------------------------------------------------
-        //---   Return from CardView
-        //------------------------------------------------------------------------------------------
-        if (requestCode == REQUEST_YAHOO) {
+        //--------------------------------------------------------------------------------------
+        //---   Return via finish()
+        //--------------------------------------------------------------------------------------
+        if (resultCode == Activity.RESULT_OK) {
 
-            //--------------------------------------------------------------------------------------
-            //---   Return via finish()
-            //--------------------------------------------------------------------------------------
-            if (resultCode == Activity.RESULT_OK) {
+            //------------------------------------------------------------------------------------------
+            //---   Return from YAHOO
+            //------------------------------------------------------------------------------------------
+            if (requestCode == REQUEST_INFO) {
+
+                allStocks = sqlHandler.getStocksByCategory(Category);
+
+                adapterStocks = new CustomDatabaseAdapter();
+                listViewAllStocks.setAdapter(adapterStocks);
+                adapterStocks.notifyDataSetChanged();
+            }
+
+            //------------------------------------------------------------------------------------------
+            //---   Return from YAHOO
+            //------------------------------------------------------------------------------------------
+            if (requestCode == REQUEST_YAHOO) {
 
                 allStocks = sqlHandler.getStocksByCategory(Category);
 

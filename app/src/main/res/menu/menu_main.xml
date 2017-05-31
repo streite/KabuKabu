@@ -10,4 +10,11 @@
         android:icon="@drawable/ic_action_refresh_black"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_edit"
+        android:title="Add"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_edit"
+        app:showAsAction="ifRoom" />
+
 </menu>

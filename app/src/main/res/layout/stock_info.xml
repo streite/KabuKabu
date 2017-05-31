@@ -59,7 +59,7 @@
         android:layout_marginTop="10dp"
         android:layout_below="@+id/edtStockInfoShares"
         android:background="@android:color/transparent"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:clickable="false"
         android:cursorVisible="false"
         android:focusable="false"
