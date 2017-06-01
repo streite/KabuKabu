@@ -88,4 +88,18 @@
         android:textColor="@color/colorYellow1"
         android:textSize="48sp" />
 
+    <Spinner
+        android:id="@+id/spnStockInfoCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edtStockInfoComission"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/colorYellow1"
+        android:dropDownWidth="50dp"
+        android:layout_toRightOf="@+id/txtPortfolioCategory"
+        android:entries="@array/categories"
+        android:gravity="center"
+        android:padding="10dp"
+        android:spinnerMode="dialog" />
+
 </RelativeLayout>

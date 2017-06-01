@@ -189,9 +189,13 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //------------------------------------------------------------------------------------------
             TextView menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewTicker);
             menuOption.setText(currentStock.getTicker());
+            //--------------------------------------------------------------------------------------
+            //---   Price
             //------------------------------------------------------------------------------------------
             menuOption = (TextView) itemView.findViewById(portfolioListViewPrice);
-            menuOption.setText(df2.format(currentStock.getPrice()));
+            String PriceFormat = String.format("%.02f", currentStock.getPrice());
+//            menuOption.setText(df2.format(currentStock.getPrice()));
+            menuOption.setText(PriceFormat);
             //------------------------------------------------------------------------------------------
             menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewPercChange);
             if (currentStock.getPercChange().contains("+")) {
@@ -215,16 +219,30 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             } else {
                 menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
             }
-            menuOption.setText(df2.format(GainLoss));
+            String GainLossFormat = String.format("%.02f", GainLoss);
+            if (Shares < 1) {
+                menuOption.setText("----");
+            } else {
+                menuOption.setText(GainLossFormat);
+            }
             //------------------------------------------------------------------------------------------
             menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLossPerc);
-            GainLossPerc = (GainLoss*100)/(Basis*Shares);
-            if (GainLossPerc >= 0) {
-                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
+            if (Basis == 0) {
+                menuOption.setText("---");
             } else {
-                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+                if (Shares < 1) {
+                    GainLossPerc = ((Price - Basis) * 100) / Basis;
+                } else {
+                    GainLossPerc = (GainLoss * 100) / (Basis * Shares);
+                }
+                if (GainLossPerc >= 0) {
+                    menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
+                } else {
+                    menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+                }
+                String GainLossPercFormat = String.format("%.02f", GainLossPerc);
+                menuOption.setText(GainLossPercFormat);
             }
-            menuOption.setText(df1.format(GainLossPerc) + "%");
 
             return itemView;
         }
