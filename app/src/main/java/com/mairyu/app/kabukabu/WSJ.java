@@ -192,11 +192,12 @@ public class WSJ extends Activity {
 
             ArrayList<Stock> ExampleSentences = new ArrayList<>();
 
+            Log.i("LOG: (KV) POST", "HTML "+HTML_Source);
+
             ExampleSentences = WSJResponseParser.getTopLoser(HTML_Source);
 
 //            mTextView.setText(ExampleSentences.get(0)+ExampleSentences.get(1));
 
-//            Log.i("LOG: (KV) POST", "HTML "+HTML_Source);
 
 //            if (progressDialog.isShowing()) {
 //

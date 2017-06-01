@@ -12,6 +12,7 @@ public class Stock  {
     private int Shares;
     private float Basis;
     private String Date;
+    private String Volume;
     private int Commission;
 
 //    TextView txtStockTicker;
@@ -39,6 +40,7 @@ public class Stock  {
         Shares = 0;
         Basis = 0;
         Date = "";
+        Volume = "";
         Commission = 0;
     }
 
@@ -133,6 +135,14 @@ public class Stock  {
 
     public void setDate(String date) {
         Date = date;
+    }
+
+    public String getVolume() {
+        return Volume;
+    }
+
+    public void setVolume(String volume) {
+        Volume = volume;
     }
 
     public int getCommission() {
