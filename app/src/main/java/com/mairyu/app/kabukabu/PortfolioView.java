@@ -35,7 +35,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     private ArrayList<Stock> allStocks = new ArrayList<>();
     private ArrayAdapter<Stock> adapterStocks;
-
     private ListView listViewAllStocks;
 
     EditText edtPortfolioTicker;
@@ -150,7 +149,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 adapterStocks = new CustomDatabaseAdapter();
                 listViewAllStocks.setAdapter(adapterStocks);
 
-                SQLDBSize = sqlHandler.getStockCount();
+                SQLDBSize = allStocks.size();
+
+                TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
+                txtCategory.setText(Category+" ("+SQLDBSize+")");
             }
         });
     }
@@ -182,7 +184,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             Price = currentStock.getPrice();
             Shares = currentStock.getShares();
-            ChangePerc = currentStock.getPercChange();
+            ChangePerc = currentStock.getChangePerc();
             Basis = currentStock.getBasis();
             Comission = currentStock.getCommission();
 
@@ -196,18 +198,21 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             String PriceFormat = String.format("%.02f", currentStock.getPrice());
 //            menuOption.setText(df2.format(currentStock.getPrice()));
             menuOption.setText(PriceFormat);
+            //--------------------------------------------------------------------------------------
+            //---   Change (Percentage)
             //------------------------------------------------------------------------------------------
-            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewPercChange);
-            if (currentStock.getPercChange().contains("+")) {
+            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewChangePerc);
+            if (currentStock.getChangePerc().contains("+")) {
                 menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
             } else {
                 menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
             }
             ChangePerc = ChangePerc.replace("%","");
+            String ChangePercFormat = String.format("%.02f", ChangePerc);
             if (ChangePerc.equals("")) {
 //                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
             } else {
-                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
+                menuOption.setText(ChangePercFormat);
             }
             //--------------------------------------------------------------------------------------
             //---   Gain/Loss
@@ -404,11 +409,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         String SQLFileName = "0";
-
-//        ImageView ivVectorImage = (ImageView) findViewById(R.id.action_refresh);
-//        ImageButton ivVectorImage = (ImageButton) menu.findItem(R.id.action_refresh).getActionView();
-
-//        ivVectorImage.setColorFilter(getResources().getColor(R.color.colorYellow1));
 
         //------------------------------------------------------------------------------------------
         //---   Show active SQL DB

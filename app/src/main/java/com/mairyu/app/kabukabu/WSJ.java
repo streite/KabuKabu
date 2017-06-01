@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -21,6 +23,10 @@ import java.util.ArrayList;
 //===   WSJ
 //==================================================================================================
 public class WSJ extends Activity {
+
+    private ArrayList<Stock> allStocks = new ArrayList<>();
+    private ArrayAdapter<Stock> adapterStocks;
+    private ListView listViewAllStocks;
 
     TextView txtHTML;
 

@@ -97,7 +97,7 @@ public class Stock  {
         Change = change;
     }
 
-    public String getPercChange() {
+    public String getChangePerc() {
         return PercChange;
     }
 

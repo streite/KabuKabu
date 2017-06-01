@@ -166,7 +166,7 @@ public class YahooAPI extends AppCompatActivity {
                 Stock sqlStock = sqlHandler.getStocksByTicker(Ticker);
                 sqlStock.setPrice(tmpStock.getPrice());
                 sqlStock.setChange(tmpStock.getChange());
-                sqlStock.setPercChange(tmpStock.getPercChange());
+                sqlStock.setPercChange(tmpStock.getChangePerc());
 
                 sqlHandler.updateStock(sqlStock);
             }

@@ -85,7 +85,7 @@ public class SQLhandler extends SQLiteOpenHelper {
         values.put(COLUMN_TICKER, stock.getTicker());
         values.put(COLUMN_PRICE, stock.getPrice());
         values.put(COLUMN_CHANGE, stock.getChange());
-        values.put(COLUMN_PERC_CHANGE, stock.getPercChange());
+        values.put(COLUMN_PERC_CHANGE, stock.getChangePerc());
         values.put(COLUMN_CATEGORY, stock.getGroup());
         values.put(COLUMN_SHARES, stock.getShares());
         values.put(COLUMN_BASIS, stock.getBasis());
@@ -288,7 +288,7 @@ public class SQLhandler extends SQLiteOpenHelper {
         values.put(COLUMN_TICKER, stock.getTicker());
         values.put(COLUMN_PRICE, stock.getPrice());
         values.put(COLUMN_CHANGE, stock.getChange());
-        values.put(COLUMN_PERC_CHANGE, stock.getPercChange());
+        values.put(COLUMN_PERC_CHANGE, stock.getChangePerc());
         values.put(COLUMN_CATEGORY, stock.getGroup());
         values.put(COLUMN_SHARES, stock.getShares());
         values.put(COLUMN_BASIS, stock.getBasis());
