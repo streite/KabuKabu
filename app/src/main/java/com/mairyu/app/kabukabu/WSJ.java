@@ -1,11 +1,14 @@
 package com.mairyu.app.kabukabu;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,12 +22,14 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import static com.mairyu.app.kabukabu.R.id.portfolioListViewPrice;
+
 //==================================================================================================
 //===   WSJ
 //==================================================================================================
-public class WSJ extends Activity {
+public class WSJ extends AppCompatActivity {
 
-    private ArrayList<Stock> allStocks = new ArrayList<>();
+    private ArrayList<Stock> allLosers = new ArrayList<>();
     private ArrayAdapter<Stock> adapterStocks;
     private ListView listViewAllStocks;
 
@@ -41,7 +46,7 @@ public class WSJ extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.stock_info);
+        setContentView(R.layout.wsj_view);
 
         //------------------------------------------------------------------------------------------
         //---   Mimic Popup Window
@@ -55,6 +60,16 @@ public class WSJ extends Activity {
 
         getWindow().setLayout((int)(width*.95),(int)(height*0.7));
 
+        //------------------------------------------------------------------------------------------
+        //---   ListView Setup
+        //------------------------------------------------------------------------------------------
+
+        listViewAllStocks = (ListView) findViewById(R.id.listViewAllStocks);
+        adapterStocks = new CustomDatabaseAdapter();
+        listViewAllStocks.setAdapter(adapterStocks);
+
+        registerForContextMenu(listViewAllStocks);
+
         //--------------------------------------------------------------------------------------
         //---   Setup HTTP client for websites API server
         //--------------------------------------------------------------------------------------
@@ -65,18 +80,62 @@ public class WSJ extends Activity {
     }
 
     //**********************************************************************************************
+    //***   Custom Array Adapter for PortfolioPage
+    //**********************************************************************************************
+    private class CustomDatabaseAdapter extends ArrayAdapter<Stock> {
+
+        public CustomDatabaseAdapter() {
+
+            super(WSJ.this, R.layout.wsj_list_view_item, allLosers);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            View itemView = convertView;
+
+            if (itemView == null) {
+
+                itemView = getLayoutInflater().inflate(R.layout.portfolio_list_view_item, parent, false);
+            }
+
+            Stock currentStock = allLosers.get(position);
+
+            //------------------------------------------------------------------------------------------
+            TextView menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewTicker);
+            menuOption.setText(currentStock.getTicker());
+
+            menuOption = (TextView) itemView.findViewById(portfolioListViewPrice);
+            menuOption.setText(currentStock.getPrice()+"");
+
+            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewChangePerc);
+            menuOption.setText(currentStock.getChangePerc());
+
+            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLoss);
+            menuOption.setText(currentStock.getVolume());
+
+            //------------------------------------------------------------------------------------------
+            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLossPerc);
+            menuOption.setText(currentStock.getVolume());
+
+            return itemView;
+        }
+    }
+
+
+    //**********************************************************************************************
     //***   Pull Data from website, call Parser etc.
     //**********************************************************************************************
     private class TatoebaAsyncStuff extends AsyncTask<String, Void, String> {
 
         Context context;
 
-//        ProgressDialog progressDialog;
+        ProgressDialog progressDialog;
 
         public TatoebaAsyncStuff(Context context) {
 
             this.context = context;
-//            progressDialog = new ProgressDialog(context);
+            progressDialog = new ProgressDialog(context);
         }
 
         //------------------------------------------------------------------------------------------
@@ -87,8 +146,8 @@ public class WSJ extends Activity {
 
             super.onPreExecute();
 
-//            progressDialog.setTitle("Downloading Info From Tatoeba Web Page ... Please Wait");
-//            progressDialog.show();
+            progressDialog.setTitle("Downloading Info From Tatoeba Web Page ... Please Wait");
+            progressDialog.show();
         }
 
         //------------------------------------------------------------------------------------------
@@ -196,19 +255,20 @@ public class WSJ extends Activity {
 
             super.onPostExecute(HTML_Source);
 
-            ArrayList<Stock> ExampleSentences = new ArrayList<>();
-
             Log.i("LOG: (KV) POST", "HTML "+HTML_Source);
 
-            ExampleSentences = WSJResponseParser.getTopLoser(HTML_Source);
+            allLosers = WSJResponseParser.getTopLoser(HTML_Source);
 
-//            mTextView.setText(ExampleSentences.get(0)+ExampleSentences.get(1));
+            listViewAllStocks = (ListView) findViewById(R.id.listViewAllStocks);
+            adapterStocks = new CustomDatabaseAdapter();
+            listViewAllStocks.setAdapter(adapterStocks);
+            adapterStocks.notifyDataSetChanged();
 
 
-//            if (progressDialog.isShowing()) {
-//
-//                progressDialog.dismiss();
-//            }
+            if (progressDialog.isShowing()) {
+
+                progressDialog.dismiss();
+            }
         }
     }
 
