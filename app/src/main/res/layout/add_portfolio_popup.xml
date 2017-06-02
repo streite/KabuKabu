@@ -115,6 +115,7 @@
             android:layout_toRightOf="@+id/txtPortfolioTicker"
             android:gravity="center_vertical|center_horizontal"
             android:hint="Shares"
+            android:text="0"
             android:textSize="18sp" />
 
     </LinearLayout>
@@ -147,6 +148,7 @@
             android:layout_toRightOf="@+id/txtPortfolioTicker"
             android:gravity="center_vertical|center_horizontal"
             android:hint="Basis"
+            android:text="0"
             android:inputType="numberDecimal"
             android:textSize="18sp" />
 
@@ -181,6 +183,7 @@
             android:layout_toRightOf="@+id/txtPortfolioTicker"
             android:gravity="center_vertical|center_horizontal"
             android:hint="Comission"
+            android:text="0"
             android:inputType="number"
             android:textSize="18sp" />
 

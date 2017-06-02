@@ -35,6 +35,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     private ArrayList<Stock> allStocks = new ArrayList<>();
     private ArrayAdapter<Stock> adapterStocks;
+
     private ListView listViewAllStocks;
 
     EditText edtPortfolioTicker;
@@ -208,11 +209,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
             }
             ChangePerc = ChangePerc.replace("%","");
-            String ChangePercFormat = String.format("%.02f", ChangePerc);
+            String ChangePercFormat = String.format("%.02f", GainLoss);
             if (ChangePerc.equals("")) {
 //                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
             } else {
-                menuOption.setText(ChangePercFormat);
+                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
             }
             //--------------------------------------------------------------------------------------
             //---   Gain/Loss
