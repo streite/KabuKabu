@@ -132,6 +132,7 @@ public class WSJ extends AppCompatActivity {
 
         ProgressDialog progressDialog;
 
+
         public TatoebaAsyncStuff(Context context) {
 
             this.context = context;
