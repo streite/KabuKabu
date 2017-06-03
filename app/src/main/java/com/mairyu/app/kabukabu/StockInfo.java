@@ -1,16 +1,20 @@
 package com.mairyu.app.kabukabu;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 //==================================================================================================
@@ -31,9 +35,11 @@ public class StockInfo extends AppCompatActivity {
     EditText edtStockInfoComission;
 
     String PortfolioCategory;
+    int Category_Index;
 
     private Spinner Portfolio_Spinner;
 
+    private String[] CategoryArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,7 @@ public class StockInfo extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         SQL_Stock_ID = extras.getInt("SQL_STOCK_ID");
+        Category_Index = extras.getInt("CATEGORY_INDEX");
 
         //------------------------------------------------------------------------------------------
         //---   Preference/Settings
@@ -78,6 +85,9 @@ public class StockInfo extends AppCompatActivity {
         //----------------------------------------------------------------------------------
         //---   Spinner
         //----------------------------------------------------------------------------------
+
+        CategoryArray = getResources().getStringArray(R.array.categories);
+
         Portfolio_Spinner = (Spinner) findViewById(R.id.spnStockInfoCategory);
         Portfolio_Spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
 
@@ -88,7 +98,10 @@ public class StockInfo extends AppCompatActivity {
 // Apply the adapter to the spinner
         Portfolio_Spinner.setAdapter(adapter);
 
-        //------------------------------------------------------------------------------------------
+        Spinner mySpinner = (Spinner)findViewById(R.id.spnStockInfoCategory);
+        mySpinner.setAdapter(new MyCustomAdapter(StockInfo.this, R.layout.row, CategoryArray));
+
+    //------------------------------------------------------------------------------------------
         //---   Wait until activity is stable
         //------------------------------------------------------------------------------------------
         findViewById(R.id.rlv_stock_info).post(new Runnable() {
@@ -204,6 +217,58 @@ public class StockInfo extends AppCompatActivity {
         @Override
         public void onNothingSelected(AdapterView<?> arg0) {
             // TODO Auto-generated method stub
+        }
+    }
+
+    //**********************************************************************************************
+    //***   Custom Array Adapter for PortfolioPage
+    //**********************************************************************************************
+    public class MyCustomAdapter extends ArrayAdapter<String>{
+
+        public MyCustomAdapter(Context context, int textViewResourceId,
+                               String[] objects) {
+            super(context, textViewResourceId, objects);
+
+            // TODO Auto-generated constructor stub
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView,ViewGroup parent) {
+            // TODO Auto-generated method stub
+//            View row;
+//            LayoutInflater inflater=getLayoutInflater();
+//            row = inflater.inflate(_resource, null);
+//            TextView _textView = row.findViewById(_textViewResourceId);
+//            _textView.setText(_navigations.get(position));
+//
+//
+//            Display display = getWindowManager().getDefaultDisplay();
+//            Point size = new Point();
+//            display.getSize(size);
+//            int _width = size.x;
+//
+//            row.setMinimumWidth = _width;
+//            return row;
+
+            return getCustomView(position, convertView, parent);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            // TODO Auto-generated method stub
+            return getCustomView(position, convertView, parent);
+        }
+
+        public View getCustomView(int position, View convertView, ViewGroup parent) {
+            // TODO Auto-generated method stub
+            //return super.getView(position, convertView, parent);
+
+            LayoutInflater inflater=getLayoutInflater();
+            View row=inflater.inflate(R.layout.row, parent, false);
+            TextView label=(TextView)row.findViewById(R.id.weekofday);
+            label.setText(CategoryArray[position]);
+
+            return row;
         }
     }
 }
