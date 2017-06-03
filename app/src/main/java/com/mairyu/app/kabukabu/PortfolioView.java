@@ -35,6 +35,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     private ArrayList<Stock> allStocks = new ArrayList<>();
     private ArrayAdapter<Stock> adapterStocks;
+
     private ListView listViewAllStocks;
 
     EditText edtPortfolioTicker;
@@ -208,11 +209,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
             }
             ChangePerc = ChangePerc.replace("%","");
-            String ChangePercFormat = String.format("%.02f", Float.parseFloat(ChangePerc));
+            String ChangePercFormat = String.format("%.02f", GainLoss);
             if (ChangePerc.equals("")) {
 //                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
             } else {
-                menuOption.setText(ChangePercFormat);
+                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
             }
             //--------------------------------------------------------------------------------------
             //---   Gain/Loss
@@ -390,7 +391,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 Intent intent2Info = new Intent(PortfolioView.this, StockInfo.class);
 
                 intent2Info.putExtra("SQL_STOCK_ID", currentStock.getId());
-                intent2Info.putExtra("CATEGORY_INDEX", Category);
 
                 //---   ==> CardView
                 startActivityForResult(intent2Info,REQUEST_INFO);
