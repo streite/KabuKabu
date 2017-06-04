@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,8 +21,6 @@ import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
-
-import static com.mairyu.app.kabukabu.R.id.portfolioListViewPrice;
 
 //==================================================================================================
 //===   WSJ
@@ -95,27 +94,54 @@ public class WSJ extends AppCompatActivity {
 
             if (itemView == null) {
 
-                itemView = getLayoutInflater().inflate(R.layout.portfolio_list_view_item, parent, false);
+                itemView = getLayoutInflater().inflate(R.layout.wsj_list_view_item, parent, false);
             }
 
             Stock currentStock = allLosers.get(position);
+
+//            Price = currentStock.getPrice();
+//            Shares = currentStock.getShares();
+            String ChangePerc = currentStock.getChangePerc();
+//            Basis = currentStock.getBasis();
+//            Comission = currentStock.getCommission();
 
             //------------------------------------------------------------------------------------------
             TextView menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewTicker);
             menuOption.setText(currentStock.getTicker());
 
-            menuOption = (TextView) itemView.findViewById(portfolioListViewPrice);
-            menuOption.setText(currentStock.getPrice()+"");
+//            menuOption = (TextView) itemView.findViewById(portfolioListViewPrice);
+//            menuOption.setText(currentStock.getPrice()+"");
 
+//            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewChangePerc);
+//            menuOption.setText(currentStock.getChangePerc());
+
+            //--------------------------------------------------------------------------------------
+            //---   Change (Percentage)
+            //------------------------------------------------------------------------------------------
             menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewChangePerc);
-            menuOption.setText(currentStock.getChangePerc());
+            if (currentStock.getChangePerc().contains("+")) {
+                menuOption.setTextColor(ContextCompat.getColor(WSJ.this, R.color.colorGreenStrong));
+            } else {
+                menuOption.setTextColor(ContextCompat.getColor(WSJ.this, R.color.colorRedStrong));
+            }
+//            ChangePerc = ChangePerc.replace("%","");
+            String ChangePercFormat = String.format("%.02f", Float.parseFloat(currentStock.getChangePerc()));
+            if (ChangePerc.equals("")) {
+//                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
+            } else {
+                menuOption.setText(ChangePercFormat+"%");
+            }
 
-            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLoss);
+
+            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewCompany);
+            menuOption.setText(currentStock.getCompany());
+
+            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewVolume);
             menuOption.setText(currentStock.getVolume());
 
             //------------------------------------------------------------------------------------------
-            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLossPerc);
-            menuOption.setText(currentStock.getVolume());
+//            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLossPerc);
+//            menuOption.setText(currentStock.getVolume());
 
             return itemView;
         }

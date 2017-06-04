@@ -40,7 +40,8 @@ public class WSJResponseParser {
             first = 0;
             last = PartSnippet.indexOf("<") - 2;
             Ticker = PartSnippet.substring(first,last);
-            tmpStock.setTicker(Ticker);
+            tmpStock.setCompany(Ticker.substring(0,Ticker.indexOf("(")-1));
+            tmpStock.setTicker(Ticker.substring(Ticker.indexOf("(")+1,Ticker.indexOf(")")));
             PartSnippet = PartSnippet.substring(last,PartSnippet.length());
             Log.i("LOG: (WSJP) PARSE", "Ticker ... " + Ticker);
 

@@ -213,7 +213,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             if (ChangePerc.equals("")) {
 //                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
             } else {
-                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
+                menuOption.setText(ChangePercFormat);
             }
             //--------------------------------------------------------------------------------------
             //---   Gain/Loss
