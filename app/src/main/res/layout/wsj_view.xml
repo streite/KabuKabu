@@ -7,10 +7,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_light_yellow_bg">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
-
     <ListView
         android:id="@+id/listViewAllStocks"
         android:layout_width="match_parent"

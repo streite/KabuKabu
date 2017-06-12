@@ -24,7 +24,11 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.ClearValuesRequest;
+import com.google.api.services.sheets.v4.model.ClearValuesResponse;
+import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.IOException;
@@ -60,11 +64,9 @@ public class GoogleSheets extends AppCompatActivity {
     private String sheetsRange;
     private String sheetsMode;
 
-    ArrayList<Stock> allStocks = new ArrayList<>();
+    private ArrayList<Stock> allStocks = new ArrayList<>();
 
-    SQLhandler sqlHandler;
-
-//    private PreferenceSettings _appPrefs;
+    private SQLhandler sqlHandler;
 
     // Client ID: 421675712394-0702fv31pk2q2dpsvfqus8n2hi9o4bu9.apps.googleusercontent.com
 
@@ -113,12 +115,6 @@ public class GoogleSheets extends AppCompatActivity {
 
         googleAccountCredential = GoogleAccountCredential.usingOAuth2(this,Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
-
-        //------------------------------------------------------------------------------------------
-        //---   Preference/Settings
-        //------------------------------------------------------------------------------------------
-
-//        _appPrefs = new PreferenceSettings(getApplicationContext());
 
         //------------------------------------------------------------------------------------------
         //---   SQLite Setup
@@ -244,6 +240,7 @@ public class GoogleSheets extends AppCompatActivity {
             try {
 
                 String range;
+                String valueInputOption = "RAW";
                 List<String> results = new ArrayList<String>();
                 ValueRange response  = null;
 
@@ -291,49 +288,57 @@ public class GoogleSheets extends AppCompatActivity {
                     //------------------------------------------------------------------------------
                     } else if (sheetsMode.equals("WRITE")) {
 
-//                        allStocks = sqlHandler.getAllFlashcards(false);
-//                        Flashcard currentFlash;
-//                        int stackSize = allStocks.size();
-//
-//                        range = sheetsTab + "!A1:I" + stackSize;
-//
-//                        List<List<Object>> writeValues = new ArrayList<>();
+                        allStocks = sqlHandler.getAllStocks(false);
+                        Stock currentStock;
+                        int stackSize = allStocks.size();
+
+                        range = sheetsTab + "!A1:H" + stackSize;
+
+                        List<List<Object>> writeValues = new ArrayList<>();
 
                         //------------------------------------------------------------------------------------------
-                        //---   Loop over all flashcards
+                        //---   Loop over all stocks
                         //------------------------------------------------------------------------------------------
-//                        for (int sqlIndex = 0; sqlIndex < stackSize; sqlIndex++) {
-//
-//                            currentFlash = allStocks.get(sqlIndex);
-//
-//                            List<Object> data = new ArrayList<>();
-//
-////                            data.add(currentFlash.getForeignChar());
-//
-//                            writeValues.add(data);
-//                        }
+                        for (int sqlIndex = 0; sqlIndex < stackSize; sqlIndex++) {
 
-//                        ValueRange requestBody = new ValueRange();
-//                        requestBody.setRange(range);
-//                        requestBody.setMajorDimension("ROWS");
-//                        requestBody.setValues(writeValues);
-//
-//                        Log.i("LOG: (GS) ASYNC-TRY", "WRITE - requestBody " + requestBody);
-//                        Log.i("LOG: (GS) ASYNC-TRY", "WRITE - writeValues " + writeValues);
-//
-//                        String clearRange = sheetsTab + "!A1:F" + 500;
-//                        ClearValuesRequest clearBody = new ClearValuesRequest();
-//                        Sheets.Spreadsheets.Values.Clear clearRequest =
-//                                mService.spreadsheets().values().clear(spreadsheetId,clearRange,clearBody);
-//                        ClearValuesResponse clearResponse = clearRequest.execute();
-//
-//                        Sheets.Spreadsheets.Values.Update request =
-//                                mService.spreadsheets().values().update(spreadsheetId, range, requestBody);
-//                        request.setValueInputOption(valueInputOption);
-//
-//                        UpdateValuesResponse responseWrite = request.execute();
-//
-//                        Log.i("LOG: (GS) ASYNC-TRY", "WRITE - response ... " + responseWrite);
+                            currentStock = allStocks.get(sqlIndex);
+
+                            List<Object> data = new ArrayList<>();
+
+                            data.add(currentStock.getCompany());
+                            data.add(currentStock.getTicker());
+                            data.add(currentStock.getPrice());
+                            data.add(currentStock.getGroup());
+                            data.add(currentStock.getShares());
+                            data.add(currentStock.getBasis());
+                            data.add(currentStock.getDate());
+                            data.add(currentStock.getCommission());
+
+
+                            writeValues.add(data);
+                        }
+
+                        ValueRange requestBody = new ValueRange();
+                        requestBody.setRange(range);
+                        requestBody.setMajorDimension("ROWS");
+                        requestBody.setValues(writeValues);
+
+                        Log.i("LOG: (GS) ASYNC-TRY", "WRITE - requestBody " + requestBody);
+                        Log.i("LOG: (GS) ASYNC-TRY", "WRITE - writeValues " + writeValues);
+
+                        String clearRange = sheetsTab + "!A1:H" + 500;
+                        ClearValuesRequest clearBody = new ClearValuesRequest();
+                        Sheets.Spreadsheets.Values.Clear clearRequest =
+                                mService.spreadsheets().values().clear(sheetsID,clearRange,clearBody);
+                        ClearValuesResponse clearResponse = clearRequest.execute();
+
+                        Sheets.Spreadsheets.Values.Update request =
+                                mService.spreadsheets().values().update(sheetsID, range, requestBody);
+                        request.setValueInputOption(valueInputOption);
+
+                        UpdateValuesResponse responseWrite = request.execute();
+
+                        Log.i("LOG: (GS) ASYNC-TRY", "WRITE - response ... " + responseWrite);
                     }
 
                 } catch (UserRecoverableAuthIOException e) {

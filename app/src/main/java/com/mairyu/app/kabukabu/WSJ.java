@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -31,9 +34,11 @@ public class WSJ extends AppCompatActivity {
     private ArrayAdapter<Stock> adapterStocks;
     private ListView listViewAllStocks;
 
-    TextView txtHTML;
+    private SQLhandler sqlHandler;
 
-//    TextView mTextView;
+    private PreferenceSettings _appPrefs;
+
+    TextView txtHTML;
 
     String fullResponse;
 
@@ -47,16 +52,10 @@ public class WSJ extends AppCompatActivity {
         setContentView(R.layout.wsj_view);
 
         //------------------------------------------------------------------------------------------
-        //---   Mimic Popup Window
+        //---   Preference/Settings
         //------------------------------------------------------------------------------------------
 
-//        DisplayMetrics dm = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(dm);
-//
-//        int width = dm.widthPixels;
-//        int height = dm.heightPixels;
-//
-//        getWindow().setLayout((int)(width*.95),(int)(height*0.7));
+        _appPrefs = new PreferenceSettings(getApplicationContext());
 
         //------------------------------------------------------------------------------------------
         //---   ListView Setup
@@ -68,13 +67,18 @@ public class WSJ extends AppCompatActivity {
 
         registerForContextMenu(listViewAllStocks);
 
-        //--------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
+        //---   SQLite Setup
+        //------------------------------------------------------------------------------------------
+
+        sqlHandler = new SQLhandler(WSJ.this, _appPrefs.getSQLDBName(), Integer.parseInt(_appPrefs.getSQLDBVersion()));
+
+        //------------------------------------------------------------------------------------------
         //---   Setup HTTP client for websites API server
-        //--------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
+        WJSAsyncStuff wsjAsyncStuff = new WJSAsyncStuff(WSJ.this);
 
-        TatoebaAsyncStuff tatoebaAsyncStuff = new TatoebaAsyncStuff(WSJ.this);
-
-        tatoebaAsyncStuff.execute();
+        wsjAsyncStuff.execute();
     }
 
     //**********************************************************************************************
@@ -151,14 +155,14 @@ public class WSJ extends AppCompatActivity {
     //**********************************************************************************************
     //***   Pull Data from website, call Parser etc.
     //**********************************************************************************************
-    private class TatoebaAsyncStuff extends AsyncTask<String, Void, String> {
+    private class WJSAsyncStuff extends AsyncTask<String, Void, String> {
 
         Context context;
 
         ProgressDialog progressDialog;
 
 
-        public TatoebaAsyncStuff(Context context) {
+        public WJSAsyncStuff(Context context) {
 
             this.context = context;
             progressDialog = new ProgressDialog(context);
@@ -172,7 +176,7 @@ public class WSJ extends AppCompatActivity {
 
             super.onPreExecute();
 
-            progressDialog.setTitle("Downloading Info From Tatoeba Web Page ... Please Wait");
+            progressDialog.setTitle("Downloading Info From WSJ Web Page ... Please Wait");
             progressDialog.show();
         }
 
@@ -186,7 +190,6 @@ public class WSJ extends AppCompatActivity {
             HttpURLConnection httpURLConnection = null;
             String result = null;
             String url = "http://online.wsj.com/mdc/public/page/2_3021-losecomp-loser.html";
-//            String url = "https://tatoeba.org/eng/sentences/search?query=rain&from=eng&to=jpn";
 
             try {
                 httpURLConnection = (HttpURLConnection) (new URL(url)).openConnection();
@@ -320,5 +323,52 @@ public class WSJ extends AppCompatActivity {
             result = new String(buffer, 0, numChars);
         }
         return result;
+    }
+
+    //**********************************************************************************************
+    //***   onCreateContextMenu (Context Menu)
+    //**********************************************************************************************
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        menu.setHeaderTitle("Select The Action");
+
+        menu.add(0, v.getId(), 0, "Track");
+    }
+
+    //**********************************************************************************************
+    //***   onContextItemSelected (Context Menu)
+    //**********************************************************************************************
+    @Override
+    public boolean onContextItemSelected(MenuItem item){
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        CharSequence Title = item.getTitle();
+        View view;
+        Stock currentStock = allLosers.get(info.position);
+
+        switch (Title.toString()) {
+
+            //--------------------------------------------------------------------------------------
+            //---   EDIT
+            //--------------------------------------------------------------------------------------
+            case "Track":
+
+                Stock newStock = new Stock();
+
+                newStock.setTicker(currentStock.getTicker());
+                newStock.setGroup("WSJ_LOSER");
+                newStock.setShares(0);
+                newStock.setBasis(currentStock.getPrice());
+                newStock.setCommission(10);
+
+                sqlHandler.addStock(newStock);
+
+                break;
+        }
+
+        return true;
     }
 }

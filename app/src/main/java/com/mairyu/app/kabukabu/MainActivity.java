@@ -8,7 +8,8 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnPortfolio,btnGoogleSheets,btnYahoo,btnWSJ;
+    Button btnPortfolio,btnYahoo,btnWSJ;
+    Button btnGoogleSheetsRead,btnGoogleSheetsWrite;
 
     String Google_Sheet = "TECH";
 
@@ -54,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnGoogleSheets = (Button) findViewById(R.id.btnGoogleSheets);
-        btnGoogleSheets.setOnClickListener(new View.OnClickListener() {
+        btnGoogleSheetsRead = (Button) findViewById(R.id.btnGoogleSheetsRead);
+        btnGoogleSheetsRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     //--------------------------------------------------------------------------------------
                     //---   SAVE
                     //--------------------------------------------------------------------------------------
-                    case R.id.btnGoogleSheets:
+                    case R.id.btnGoogleSheetsRead:
 
                         Intent intentSheet = new Intent(MainActivity.this, GoogleSheets.class);
                         intentSheet.putExtra("SHEETS_ID", "1nISn67Vft5ncSsnNfTRmFM2okQO8ttCrBtmWhFTu4bM");
@@ -86,6 +87,40 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btnGoogleSheetsWrite = (Button) findViewById(R.id.btnGoogleSheetsWrite);
+        btnGoogleSheetsWrite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //------------------------------------------------------------------------------------------
+                //---   Setup Layout
+                //------------------------------------------------------------------------------------------
+
+                switch (v.getId()) {
+
+                    //--------------------------------------------------------------------------------------
+                    //---   SAVE
+                    //--------------------------------------------------------------------------------------
+                    case R.id.btnGoogleSheetsWrite:
+
+                        Intent intentSheet = new Intent(MainActivity.this, GoogleSheets.class);
+                        intentSheet.putExtra("SHEETS_ID", "1nISn67Vft5ncSsnNfTRmFM2okQO8ttCrBtmWhFTu4bM");
+                        intentSheet.putExtra("SHEETS_TAB", Google_Sheet);
+                        intentSheet.putExtra("SHEETS_RANGE", Google_Sheet);
+                        intentSheet.putExtra("SHEETS_MODE", "WRITE");
+
+                        startActivityForResult(intentSheet,REQUEST_SHEETS);
+
+//                        Intent intentGoogle = new Intent(MainActivity.this, GoogleSheets.class);
+//                        startActivity(intentGoogle);
+
+                        break;
+
+                }
+            }
+        });
+
 
         btnYahoo = (Button) findViewById(R.id.btnYahoo);
         btnYahoo.setOnClickListener(new View.OnClickListener() {
