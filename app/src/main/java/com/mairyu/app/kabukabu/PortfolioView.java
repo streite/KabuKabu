@@ -48,6 +48,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     Button btnDatabaseShow;
     Button btnDatabasePurge;
 
+    private TextView portfolioListViewChangePerc;
+
     private Toolbar mToolbar;
 
     private Spinner Portfolio_Spinner;
@@ -189,6 +191,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             Basis = currentStock.getBasis();
             Comission = currentStock.getCommission();
 
+            //--------------------------------------------------------------------------------------
+            //---   Ticker
             //------------------------------------------------------------------------------------------
             TextView menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewTicker);
             menuOption.setText(currentStock.getTicker());
@@ -197,23 +201,22 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //------------------------------------------------------------------------------------------
             menuOption = (TextView) itemView.findViewById(portfolioListViewPrice);
             String PriceFormat = String.format("%.02f", currentStock.getPrice());
-//            menuOption.setText(df2.format(currentStock.getPrice()));
             menuOption.setText(PriceFormat);
             //--------------------------------------------------------------------------------------
             //---   Change (Percentage)
             //------------------------------------------------------------------------------------------
-            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewChangePerc);
+            portfolioListViewChangePerc = (TextView) itemView.findViewById(R.id.portfolioListViewChangePerc);
             if (currentStock.getChangePerc().contains("+")) {
-                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
+                portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
             } else {
-                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+                portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
             }
             ChangePerc = ChangePerc.replace("%","");
-            String ChangePercFormat = String.format("%.02f", GainLoss);
+            String ChangePercFormat = String.format("%.02f", Float.parseFloat(ChangePerc));
             if (ChangePerc.equals("")) {
-//                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
+//                portfolioListViewChangePerc.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
             } else {
-                menuOption.setText(ChangePercFormat);
+                portfolioListViewChangePerc.setText(ChangePercFormat);
             }
             //--------------------------------------------------------------------------------------
             //---   Gain/Loss

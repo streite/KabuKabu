@@ -25,13 +25,13 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnPortfolioAdd"
+            android:id="@+id/btnWSJFilterVolume"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="1dp"
             android:layout_weight="1"
-            android:text="ADD"/>
+            android:text="VOLUME"/>
 
         <Button
             android:id="@+id/btnDatabaseSave"

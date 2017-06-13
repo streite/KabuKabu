@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 //==================================================================================================
 //===   WSJ
 //==================================================================================================
-public class WSJ extends AppCompatActivity {
+public class WSJ extends AppCompatActivity implements View.OnClickListener {
 
     private ArrayList<Stock> allLosers = new ArrayList<>();
     private ArrayAdapter<Stock> adapterStocks;
@@ -38,7 +39,8 @@ public class WSJ extends AppCompatActivity {
 
     private PreferenceSettings _appPrefs;
 
-    TextView txtHTML;
+    private TextView txtHTML;
+    private Button btnWSJFilterVolume;
 
     String fullResponse;
 
@@ -56,6 +58,13 @@ public class WSJ extends AppCompatActivity {
         //------------------------------------------------------------------------------------------
 
         _appPrefs = new PreferenceSettings(getApplicationContext());
+
+        //------------------------------------------------------------------------------------------
+        //---   Layout
+        //------------------------------------------------------------------------------------------
+
+        btnWSJFilterVolume = (Button) findViewById(R.id.btnWSJFilterVolume);
+        btnWSJFilterVolume.setOnClickListener(WSJ.this);
 
         //------------------------------------------------------------------------------------------
         //---   ListView Setup
@@ -106,16 +115,19 @@ public class WSJ extends AppCompatActivity {
 //            Price = currentStock.getPrice();
 //            Shares = currentStock.getShares();
             String ChangePerc = currentStock.getChangePerc();
+            String Volume = currentStock.getVolume();
 //            Basis = currentStock.getBasis();
 //            Comission = currentStock.getCommission();
 
-            //------------------------------------------------------------------------------------------
+            //--------------------------------------------------------------------------------------
+            //---   Ticker
+            //--------------------------------------------------------------------------------------
             TextView menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewTicker);
             menuOption.setText(currentStock.getTicker());
 
-//            menuOption = (TextView) itemView.findViewById(portfolioListViewPrice);
+//            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewPrice);
 //            menuOption.setText(currentStock.getPrice()+"");
-
+//
 //            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewChangePerc);
 //            menuOption.setText(currentStock.getChangePerc());
 
@@ -133,9 +145,8 @@ public class WSJ extends AppCompatActivity {
             if (ChangePerc.equals("")) {
 //                menuOption.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
             } else {
-                menuOption.setText(ChangePercFormat+"%");
+                menuOption.setText(ChangePercFormat + "%");
             }
-
 
             menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewCompany);
             menuOption.setText(currentStock.getCompany());
@@ -151,8 +162,44 @@ public class WSJ extends AppCompatActivity {
         }
     }
 
-
     //**********************************************************************************************
+    //***   onClick (Button)
+    //**********************************************************************************************
+    @Override
+    public void onClick(View v) {
+
+
+        //------------------------------------------------------------------------------------------
+        //---   Button ID
+        //------------------------------------------------------------------------------------------
+        switch (v.getId()) {
+
+            //--------------------------------------------------------------------------------------
+            //---   BUTTON: Word
+            //--------------------------------------------------------------------------------------
+            case R.id.btnWSJFilterVolume:
+
+                int position = 0;
+
+                for (Stock stock : allLosers) {
+
+                    if (Integer.parseInt(stock.getVolume().replaceAll(",", "")) > 100000) {
+
+                        Log.i("LOG: (WSJ) VOLUME", "Volume: " + stock.getTicker());
+
+                    } else {
+
+                        Stock toRemove = adapterStocks.getItem(position);
+                        adapterStocks.remove(toRemove);
+                    }
+                    position++;
+                }
+
+                break;
+        }
+    }
+
+                //**********************************************************************************************
     //***   Pull Data from website, call Parser etc.
     //**********************************************************************************************
     private class WJSAsyncStuff extends AsyncTask<String, Void, String> {
