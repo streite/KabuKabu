@@ -20,8 +20,8 @@ public class WSJResponseParser {
 
         int first = TatoebaResponse.indexOf("onmouseover");
         int last = TatoebaResponse.lastIndexOf("Includes common, closed end funds");
-        Log.i("LOG: (WSJP) PARSE", "first ... " + first);
-        Log.i("LOG: (WSJP) PARSE", "last ... " + last);
+//        Log.i("LOG: (WSJP) PARSE", "first ... " + first);
+//        Log.i("LOG: (WSJP) PARSE", "last ... " + last);
         FullSnippet = TatoebaResponse.substring(first,last);
         Snippet = FullSnippet;
 
@@ -43,7 +43,7 @@ public class WSJResponseParser {
             tmpStock.setCompany(Ticker.substring(0,Ticker.indexOf("(")-1));
             tmpStock.setTicker(Ticker.substring(Ticker.indexOf("(")+1,Ticker.indexOf(")")));
             PartSnippet = PartSnippet.substring(last,PartSnippet.length());
-            Log.i("LOG: (WSJP) PARSE", "Ticker ... " + Ticker);
+//            Log.i("LOG: (WSJP) PARSE", "Ticker ... " + Ticker);
 
             first = PartSnippet.indexOf("nnum") + 6;
             last = PartSnippet.substring(first,PartSnippet.length()).indexOf("td") - 2 + first;
@@ -71,7 +71,7 @@ public class WSJResponseParser {
             PartSnippet = PartSnippet.substring(last,PartSnippet.length());
 
             FullSnippet = FullSnippet.substring(Pointer,FullSnippet.length());
-            Log.i("LOG: (WSJP) PARSE", "FullSnippet ... " + FullSnippet);
+//            Log.i("LOG: (WSJP) PARSE", "FullSnippet ... " + FullSnippet);
 
             allDictItems.add(tmpStock);
 

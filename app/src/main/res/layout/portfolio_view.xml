@@ -47,22 +47,22 @@
             android:text="Save"/>
 
         <Button
-            android:id="@+id/btnDatabaseShow"
+            android:id="@+id/btnPortfolioFilterPerc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
             android:layout_weight="1"
-            android:text="Show"/>
+            android:text="1 %"/>
 
         <Button
-            android:id="@+id/btnDatabasePurge"
+            android:id="@+id/btnPortfolioFilterShares"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="3dp"
             android:layout_weight="1"
-            android:text="Purge"/>
+            android:text="SHARES"/>
 
     </LinearLayout>
 

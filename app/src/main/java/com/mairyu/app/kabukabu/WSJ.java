@@ -181,6 +181,8 @@ public class WSJ extends AppCompatActivity implements View.OnClickListener {
 
                 int position = 0;
 
+                ArrayList<Integer> FilterVolume = new ArrayList<Integer>();
+
                 for (Stock stock : allLosers) {
 
                     if (Integer.parseInt(stock.getVolume().replaceAll(",", "")) > 100000) {
@@ -189,17 +191,32 @@ public class WSJ extends AppCompatActivity implements View.OnClickListener {
 
                     } else {
 
-                        Stock toRemove = adapterStocks.getItem(position);
-                        adapterStocks.remove(toRemove);
+                        FilterVolume.add(position);
                     }
                     position++;
+                }
+
+                Log.i("LOG: (WSJ) VOLUME", "Count: " + adapterStocks.getCount());
+
+//                Stock toRemove = adapterStocks.getItem(2);
+//                adapterStocks.remove(toRemove);
+
+                int heap = 0;
+
+                for (int i : FilterVolume) {
+
+                    Log.i("LOG: (WSJ) VOLUME", "Volume: " + i + (i-heap));
+
+                    Stock toRemove = adapterStocks.getItem(i-heap);
+                    adapterStocks.remove(toRemove);
+                    heap++;
                 }
 
                 break;
         }
     }
 
-                //**********************************************************************************************
+    //**********************************************************************************************
     //***   Pull Data from website, call Parser etc.
     //**********************************************************************************************
     private class WJSAsyncStuff extends AsyncTask<String, Void, String> {

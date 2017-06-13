@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static com.mairyu.app.kabukabu.R.id.portfolioListViewPrice;
+import static java.lang.StrictMath.abs;
 
 //==================================================================================================
 //===   PortfolioView
@@ -43,10 +45,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     EditText edtPortfolioBasis;
     EditText edtPortfolioComission;
 
-    Button btnPortfolioAdd;
-    Button btnDatabaseSave;
-    Button btnDatabaseShow;
-    Button btnDatabasePurge;
+    private Button btnPortfolioAdd;
+    private Button btnDatabaseSave;
+    private Button btnDatabaseShow;
+    private Button btnPortfolioFilterShares;
+    private Button btnPortfolioFilterPerc;
 
     private TextView portfolioListViewChangePerc;
 
@@ -82,6 +85,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     static final int REQUEST_INFO = 1000;
     static final int REQUEST_YAHOO = 2000;
 
+    //http://www.nasdaq.com/symbol/aapl/option-chain
     //**********************************************************************************************
     //***   onCreate
     //**********************************************************************************************
@@ -119,11 +123,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         btnDatabaseSave = (Button) findViewById(R.id.btnDatabaseSave);
         btnDatabaseSave.setOnClickListener(PortfolioView.this);
 
-        btnDatabaseShow = (Button) findViewById(R.id.btnDatabaseShow);
-        btnDatabaseShow.setOnClickListener(PortfolioView.this);
+        btnPortfolioFilterShares = (Button) findViewById(R.id.btnPortfolioFilterShares);
+        btnPortfolioFilterShares.setOnClickListener(PortfolioView.this);
 
-        btnDatabasePurge = (Button) findViewById(R.id.btnDatabasePurge);
-        btnDatabasePurge.setOnClickListener(PortfolioView.this);
+        btnPortfolioFilterPerc = (Button) findViewById(R.id.btnPortfolioFilterPerc);
+        btnPortfolioFilterPerc.setOnClickListener(PortfolioView.this);
 
         //------------------------------------------------------------------------------------------
         //---   ListView Setup
@@ -212,11 +216,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
             }
             ChangePerc = ChangePerc.replace("%","");
-            String ChangePercFormat = String.format("%.02f", Float.parseFloat(ChangePerc));
             if (ChangePerc.equals("")) {
 //                portfolioListViewChangePerc.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
             } else {
-                portfolioListViewChangePerc.setText(ChangePercFormat);
+                String ChangePercFormat = String.format("%.02f", Float.parseFloat(ChangePerc));
+                portfolioListViewChangePerc.setText(ChangePercFormat+"%");
             }
             //--------------------------------------------------------------------------------------
             //---   Gain/Loss
@@ -250,7 +254,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                     menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
                 }
                 String GainLossPercFormat = String.format("%.02f", GainLossPerc);
-                menuOption.setText(GainLossPercFormat);
+                menuOption.setText(GainLossPercFormat+"%");
             }
 
             return itemView;
@@ -262,6 +266,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     //**********************************************************************************************
     @Override
     public void onClick(View view) {
+
+        int position, heap;
 
         //------------------------------------------------------------------------------------------
         //---   Setup Layout
@@ -333,6 +339,80 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                         popupWindow.dismiss();
                     }
                 });
+
+                break;
+
+            //--------------------------------------------------------------------------------------
+            //---   Filter non-owned Stocks
+            //--------------------------------------------------------------------------------------
+            case R.id.btnPortfolioFilterShares:
+
+                position = 0;
+
+                ArrayList<Integer> FilterShares = new ArrayList<Integer>();
+
+                for (Stock stock : allStocks) {
+
+                    if (stock.getShares() > 0) {
+
+//                        Log.i("LOG: (PF) SHARES", "Shares: " + stock.getTicker());
+
+                    } else {
+
+                        FilterShares.add(position);
+                    }
+                    position++;
+                }
+
+                Log.i("LOG: (PF) SHARES", "Count: " + adapterStocks.getCount());
+
+                heap = 0;
+
+                for (int i : FilterShares) {
+
+//                    Log.i("LOG: (PF) SHARES", "Shares: " + i + (i-heap));
+
+                    Stock toRemove = adapterStocks.getItem(i-heap);
+                    adapterStocks.remove(toRemove);
+                    heap++;
+                }
+
+                break;
+
+            //--------------------------------------------------------------------------------------
+            //---   Filter < 1% Gain/Loss
+            //--------------------------------------------------------------------------------------
+            case R.id.btnPortfolioFilterPerc:
+
+                position = 0;
+
+                ArrayList<Integer> FilterPerc = new ArrayList<Integer>();
+
+                for (Stock stock : allStocks) {
+
+                    if (abs(Float.parseFloat(stock.getChangePerc().replace("%",""))) > 1) {
+
+                        Log.i("LOG: (PF) PERC", "Perc: " + stock.getTicker());
+
+                    } else {
+
+                        FilterPerc.add(position);
+                    }
+                    position++;
+                }
+
+                Log.i("LOG: (PF) PERC", "Count: " + adapterStocks.getCount());
+
+                heap = 0;
+
+                for (int i : FilterPerc) {
+
+                    Log.i("LOG: (PF) PERC", "Perc: " + i + (i-heap));
+
+                    Stock toRemove = adapterStocks.getItem(i-heap);
+                    adapterStocks.remove(toRemove);
+                    heap++;
+                }
 
                 break;
 
