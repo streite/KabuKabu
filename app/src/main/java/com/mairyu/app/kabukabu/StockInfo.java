@@ -100,6 +100,7 @@ public class StockInfo extends AppCompatActivity {
 
         Spinner mySpinner = (Spinner)findViewById(R.id.spnStockInfoCategory);
         mySpinner.setAdapter(new MyCustomAdapter(StockInfo.this, R.layout.row, CategoryArray));
+//        mySpinner.setSelection(0);
 
     //------------------------------------------------------------------------------------------
         //---   Wait until activity is stable

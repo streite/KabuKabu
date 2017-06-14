@@ -451,6 +451,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         menu.add(0, v.getId(), 0, "Add");
         menu.add(0, v.getId(), 0, "Edit");
         menu.add(0, v.getId(), 0, "Delete");
+        menu.add(0, v.getId(), 0, "Clear");
     }
 
     //**********************************************************************************************
@@ -477,6 +478,20 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 //---   ==> CardView
                 startActivityForResult(intent2Info,REQUEST_INFO);
+
+                break;
+
+            //--------------------------------------------------------------------------------------
+            //---   CLEAR (Copy Price to Base)
+            //--------------------------------------------------------------------------------------
+            case "Clear":
+
+                currentStock.setShares(0);
+                currentStock.setCommission(0);
+
+                sqlHandler.updateStock(currentStock);
+
+                adapterStocks.notifyDataSetChanged();
 
                 break;
         }
