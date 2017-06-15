@@ -3,7 +3,12 @@ package com.mairyu.app.kabukabu;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,7 +31,9 @@ import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import static com.mairyu.app.kabukabu.R.id.pager;
 import static com.mairyu.app.kabukabu.R.id.portfolioListViewPrice;
 import static java.lang.StrictMath.abs;
 
@@ -61,6 +68,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     private PreferenceSettings _appPrefs;
 
+    private ViewPager mPager;
+    private PagerAdapter mPagerAdapter;
+
+    HashMap<Integer,String> mFragmentTags = new HashMap<Integer,String>();
+
     SQLhandler sqlHandler;
     String SQL_Filename;
     int SQLDBSize;
@@ -93,7 +105,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.portfolio_view);
+        setContentView(R.layout.portfolio_view_pager);
 
         Bundle extras = getIntent().getExtras();
         Category = extras.getString("PORTFOLIO_CATEGORY");
@@ -130,6 +142,15 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         btnPortfolioFilterPerc.setOnClickListener(PortfolioView.this);
 
         //------------------------------------------------------------------------------------------
+        //---   ViewPager
+        //------------------------------------------------------------------------------------------
+
+        mPager = (ViewPager) findViewById(pager);
+        mPagerAdapter = new CardViewPagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+        mPagerAdapter.notifyDataSetChanged();
+
+        //------------------------------------------------------------------------------------------
         //---   ListView Setup
         //------------------------------------------------------------------------------------------
 
@@ -142,6 +163,54 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
 
         sqlHandler = new SQLhandler(PortfolioView.this, _appPrefs.getSQLDBName(), Integer.parseInt(_appPrefs.getSQLDBVersion()));
+
+        //------------------------------------------------------------------------------------------
+        //---   ViewPager Listener
+        //------------------------------------------------------------------------------------------
+
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            // triggered many many times when touching and trying to scroll it, once released it finishes with new position
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            //--------------------------------------------------------------------------------------
+            //---   Page Slide
+            //--------------------------------------------------------------------------------------
+            @Override
+            public void onPageSelected(int position) {
+
+//                if (!ButtonPush) {
+//                    if (lastPage > position) {
+//                        index--;
+//                    } else {
+//                        index++;
+//                    }
+//                }
+//                lastPage = position;
+//                ButtonPush = false;
+//
+//                Log.i("LOG: (CV) PAGEVIEWER", "onPageSelected - new page: " + position);
+//
+//                Fragment fragment = ((CardViewPagerAdapter) mPager.getAdapter()).getFragment(position);
+//
+//                View Fragmentview = fragment.getView();
+//
+//                refreshView(Fragmentview);
+//                currentIndex = cardIndexArray.get(position);
+//                refreshCard(currentIndex);
+//
+//                txtCardProgress.setText((position+1) + " / " + CardBatchSize);
+            }
+
+            //SCROLL_STATE_IDLE=0, SCROLL_STATE_DRAGGING=1, SCROLL_STATE_SETTLING=2
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         //------------------------------------------------------------------------------------------
         //---   If cards are already loaded, show right away (wait until activity is stable)
@@ -258,6 +327,56 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             }
 
             return itemView;
+        }
+    }
+
+    //**********************************************************************************************
+    //***   Page Adapter (FragmentStatePagerAdapter caused weirdness in HashMap)
+    //**********************************************************************************************
+    private class CardViewPagerAdapter extends FragmentPagerAdapter {
+
+//        HashMap<Integer,String> mFragmentTags = new HashMap<Integer,String>();
+
+        public CardViewPagerAdapter(FragmentManager fm) {
+
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            return new PortfolioViewFragment();
+        }
+
+        @Override
+        public int getCount() {
+
+            return getResources().getStringArray(R.array.categories).length;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+
+            Object obj = super.instantiateItem(container, position);
+
+            if (obj instanceof Fragment) {
+
+                Fragment f = (Fragment) obj;
+                String tag = f.getTag();
+                mFragmentTags.put(position, tag);
+            }
+
+            return obj;
+        }
+
+        public Fragment getFragment(int position) {
+
+            String tag = mFragmentTags.get(position);
+
+            if (tag == null)
+                return null;
+
+            return getSupportFragmentManager().findFragmentByTag(tag);
         }
     }
 

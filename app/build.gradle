@@ -4,21 +4,28 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.mairyu.app.kabukabu"
+        applicationId "com.mairyu.app.lingoflash"
         minSdkVersion 23
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-/*
-    buildTypes {
+/*    signingConfigs {
         release {
+            storeFile file("mairyu.jks")
+            storePassword "Jjmania8*"
+            keyAlias "my-alias"
+            keyPassword "Jjmania8*"
+        }
+    }*/
+/*    buildTypes {
+        release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-*/
+    }*/
 }
 
 dependencies {
@@ -46,5 +53,3 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'org.jsoup:jsoup:1.7.3'
 }
-
-
