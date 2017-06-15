@@ -107,6 +107,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.portfolio_view_pager);
 
+        //------------------------------------------------------------------------------------------
+        //---   Get Card Details
+        //------------------------------------------------------------------------------------------
+
         Bundle extras = getIntent().getExtras();
         Category = extras.getString("PORTFOLIO_CATEGORY");
 
@@ -126,22 +130,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         //------------------------------------------------------------------------------------------
-        //---   Layout
-        //------------------------------------------------------------------------------------------
-
-        btnPortfolioAdd = (Button) findViewById(R.id.btnPortfolioAdd);
-        btnPortfolioAdd.setOnClickListener(PortfolioView.this);
-
-        btnDatabaseSave = (Button) findViewById(R.id.btnDatabaseSave);
-        btnDatabaseSave.setOnClickListener(PortfolioView.this);
-
-        btnPortfolioFilterShares = (Button) findViewById(R.id.btnPortfolioFilterShares);
-        btnPortfolioFilterShares.setOnClickListener(PortfolioView.this);
-
-        btnPortfolioFilterPerc = (Button) findViewById(R.id.btnPortfolioFilterPerc);
-        btnPortfolioFilterPerc.setOnClickListener(PortfolioView.this);
-
-        //------------------------------------------------------------------------------------------
         //---   ViewPager
         //------------------------------------------------------------------------------------------
 
@@ -151,12 +139,28 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         mPagerAdapter.notifyDataSetChanged();
 
         //------------------------------------------------------------------------------------------
+        //---   Layout
+        //------------------------------------------------------------------------------------------
+
+//        btnPortfolioAdd = (Button) findViewById(R.id.btnPortfolioAdd);
+//        btnPortfolioAdd.setOnClickListener(PortfolioView.this);
+//
+//        btnDatabaseSave = (Button) findViewById(R.id.btnDatabaseSave);
+//        btnDatabaseSave.setOnClickListener(PortfolioView.this);
+//
+//        btnPortfolioFilterShares = (Button) findViewById(R.id.btnPortfolioFilterShares);
+//        btnPortfolioFilterShares.setOnClickListener(PortfolioView.this);
+//
+//        btnPortfolioFilterPerc = (Button) findViewById(R.id.btnPortfolioFilterPerc);
+//        btnPortfolioFilterPerc.setOnClickListener(PortfolioView.this);
+
+        //------------------------------------------------------------------------------------------
         //---   ListView Setup
         //------------------------------------------------------------------------------------------
 
-        listViewAllStocks = (ListView) findViewById(R.id.listViewAllStocks);
-
-        registerForContextMenu(listViewAllStocks);
+//        listViewAllStocks = (ListView) findViewById(R.id.listViewAllStocks);
+//
+//        registerForContextMenu(listViewAllStocks);
 
         //------------------------------------------------------------------------------------------
         //---   SQLite Setup
@@ -213,12 +217,34 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         });
 
         //------------------------------------------------------------------------------------------
-        //---   If cards are already loaded, show right away (wait until activity is stable)
+        //---   Show initial card
         //------------------------------------------------------------------------------------------
 
-        findViewById(R.id.rlv_portfolio_view).post(new Runnable() {
+        mPager.post(new Runnable() {
 
             public void run() {
+
+                //------------------------------------------------------------------------------------------
+                //---   Layout
+                //------------------------------------------------------------------------------------------
+
+                listViewAllStocks = (ListView) findViewById(R.id.listViewAllStocks);
+
+                registerForContextMenu(listViewAllStocks);
+
+                btnPortfolioAdd = (Button) findViewById(R.id.btnPortfolioAdd);
+                btnPortfolioAdd.setOnClickListener(PortfolioView.this);
+
+                btnDatabaseSave = (Button) findViewById(R.id.btnDatabaseSave);
+                btnDatabaseSave.setOnClickListener(PortfolioView.this);
+
+                btnPortfolioFilterShares = (Button) findViewById(R.id.btnPortfolioFilterShares);
+                btnPortfolioFilterShares.setOnClickListener(PortfolioView.this);
+
+                btnPortfolioFilterPerc = (Button) findViewById(R.id.btnPortfolioFilterPerc);
+                btnPortfolioFilterPerc.setOnClickListener(PortfolioView.this);
+
+//                refreshCard(currentIndex);
 
                 allStocks = sqlHandler.getStocksByCategory(Category);
 
@@ -231,6 +257,26 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 txtCategory.setText(Category+" ("+SQLDBSize+")");
             }
         });
+
+        //------------------------------------------------------------------------------------------
+        //---   If cards are already loaded, show right away (wait until activity is stable)
+        //------------------------------------------------------------------------------------------
+
+//        findViewById(R.id.rlv_portfolio_view).post(new Runnable() {
+//
+//            public void run() {
+//
+//                allStocks = sqlHandler.getStocksByCategory(Category);
+//
+//                adapterStocks = new CustomDatabaseAdapter();
+//                listViewAllStocks.setAdapter(adapterStocks);
+//
+//                SQLDBSize = allStocks.size();
+//
+//                TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
+//                txtCategory.setText(Category+" ("+SQLDBSize+")");
+//            }
+//        });
     }
 
     //**********************************************************************************************

@@ -23,151 +23,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/llhTopInfo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <RelativeLayout
-                    android:id="@+id/llhCardViewKnow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/cardViewListViewKnowForeignCharLevel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="false"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:background="@drawable/custom_border"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:text="FC"
-                        android:textColor="#040404"
-                        android:textSize="18sp"
-                        android:textStyle="italic" />
-
-                    <TextView
-                        android:id="@+id/cardViewListViewKnowForeignAltLevel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_toRightOf="@+id/cardViewListViewKnowForeignCharLevel"
-                        android:background="@drawable/custom_border"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:text="FA"
-                        android:textColor="#040404"
-                        android:textSize="18sp"
-                        android:textStyle="italic" />
-
-
-                    <TextView
-                        android:id="@+id/cardViewListViewKnowEnglishWordLevel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:layout_toRightOf="@+id/cardViewListViewKnowForeignAltLevel"
-                        android:background="@drawable/custom_border"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:text="EW"
-                        android:textColor="#040404"
-                        android:textSize="18sp"
-                        android:textStyle="italic" />
-
-
-                </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/txtCardProgress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:text="Progress"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/txtCardForeignChar"
+            <ListView
+                android:id="@+id/listViewAllStocks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="1dp"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/transparent"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:gravity="center_vertical|center_horizontal"
-                android:hint="CHAR"
-                android:textColor="@color/colorBlue1"
-                android:textSize="96sp" />
-
-            <EditText
-                android:id="@+id/txtCardForeignAlt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="1dp"
-                android:layout_marginTop="1dp"
-                android:background="@android:color/transparent"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:hint="ALT"
-                android:textColor="@color/colorBlue2"
-                android:gravity="center_vertical|center_horizontal"
-                android:textSize="36sp" />
-
-            <EditText
-                android:id="@+id/txtCardForeignWord"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="1dp"
-                android:background="@android:color/transparent"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:hint="WORD"
-                android:textColor="@color/colorBlue2"
-                android:gravity="center_vertical|center_horizontal"
-                android:textSize="36sp" />
-
-            <EditText
-                android:id="@+id/txtCardEnglishWord"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@android:color/transparent"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:hint="WORD"
-                android:textColor="@color/colorBlue2"
-                android:gravity="center_vertical|center_horizontal"
-                android:textSize="36sp" />
+                android:layout_below="@+id/toolbar"
+                android:layout_above="@+id/llhButton"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp"
+                android:padding="0dp" />
 
         </LinearLayout>
 
