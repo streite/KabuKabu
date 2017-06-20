@@ -29,12 +29,12 @@ public class PreferenceSettings extends AppCompatActivity {
     //---   SQL DB Name
     //----------------------------------------------------------------------------------------------
 
-    public String getSQLDBName() {
+    public String getSQLStockDBName() {
 
         return _sharedPrefs.getString(SQL_FILE_NAME, "N_A");
     }
 
-    public void setSQLDBName(String text) {
+    public void setSQLStockDBName(String text) {
 
         _prefsEditor.putString(SQL_FILE_NAME, text);
 
@@ -45,12 +45,12 @@ public class PreferenceSettings extends AppCompatActivity {
     //---   SQL DB Version
     //----------------------------------------------------------------------------------------------
 
-    public String getSQLDBVersion() {
+    public String getSQLStockDBVersion() {
 
         return _sharedPrefs.getString(SQL_VERSION, "5");
     }
 
-    public void setSQLDBVersion(String text) {
+    public void setSQLStockDBVersion(String text) {
 
         _prefsEditor.putString(SQL_VERSION, text);
 

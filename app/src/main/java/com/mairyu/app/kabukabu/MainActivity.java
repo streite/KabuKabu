@@ -8,7 +8,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnPortfolio,btnYahoo,btnWSJ;
+    Button btnPortfolio,btnYahoo,btnWSJ,btnSetting;
     Button btnGoogleSheetsRead,btnGoogleSheetsWrite;
 
     String Google_Sheet = "TECH";
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                         intentSheet.putExtra("SHEETS_RANGE", Google_Sheet);
                         intentSheet.putExtra("SHEETS_MODE", "READ");
 
-                        startActivityForResult(intentSheet,REQUEST_SHEETS);
+                        startActivityForResult(intentSheet, REQUEST_SHEETS);
 
 //                        Intent intentGoogle = new Intent(MainActivity.this, GoogleSheets.class);
 //                        startActivity(intentGoogle);
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                         intentSheet.putExtra("SHEETS_RANGE", Google_Sheet);
                         intentSheet.putExtra("SHEETS_MODE", "WRITE");
 
-                        startActivityForResult(intentSheet,REQUEST_SHEETS);
+                        startActivityForResult(intentSheet, REQUEST_SHEETS);
 
 //                        Intent intentGoogle = new Intent(MainActivity.this, GoogleSheets.class);
 //                        startActivity(intentGoogle);
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                         intentSheet.putExtra("SHEETS_RANGE", Google_Sheet);
                         intentSheet.putExtra("SHEETS_MODE", "READ");
 
-                        startActivityForResult(intentSheet,REQUEST_SHEETS);
+                        startActivityForResult(intentSheet, REQUEST_SHEETS);
 
 //                        Intent intentGoogle = new Intent(MainActivity.this, GoogleSheets.class);
 //                        startActivity(intentGoogle);
@@ -177,10 +177,35 @@ public class MainActivity extends AppCompatActivity {
                         intentSheet.putExtra("SHEETS_RANGE", Google_Sheet);
                         intentSheet.putExtra("SHEETS_MODE", "READ");
 
-                        startActivityForResult(intentSheet,REQUEST_SHEETS);
+                        startActivityForResult(intentSheet, REQUEST_SHEETS);
 
 //                        Intent intentGoogle = new Intent(MainActivity.this, GoogleSheets.class);
 //                        startActivity(intentGoogle);
+
+                        break;
+
+                }
+            }
+        });
+
+        btnSetting = (Button) findViewById(R.id.btnSetting);
+        btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //------------------------------------------------------------------------------------------
+                //---   Setup Layout
+                //------------------------------------------------------------------------------------------
+
+                switch (v.getId()) {
+
+                    //--------------------------------------------------------------------------------------
+                    //---   SAVE
+                    //--------------------------------------------------------------------------------------
+                    case R.id.btnSetting:
+
+                        Intent intentSetting = new Intent(MainActivity.this, SettingsPage.class);
+                        startActivityForResult(intentSetting, REQUEST_SHEETS);
 
                         break;
 

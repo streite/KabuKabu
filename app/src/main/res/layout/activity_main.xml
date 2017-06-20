@@ -53,6 +53,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="WSJ" />
+
+        <Button
+            android:id="@+id/btnSetting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Setting" />
+
     </LinearLayout>
 
 </RelativeLayout>

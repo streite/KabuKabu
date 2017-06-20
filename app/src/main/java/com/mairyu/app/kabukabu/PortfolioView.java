@@ -114,6 +114,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         Bundle extras = getIntent().getExtras();
         Category = extras.getString("PORTFOLIO_CATEGORY");
 
+        CategoryArray = getResources().getStringArray(R.array.categories);
+
         //------------------------------------------------------------------------------------------
         //---   Preference/Settings
         //------------------------------------------------------------------------------------------
@@ -139,34 +141,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         mPagerAdapter.notifyDataSetChanged();
 
         //------------------------------------------------------------------------------------------
-        //---   Layout
-        //------------------------------------------------------------------------------------------
-
-//        btnPortfolioAdd = (Button) findViewById(R.id.btnPortfolioAdd);
-//        btnPortfolioAdd.setOnClickListener(PortfolioView.this);
-//
-//        btnDatabaseSave = (Button) findViewById(R.id.btnDatabaseSave);
-//        btnDatabaseSave.setOnClickListener(PortfolioView.this);
-//
-//        btnPortfolioFilterShares = (Button) findViewById(R.id.btnPortfolioFilterShares);
-//        btnPortfolioFilterShares.setOnClickListener(PortfolioView.this);
-//
-//        btnPortfolioFilterPerc = (Button) findViewById(R.id.btnPortfolioFilterPerc);
-//        btnPortfolioFilterPerc.setOnClickListener(PortfolioView.this);
-
-        //------------------------------------------------------------------------------------------
-        //---   ListView Setup
-        //------------------------------------------------------------------------------------------
-
-//        listViewAllStocks = (ListView) findViewById(R.id.listViewAllStocks);
-//
-//        registerForContextMenu(listViewAllStocks);
-
-        //------------------------------------------------------------------------------------------
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(PortfolioView.this, _appPrefs.getSQLDBName(), Integer.parseInt(_appPrefs.getSQLDBVersion()));
+        sqlHandler = new SQLhandler(PortfolioView.this,_appPrefs.getSQLStockDBName(),
+                Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
 
         //------------------------------------------------------------------------------------------
         //---   ViewPager Listener
@@ -198,15 +177,19 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 //
 //                Log.i("LOG: (CV) PAGEVIEWER", "onPageSelected - new page: " + position);
 //
-//                Fragment fragment = ((CardViewPagerAdapter) mPager.getAdapter()).getFragment(position);
-//
-//                View Fragmentview = fragment.getView();
-//
-//                refreshView(Fragmentview);
+                Fragment fragment = ((CardViewPagerAdapter) mPager.getAdapter()).getFragment(position);
+
+                View Fragmentview = fragment.getView();
+
+                refreshView(Fragmentview);
 //                currentIndex = cardIndexArray.get(position);
 //                refreshCard(currentIndex);
 //
 //                txtCardProgress.setText((position+1) + " / " + CardBatchSize);
+                Category = CategoryArray[position];
+
+                TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
+                txtCategory.setText(Category + " (" + SQLDBSize + ")");
             }
 
             //SCROLL_STATE_IDLE=0, SCROLL_STATE_DRAGGING=1, SCROLL_STATE_SETTLING=2
@@ -679,8 +662,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
 
         TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
-        txtCategory.setText(Category+" ("+SQLDBSize+")");
-//        txtCategory.setTextColor(getResources().getColor(R.color.colorYellow1));
+        txtCategory.setText(Category + " (" + SQLDBSize + ")");
         txtCategory.setTextColor(ContextCompat.getColor(this, R.color.colorYellow1));
 
         return true;
@@ -781,4 +763,33 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 //            // TODO Auto-generated method stub
 //        }
 //    }
+
+    //**********************************************************************************************
+    //***   Method: Refresh Card Layout
+    //**********************************************************************************************
+    private void refreshView(View view) {
+
+        //------------------------------------------------------------------------------------------
+        //---   Layout
+        //------------------------------------------------------------------------------------------
+
+        listViewAllStocks = (ListView) findViewById(R.id.listViewAllStocks);
+    }
+
+    //**********************************************************************************************
+    //***   Method: Refresh Card Layout
+    //**********************************************************************************************
+    private void refreshCard (int currentID) {
+
+//        Flashcard currentFlash = sqlHandler.getFlashcardByID(currentID);
+
+        //------------------------------------------------------------------------------------------
+        //---   Update Cards in Display
+        //------------------------------------------------------------------------------------------
+
+//        txtCardForeignChar.setText(currentFlash.getForeignChar());
+//        txtCardForeignAlt.setText(currentFlash.getForeignAlt());
+
+
+    }
 }

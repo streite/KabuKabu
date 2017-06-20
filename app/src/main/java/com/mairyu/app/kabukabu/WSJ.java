@@ -80,7 +80,8 @@ public class WSJ extends AppCompatActivity implements View.OnClickListener {
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(WSJ.this, _appPrefs.getSQLDBName(), Integer.parseInt(_appPrefs.getSQLDBVersion()));
+        sqlHandler = new SQLhandler(WSJ.this,_appPrefs.getSQLStockDBName(),
+                Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
 
         //------------------------------------------------------------------------------------------
         //---   Setup HTTP client for websites API server

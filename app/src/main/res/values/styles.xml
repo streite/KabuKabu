@@ -13,6 +13,7 @@
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>style>
 
+    // Hide native ActionBar
     <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
 
     </style>

@@ -48,15 +48,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
-                    android:id="@+id/btnCardViewShow"
+                    android:id="@+id/btnPortfolioAdd"
                     android:layout_weight="1"
                     android:textSize="14sp"
                     android:background="@drawable/gradient_dark_blue_bg"
                     android:textColor="@color/colorBlue4"
-                    android:text="Show" />
+                    android:text="Add" />
 
                 <Button
-                    android:id="@+id/btnCardViewSound"
+                    android:id="@+id/btnDatabaseSave"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
@@ -64,12 +64,12 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/gradient_dark_blue_bg"
-                    android:text="Sound"
+                    android:text="Save"
                     android:textColor="@color/colorBlue4"
                     android:textSize="14sp" />
 
                 <Button
-                    android:id="@+id/btnCardViewWrong"
+                    android:id="@+id/btnPortfolioFilterShares"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
@@ -77,10 +77,10 @@
                     android:textSize="14sp"
                     android:background="@drawable/gradient_dark_red_bg"
                     android:textColor="#FFFFFF"
-                    android:text="WRONG" />
+                    android:text="Shares" />
 
                 <Button
-                    android:id="@+id/btnCardViewCorrect"
+                    android:id="@+id/btnPortfolioFilterPerc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
@@ -88,7 +88,7 @@
                     android:textSize="14sp"
                     android:background="@drawable/gradient_dark_green_bg"
                     android:textColor="#FFFFFF"
-                    android:text="CORRECT" />
+                    android:text="1%" />
 
             </LinearLayout>
 

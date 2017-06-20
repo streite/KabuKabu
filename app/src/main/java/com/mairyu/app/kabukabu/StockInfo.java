@@ -71,7 +71,8 @@ public class StockInfo extends AppCompatActivity {
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(StockInfo.this, _appPrefs.getSQLDBName(), Integer.parseInt(_appPrefs.getSQLDBVersion()));
+        sqlHandler = new SQLhandler(StockInfo.this,_appPrefs.getSQLStockDBName(),
+                Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
 
         //------------------------------------------------------------------------------------------
         //---   Layout

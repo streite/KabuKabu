@@ -31,14 +31,25 @@
             </intent-filter>
         </activity>
         <activity android:name=".Stock" />
+        //------------------------------------------------------------------------------------------
         <activity android:name=".WSJ" />
+        //------------------------------------------------------------------------------------------
+        <activity
+            android:name=".SettingsPage"
+            android:label=""
+            android:theme="@style/MyMaterialTheme" />
+        //------------------------------------------------------------------------------------------
         <activity android:name=".CategoryView" />
+        //------------------------------------------------------------------------------------------
         <activity android:name=".GoogleSheets" />
+        //------------------------------------------------------------------------------------------
         <activity android:name=".YahooAPI" />
+        //------------------------------------------------------------------------------------------
         <activity
             android:name=".PortfolioView"
             android:label=""
             android:theme="@style/MyMaterialTheme" />
+        //------------------------------------------------------------------------------------------
         <activity
             android:name=".StockInfo"
             android:label=""

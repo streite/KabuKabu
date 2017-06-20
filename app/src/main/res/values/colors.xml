@@ -22,6 +22,11 @@
     <color name="colorYellow3">#FFFFCC</color>
     <color name="colorYellow4">#FFFFF0</color>
 
+    <color name="colorBrown1">#6F4E37</color>
+    <color name="colorBrown2">#7F462C</color>
+    <color name="colorBrown3">#C47451</color>
+    <color name="colorBrown4">#E78A61</color>
+
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#ff4081</color>

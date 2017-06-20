@@ -1,11 +1,13 @@
 package com.mairyu.app.kabukabu;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 
 public class SettingsPage extends AppCompatActivity {
@@ -13,6 +15,11 @@ public class SettingsPage extends AppCompatActivity {
     private Toolbar mToolbar;
 
     private PreferenceSettings _appPrefs;
+
+    private TextView txtSQLStockName;
+    private TextView edtSQLStockName;
+    private TextView txtSQLStockVersion;
+    private TextView edtSQLStockVersion;
 
     //**********************************************************************************************
     //***   onCreate
@@ -29,7 +36,7 @@ public class SettingsPage extends AppCompatActivity {
 
         _appPrefs = new PreferenceSettings(getApplicationContext());
 
-        Log.i("LOG: (SP) SQL Filename", _appPrefs.getSQLDBName());
+        Log.i("LOG: (SP) SQL Filename", _appPrefs.getSQLStockDBName());
 
         //------------------------------------------------------------------------------------------
         //---   Toolbar
@@ -44,6 +51,17 @@ public class SettingsPage extends AppCompatActivity {
         //---   Layout
         //------------------------------------------------------------------------------------------
 
+        txtSQLStockName = (TextView) findViewById(R.id.txtSQLStockName);
+        edtSQLStockName = (TextView) findViewById(R.id.edtSQLStockName);
+        txtSQLStockVersion = (TextView) findViewById(R.id.txtSQLStockVersion);
+        edtSQLStockVersion = (TextView) findViewById(R.id.edtSQLStockVersion);
+
+        //------------------------------------------------------------------------------------------
+        //---   Display during init
+        //------------------------------------------------------------------------------------------
+
+        edtSQLStockName.setText(_appPrefs.getSQLStockDBName());
+        edtSQLStockVersion.setText(_appPrefs.getSQLStockDBVersion());
     }
 
     //**********************************************************************************************
@@ -65,21 +83,15 @@ public class SettingsPage extends AppCompatActivity {
 
         int id = item.getItemId();
 
-//        if (id == R.id.edit) {
-//
-//            Log.i("LOG: (SP2) SQL Filename", "SQL " + SQL_Filename);
-//
-//            _appPrefs.setSQLDBName(SQL_Filename);
-//
-//            Log.i("LOG: (SP3) Language", "LANG " + _appPrefs.getLanguage());
-//            Log.i("LOG: (SP3) SQL Filename", "SQL " + _appPrefs.getSQLDBName());
-//            Log.i("LOG: (SP) ECount", _appPrefs.getEnglishCount() + "");
-//
-//            // Not sure why I need this ... it shows up as CANCELLED otherwise
-//            setResult(Activity.RESULT_OK);
-//
-//            finish();
-//        }
+        if (id == R.id.action_edit) {
+
+            _appPrefs.setSQLStockDBName(edtSQLStockName.getText().toString());
+
+            // Not sure why I need this ... it shows up as CANCELLED otherwise
+            setResult(Activity.RESULT_OK);
+
+            finish();
+        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -120,7 +120,8 @@ public class GoogleSheets extends AppCompatActivity {
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(GoogleSheets.this,_appPrefs.getSQLDBName(),Integer.parseInt(_appPrefs.getSQLDBVersion()));
+        sqlHandler = new SQLhandler(GoogleSheets.this,_appPrefs.getSQLStockDBName(),
+                Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
 
         //------------------------------------------------------------------------------------------
         //---   Initialize credentials and service object
