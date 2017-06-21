@@ -182,11 +182,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 View Fragmentview = fragment.getView();
 
                 refreshView(Fragmentview);
-//                currentIndex = cardIndexArray.get(position);
-//                refreshCard(currentIndex);
-//
-//                txtCardProgress.setText((position+1) + " / " + CardBatchSize);
+
                 Category = CategoryArray[position];
+
+                refreshCard();
 
                 TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
                 txtCategory.setText(Category + " (" + SQLDBSize + ")");
@@ -282,77 +281,80 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 itemView = getLayoutInflater().inflate(R.layout.portfolio_list_view_item, parent, false);
             }
 
-            Stock currentStock = allStocks.get(position);
+            if (position < allStocks.size()) {
 
-            DecimalFormat df1 = new DecimalFormat("#.#");
-            DecimalFormat df2 = new DecimalFormat("#.##");
+                Stock currentStock = allStocks.get(position);
 
-            Price = currentStock.getPrice();
-            Shares = currentStock.getShares();
-            ChangePerc = currentStock.getChangePerc();
-            Basis = currentStock.getBasis();
-            Comission = currentStock.getCommission();
+                DecimalFormat df1 = new DecimalFormat("#.#");
+                DecimalFormat df2 = new DecimalFormat("#.##");
 
-            //--------------------------------------------------------------------------------------
-            //---   Ticker
-            //------------------------------------------------------------------------------------------
-            TextView menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewTicker);
-            menuOption.setText(currentStock.getTicker());
-            //--------------------------------------------------------------------------------------
-            //---   Price
-            //------------------------------------------------------------------------------------------
-            menuOption = (TextView) itemView.findViewById(portfolioListViewPrice);
-            String PriceFormat = String.format("%.02f", currentStock.getPrice());
-            menuOption.setText(PriceFormat);
-            //--------------------------------------------------------------------------------------
-            //---   Change (Percentage)
-            //------------------------------------------------------------------------------------------
-            portfolioListViewChangePerc = (TextView) itemView.findViewById(R.id.portfolioListViewChangePerc);
-            if (currentStock.getChangePerc().contains("+")) {
-                portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
-            } else {
-                portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
-            }
-            ChangePerc = ChangePerc.replace("%","");
-            if (ChangePerc.equals("")) {
-//                portfolioListViewChangePerc.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
-            } else {
-                String ChangePercFormat = String.format("%.02f", Float.parseFloat(ChangePerc));
-                portfolioListViewChangePerc.setText(ChangePercFormat+"%");
-            }
-            //--------------------------------------------------------------------------------------
-            //---   Gain/Loss
-            //--------------------------------------------------------------------------------------
-            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLoss);
-            GainLoss = ((Price - Basis) * Shares) - Comission;
-            if (GainLoss >= 0) {
-                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
-            } else {
-                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
-            }
-            String GainLossFormat = String.format("%.02f", GainLoss);
-            if (Shares < 1) {
-                menuOption.setText("----");
-            } else {
-                menuOption.setText(GainLossFormat);
-            }
-            //------------------------------------------------------------------------------------------
-            menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLossPerc);
-            if (Basis == 0) {
-                menuOption.setText("---");
-            } else {
-                if (Shares < 1) {
-                    GainLossPerc = ((Price - Basis) * 100) / Basis;
+                Price = currentStock.getPrice();
+                Shares = currentStock.getShares();
+                ChangePerc = currentStock.getChangePerc();
+                Basis = currentStock.getBasis();
+                Comission = currentStock.getCommission();
+
+                //--------------------------------------------------------------------------------------
+                //---   Ticker
+                //------------------------------------------------------------------------------------------
+                TextView menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewTicker);
+                menuOption.setText(currentStock.getTicker());
+                //--------------------------------------------------------------------------------------
+                //---   Price
+                //------------------------------------------------------------------------------------------
+                menuOption = (TextView) itemView.findViewById(portfolioListViewPrice);
+                String PriceFormat = String.format("%.02f", currentStock.getPrice());
+                menuOption.setText(PriceFormat);
+                //--------------------------------------------------------------------------------------
+                //---   Change (Percentage)
+                //------------------------------------------------------------------------------------------
+                portfolioListViewChangePerc = (TextView) itemView.findViewById(R.id.portfolioListViewChangePerc);
+                if (currentStock.getChangePerc().contains("+")) {
+                    portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
                 } else {
-                    GainLossPerc = (GainLoss * 100) / (Basis * Shares);
+                    portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
                 }
-                if (GainLossPerc >= 0) {
+                ChangePerc = ChangePerc.replace("%", "");
+                if (ChangePerc.equals("")) {
+//                portfolioListViewChangePerc.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
+                } else {
+                    String ChangePercFormat = String.format("%.02f", Float.parseFloat(ChangePerc));
+                    portfolioListViewChangePerc.setText(ChangePercFormat + "%");
+                }
+                //--------------------------------------------------------------------------------------
+                //---   Gain/Loss
+                //--------------------------------------------------------------------------------------
+                menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLoss);
+                GainLoss = ((Price - Basis) * Shares) - Comission;
+                if (GainLoss >= 0) {
                     menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
                 } else {
                     menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
                 }
-                String GainLossPercFormat = String.format("%.02f", GainLossPerc);
-                menuOption.setText(GainLossPercFormat+"%");
+                String GainLossFormat = String.format("%.02f", GainLoss);
+                if (Shares < 1) {
+                    menuOption.setText("----");
+                } else {
+                    menuOption.setText(GainLossFormat);
+                }
+                //------------------------------------------------------------------------------------------
+                menuOption = (TextView) itemView.findViewById(R.id.portfolioListViewGainLossPerc);
+                if (Basis == 0) {
+                    menuOption.setText("---");
+                } else {
+                    if (Shares < 1) {
+                        GainLossPerc = ((Price - Basis) * 100) / Basis;
+                    } else {
+                        GainLossPerc = (GainLoss * 100) / (Basis * Shares);
+                    }
+                    if (GainLossPerc >= 0) {
+                        menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
+                    } else {
+                        menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+                    }
+                    String GainLossPercFormat = String.format("%.02f", GainLossPerc);
+                    menuOption.setText(GainLossPercFormat + "%");
+                }
             }
 
             return itemView;
@@ -773,23 +775,23 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   Layout
         //------------------------------------------------------------------------------------------
 
-        listViewAllStocks = (ListView) findViewById(R.id.listViewAllStocks);
+        listViewAllStocks = (ListView) view.findViewById(R.id.listViewAllStocks);
     }
 
     //**********************************************************************************************
     //***   Method: Refresh Card Layout
     //**********************************************************************************************
-    private void refreshCard (int currentID) {
+    private void refreshCard () {
 
-//        Flashcard currentFlash = sqlHandler.getFlashcardByID(currentID);
+        allStocks = sqlHandler.getStocksByCategory(Category);
 
-        //------------------------------------------------------------------------------------------
-        //---   Update Cards in Display
-        //------------------------------------------------------------------------------------------
+        adapterStocks = new CustomDatabaseAdapter();
+        listViewAllStocks.setAdapter(adapterStocks);
+        adapterStocks.notifyDataSetChanged();
 
-//        txtCardForeignChar.setText(currentFlash.getForeignChar());
-//        txtCardForeignAlt.setText(currentFlash.getForeignAlt());
+        SQLDBSize = allStocks.size();
 
-
+        TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
+        txtCategory.setText(Category+" ("+SQLDBSize+")");
     }
 }
