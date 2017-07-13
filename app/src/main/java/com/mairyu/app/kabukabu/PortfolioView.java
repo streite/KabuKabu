@@ -443,7 +443,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 // otherwise Keyboard doesn't pop up
                 popupWindow.setFocusable(true);
 
-                popupWindow.showAtLocation(findViewById(R.id.rlv_portfolio_view), Gravity.CENTER, SQL_POPUP_GRAVITY_X, SQL_POPUP_GRAVITY_Y);
+                popupWindow.showAtLocation(findViewById(R.id.rlv_portfolio_view_pager),
+                        Gravity.CENTER, SQL_POPUP_GRAVITY_X, SQL_POPUP_GRAVITY_Y);
 
                 edtPortfolioTicker = (EditText) popupView.findViewById(R.id.edtPortfolioTicker);
 //                edtPortfolioTicker.setFocusableInTouchMode(true);

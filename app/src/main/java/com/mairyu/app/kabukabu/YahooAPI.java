@@ -29,6 +29,8 @@ public class YahooAPI extends AppCompatActivity {
 
     SQLhandler sqlHandler;
 
+    // Quandle API Key:  -zz6UJA1CAmN7KGPa_2L
+
     //**********************************************************************************************
     //***   onCreate
     //**********************************************************************************************
