@@ -30,6 +30,9 @@ public class YahooAPI extends AppCompatActivity {
     SQLhandler sqlHandler;
 
     // Quandle API Key:  -zz6UJA1CAmN7KGPa_2L
+    // Alpha: YAP5UEWWNGV6AZE6
+
+    // www.google.com/finance/option_chain?q=AAPL&output=json
 
     //**********************************************************************************************
     //***   onCreate
