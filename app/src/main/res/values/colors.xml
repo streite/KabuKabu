@@ -27,6 +27,11 @@
     <color name="colorBrown3">#C47451</color>
     <color name="colorBrown4">#E78A61</color>
 
+    <color name="colorGrey1">#848482</color>
+    <color name="colorGrey2">#B6B6B4</color>
+    <color name="colorGrey3">#D1D0CE</color>
+    <color name="colorGrey4">#E5E4E2</color>
+
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#ff4081</color>

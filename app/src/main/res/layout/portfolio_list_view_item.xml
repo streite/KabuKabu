@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:background="@drawable/gradient_yellow_bg"
+    android:background="@drawable/gradient_light_grey_bg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,12 +10,12 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_weight="20"
-        android:background="@drawable/gradient_yellow_bg"
+        android:background="@drawable/gradient_light_grey_bg"
         android:paddingBottom="5dp"
         android:paddingLeft="15dp"
         android:paddingTop="5dp"
         android:text="TICKER"
-        android:textColor="@color/colorYellow1"
+        android:textColor="@color/colorGrey1"
         android:textSize="24sp"
         android:textStyle="italic" />
 
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:paddingRight="15dp"
             android:text="G/L"
-            android:textColor="@color/colorYellow1"
+            android:textColor="@color/colorGrey1"
             android:textSize="18sp"
             android:textStyle="italic" />
 
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:paddingRight="15dp"
             android:text="G/L %%%"
-            android:textColor="@color/colorYellow1"
+            android:textColor="@color/colorGrey1"
             android:textSize="14sp"
             android:textStyle="italic" />
 
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:paddingRight="15dp"
         android:text="PRICE"
-        android:textColor="@color/colorYellow1"
+        android:textColor="@color/colorGrey1"
         android:textSize="18sp"
         android:textStyle="italic" />
 
@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:paddingRight="15dp"
         android:text="PERC"
-        android:textColor="@color/colorYellow1"
+        android:textColor="@color/colorGrey1"
         android:textSize="14sp"
         android:textStyle="italic" />
 

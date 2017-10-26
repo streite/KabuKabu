@@ -666,7 +666,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
         txtCategory.setText(Category + " (" + SQLDBSize + ")");
-        txtCategory.setTextColor(ContextCompat.getColor(this, R.color.colorYellow1));
+        txtCategory.setTextColor(ContextCompat.getColor(this, R.color.colorGrey1));
 
         return true;
     }
