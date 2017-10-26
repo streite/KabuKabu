@@ -456,6 +456,10 @@ public class WSJ extends AppCompatActivity implements View.OnClickListener {
         MenuItem menu_refresh = menu.findItem(R.id.menu_refresh);
         menu_refresh.setVisible(false);
 
+        //------------------------------------------------------------------------------------------
+        //---   Header
+        //------------------------------------------------------------------------------------------
+
         TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
         txtCategory.setText("Worst 100 (WJS)");
         txtCategory.setTextColor(ContextCompat.getColor(this, R.color.colorYellow1));

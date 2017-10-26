@@ -23,6 +23,13 @@
         <item>WSJ_LOSER</item>
     </string-array>
 
+    <string-array name="navigation">
+        <item>Main</item>
+        <item>Google Sheets</item>
+        <item>WSJ</item>
+        <item>Setting</item>
+    </string-array>
+
     <!--
     <string-array name="google_sheets">
         <item>TECH</item>

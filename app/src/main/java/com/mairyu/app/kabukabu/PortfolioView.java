@@ -7,8 +7,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -32,8 +34,10 @@ import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
+import static com.mairyu.app.kabukabu.R.id.menu_refresh;
 import static com.mairyu.app.kabukabu.R.id.pager;
 import static com.mairyu.app.kabukabu.R.id.portfolioListViewPrice;
 import static java.lang.StrictMath.abs;
@@ -87,6 +91,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     String ChangePerc;
     float Basis;
     int Comission;
+
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private String[] navigation;
 
     static final int SQL_POPUP_WIDTH = 1000;
     static final int SQL_POPUP_HEIGHT = 1500;
@@ -147,6 +155,16 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         sqlHandler = new SQLhandler(PortfolioView.this,_appPrefs.getSQLStockDBName(),
                 Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
+
+        //----------------------------------------------------------------------------------
+        //---   Navigation Drawer
+        //----------------------------------------------------------------------------------
+
+        navigation = getResources().getStringArray(R.array.navigation);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,navigation));
+        mDrawerList.setOnItemClickListener(new Navigator(this));
 
         //------------------------------------------------------------------------------------------
         //---   ViewPager Listener
@@ -470,6 +488,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
                 Portfolio_Spinner.setAdapter(adapter);
+                Portfolio_Spinner.setSelection(Arrays.asList(CategoryArray).indexOf(Category));
 
                 //----------------------------------------------------------------------------------
                 //---
@@ -659,6 +678,15 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        getSupportActionBar().setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(),
+                R.drawable.gradient_dark_grey_bg, null));
+
+        MenuItem menu_spinner = menu.findItem(R.id.menu_spinner);
+        menu_spinner.setVisible(false);
+
+        MenuItem menu_edit = menu.findItem(R.id.menu_edit);
+        menu_edit.setVisible(false);
+
         String SQLFileName = "0";
 
         //------------------------------------------------------------------------------------------
@@ -667,7 +695,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
         txtCategory.setText(Category + " (" + SQLDBSize + ")");
-        txtCategory.setTextColor(ContextCompat.getColor(this, R.color.colorGrey1));
+        txtCategory.setTextColor(ContextCompat.getColor(this, R.color.colorGrey3));
 
         //------------------------------------------------------------------------------------------
         //---   Touch SQL -> Training
@@ -706,7 +734,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
         //---   Pull down 'Settings' Menu
         //------------------------------------------------------------------------------------------
-        if (id == R.id.menu_refresh) {
+        if (id == menu_refresh) {
 
             Intent intentYahoo = new Intent(PortfolioView.this, YahooAPI.class);
             ArrayList<String> TickerList = grabTickers();
