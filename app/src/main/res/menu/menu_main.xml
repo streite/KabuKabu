@@ -4,15 +4,24 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/action_refresh"
+        android:id="@+id/menu_spinner"
+        android:title="ActionBar Spinner"
+        app:actionViewClass="android.widget.Spinner"
+        android:textSize="12sp"
+        android:gravity="left"
+        android:textColor="@color/colorYellow1"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_refresh"
         android:title="Add"
         android:orderInCategory="100"
         android:icon="@drawable/ic_action_refresh_black"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_edit"
-        android:title="Add"
+        android:id="@+id/menu_edit"
+        android:title="Edit"
         android:orderInCategory="100"
         android:icon="@drawable/ic_edit"
         app:showAsAction="ifRoom" />

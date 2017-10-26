@@ -5,9 +5,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -435,5 +437,54 @@ public class WSJ extends AppCompatActivity implements View.OnClickListener {
         }
 
         return true;
+    }
+
+    //**********************************************************************************************
+    //***   onCreateOptionsMenu (Toolbar)
+    //**********************************************************************************************
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        getSupportActionBar().setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(),
+                R.drawable.gradient_dark_yellow_bg, null));
+
+        MenuItem menu_spinner = menu.findItem(R.id.menu_spinner);
+        menu_spinner.setVisible(false);
+
+        MenuItem menu_refresh = menu.findItem(R.id.menu_refresh);
+        menu_refresh.setVisible(false);
+
+        TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
+        txtCategory.setText("Worst 100 (WJS)");
+        txtCategory.setTextColor(ContextCompat.getColor(this, R.color.colorYellow1));
+
+        return true;
+    }
+
+    //**********************************************************************************************
+    //***   onOptionsItemSelected (Toolbar)
+    //**********************************************************************************************
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        //------------------------------------------------------------------------------------------
+        //---   Pull down 'Settings' Menu
+        //------------------------------------------------------------------------------------------
+        if (id == R.id.menu_refresh) {
+
+        }
+
+        //------------------------------------------------------------------------------------------
+        //---   Update and return to Portfolio
+        //------------------------------------------------------------------------------------------
+        if (id == R.id.menu_edit) {
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

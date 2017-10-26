@@ -83,7 +83,7 @@ public class SettingsPage extends AppCompatActivity {
 
         int id = item.getItemId();
 
-        if (id == R.id.action_edit) {
+        if (id == R.id.menu_edit) {
 
             _appPrefs.setSQLStockDBName(edtSQLStockName.getText().toString());
 

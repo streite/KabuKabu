@@ -3,6 +3,8 @@ package com.mairyu.app.kabukabu;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -17,10 +19,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Arrays;
+
+import static android.widget.AdapterView.OnItemSelectedListener;
+
 //==================================================================================================
 //===   StockInfo
 //==================================================================================================
-public class StockInfo extends AppCompatActivity {
+public class StockInfo extends AppCompatActivity implements View.OnClickListener {
 
     private Toolbar mToolbar;
 
@@ -89,18 +95,18 @@ public class StockInfo extends AppCompatActivity {
 
         CategoryArray = getResources().getStringArray(R.array.categories);
 
-        Portfolio_Spinner = (Spinner) findViewById(R.id.spnStockInfoCategory);
-        Portfolio_Spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+//        Portfolio_Spinner = (Spinner) findViewById(R.id.spnStockInfoCategory);
+//        Portfolio_Spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.categories, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
-        Portfolio_Spinner.setAdapter(adapter);
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+//                R.array.categories, android.R.layout.simple_spinner_item);
+//// Specify the layout to use when the list of choices appears
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//// Apply the adapter to the spinner
+//        Portfolio_Spinner.setAdapter(adapter);
 
-        Spinner mySpinner = (Spinner)findViewById(R.id.spnStockInfoCategory);
-        mySpinner.setAdapter(new MyCustomAdapter(StockInfo.this, R.layout.row, CategoryArray));
+//        Spinner mySpinner = (Spinner)findViewById(R.id.spnStockInfoCategory);
+//        mySpinner.setAdapter(new MyCustomAdapter(StockInfo.this, R.layout.row, CategoryArray));
 //        mySpinner.setSelection(0);
 
     //------------------------------------------------------------------------------------------
@@ -123,12 +129,47 @@ public class StockInfo extends AppCompatActivity {
     }
 
     //**********************************************************************************************
+    //***   onClick (Button)
+    //**********************************************************************************************
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    //**********************************************************************************************
     //***   onCreateOptionsMenu (Toolbar)
     //**********************************************************************************************
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        getSupportActionBar().setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(),
+                R.drawable.gradient_dark_grey_bg, null));
+
+        MenuItem menu_refresh = menu.findItem(R.id.menu_refresh);
+        menu_refresh.setVisible(false);
+
+        //------------------------------------------------------------------------------------------
+        //---   Pull-Down Menu for SQL DB
+        //------------------------------------------------------------------------------------------
+
+        MenuItem item = menu.findItem(R.id.menu_spinner);
+        Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
+
+        String[] CategoryArray = getResources().getStringArray(R.array.categories);
+//        String SheetTag = _appPrefs.getSQLFlashcardDBName().substring(11);
+//        SheetTag = SheetTag.substring(0,SheetTag.length()-3);
+
+        Stock tmpStock = sqlHandler.getStockByID(SQL_Stock_ID);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.categories, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        adapter.setDropDownViewResource(android.R.layout.spinner_drop_down);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+        spinner.setSelection(Arrays.asList(CategoryArray).indexOf(tmpStock.getGroup()));
 
         return true;
     }
@@ -144,7 +185,7 @@ public class StockInfo extends AppCompatActivity {
         //------------------------------------------------------------------------------------------
         //---   Pull down 'Settings' Menu
         //------------------------------------------------------------------------------------------
-        if (id == R.id.action_refresh) {
+        if (id == R.id.menu_refresh) {
 
 //            Intent intentYahoo = new Intent(PortfolioView.this, YahooAPI.class);
 //            ArrayList<String> TickerList = grabTickers();
@@ -153,9 +194,9 @@ public class StockInfo extends AppCompatActivity {
         }
 
         //------------------------------------------------------------------------------------------
-        //---   Pull down 'Settings' Menu
+        //---   Update and return to Portfolio
         //------------------------------------------------------------------------------------------
-        if (id == R.id.action_edit) {
+        if (id == R.id.menu_edit) {
 
             Stock tmpStock = sqlHandler.getStockByID(SQL_Stock_ID);
 
@@ -206,7 +247,12 @@ public class StockInfo extends AppCompatActivity {
     //**********************************************************************************************
     //***   CustomOnItemSelectedListener (for Spinner)
     //**********************************************************************************************
-    public class CustomOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
+    public class CustomOnItemSelectedListener implements OnItemSelectedListener {
+
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+            // TODO Auto-generated method stub
+        }
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             Toast.makeText(parent.getContext(),
@@ -214,11 +260,17 @@ public class StockInfo extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
 
             PortfolioCategory = parent.getItemAtPosition(pos).toString();
-        }
 
-        @Override
-        public void onNothingSelected(AdapterView<?> arg0) {
-            // TODO Auto-generated method stub
+//            Google_Sheet = parent.getItemAtPosition(pos).toString();
+//
+//            String[] CategoriesArray = getResources().getStringArray(R.array.categories);
+////                ArrayList<String> SheetNames = new ArrayList<String>(SheetNamesArray);
+//
+//            String SQLFileName = "lingoflash." + Google_Sheet + ".db";
+//            String Language = Google_Sheet.substring(0,2);
+//
+//            _appPrefs.setSQLFlashcardDBName(SQLFileName);
+//            _appPrefs.setLanguage(Language);
         }
     }
 

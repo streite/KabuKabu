@@ -17,6 +17,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -668,6 +669,29 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         txtCategory.setText(Category + " (" + SQLDBSize + ")");
         txtCategory.setTextColor(ContextCompat.getColor(this, R.color.colorGrey1));
 
+        //------------------------------------------------------------------------------------------
+        //---   Touch SQL -> Training
+        //------------------------------------------------------------------------------------------
+        txtCategory.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View arg0, MotionEvent arg1) {
+
+                switch (arg1.getAction()) {
+
+                    case MotionEvent.ACTION_DOWN: {
+
+                        Intent intentTraining = new Intent(PortfolioView.this, CategoryView.class);
+                        startActivity(intentTraining);
+
+                        break;
+                    }
+                }
+
+                return true;
+            }
+        });
+
         return true;
     }
 
@@ -682,7 +706,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
         //---   Pull down 'Settings' Menu
         //------------------------------------------------------------------------------------------
-        if (id == R.id.action_refresh) {
+        if (id == R.id.menu_refresh) {
 
             Intent intentYahoo = new Intent(PortfolioView.this, YahooAPI.class);
             ArrayList<String> TickerList = grabTickers();

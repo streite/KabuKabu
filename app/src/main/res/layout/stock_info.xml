@@ -5,7 +5,7 @@
     android:id="@+id/rlv_stock_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_yellow_bg"
+    android:background="@drawable/gradient_grey_bg"
     tools:context="com.mairyu.app.kabukabu.StockInfo">
 
     <include
@@ -28,7 +28,7 @@
         android:focusableInTouchMode="false"
         android:gravity="center_vertical|center_horizontal"
         android:text="TICKER"
-        android:textColor="@color/colorYellow1"
+        android:textColor="@color/colorGrey1"
         android:textSize="48sp" />
 
     <EditText
@@ -47,7 +47,7 @@
         android:focusableInTouchMode="false"
         android:gravity="center_vertical|center_horizontal"
         android:text="SHARES"
-        android:textColor="@color/colorYellow1"
+        android:textColor="@color/colorGrey1"
         android:textSize="48sp" />
 
     <EditText
@@ -66,7 +66,7 @@
         android:focusableInTouchMode="false"
         android:gravity="center_vertical|center_horizontal"
         android:text="BASIS"
-        android:textColor="@color/colorYellow1"
+        android:textColor="@color/colorGrey1"
         android:textSize="48sp" />
 
     <EditText
@@ -85,20 +85,7 @@
         android:focusableInTouchMode="false"
         android:gravity="center_vertical|center_horizontal"
         android:text="COMISSION"
-        android:textColor="@color/colorYellow1"
+        android:textColor="@color/colorGrey1"
         android:textSize="48sp" />
-
-    <Spinner
-        android:id="@+id/spnStockInfoCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/edtStockInfoComission"
-        android:layout_gravity="center"
-        android:textColor="@color/colorYellow1"
-        android:dropDownWidth="10dp"
-        android:layout_toRightOf="@+id/txtPortfolioCategory"
-        android:entries="@array/categories"
-        android:gravity="center"
-        android:spinnerMode="dialog" />
 
 </RelativeLayout>
