@@ -524,24 +524,32 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 for (Stock stock : allStocks) {
 
+                    //------------------------------------------------------------------------------
+                    //---   Currently owning shares ...
+                    //------------------------------------------------------------------------------
                     if (stock.getShares() > 0) {
 
 //                        Log.i("LOG: (PF) SHARES", "Shares: " + stock.getTicker());
 
+                    //------------------------------------------------------------------------------
+                    //---   ... not owning shares ...
+                    //------------------------------------------------------------------------------
                     } else {
 
                         FilterShares.add(position);
                     }
+
                     position++;
                 }
 
                 Log.i("LOG: (PF) SHARES", "Count: " + adapterStocks.getCount());
 
+                //------------------------------------------------------------------------------
+                //---   Remove filtered ones from ListView
+                //------------------------------------------------------------------------------
                 heap = 0;
 
                 for (int i : FilterShares) {
-
-//                    Log.i("LOG: (PF) SHARES", "Shares: " + i + (i-heap));
 
                     Stock toRemove = adapterStocks.getItem(i-heap);
                     adapterStocks.remove(toRemove);
