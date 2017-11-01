@@ -7,6 +7,8 @@
     <string-array name="categories">
         <item>REGION ETF</item>
         <item>COMMODITY ETF</item>
+        <item>INDEX ETF</item>
+        <item>OTHER ETF</item>
         <item>TECH</item>
         <item>FINANCE</item>
         <item>CONSUME</item>
@@ -14,8 +16,6 @@
         <item>HEALTH</item>
         <item>TRANSPORTATION</item>
         <item>MISC</item>
-        <item>INDEX ETF</item>
-        <item>OTHER ETF</item>
         <item>MUTUAL</item>
         <item>401K NVDA</item>
         <item>401K SUN</item>
