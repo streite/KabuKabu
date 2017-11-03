@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     static final int REQUEST_PREFERENCE = 2000;
     static final int REQUEST_SHEETS = 2000;
 
+//    https://tradingticket.github.io/AndroidSDK/index.html
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
