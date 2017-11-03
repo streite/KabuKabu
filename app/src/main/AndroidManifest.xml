@@ -51,6 +51,12 @@
             android:theme="@style/MyMaterialTheme" />
         //------------------------------------------------------------------------------------------
         <activity
+            android:name=".PortfolioViewExpand"
+            android:label=""
+            android:theme="@style/MyMaterialTheme" />
+        //------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
+        <activity
             android:name=".StockInfo"
             android:label=""
             android:theme="@style/MyMaterialTheme" />

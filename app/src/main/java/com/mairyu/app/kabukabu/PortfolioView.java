@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -26,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
@@ -36,6 +38,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.mairyu.app.kabukabu.R.id.menu_refresh;
 import static com.mairyu.app.kabukabu.R.id.pager;
@@ -92,6 +97,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     float Basis;
     int Comission;
 
+    List<String> groupList;
+    List<String> childList;
+    Map<String, List<String>> laptopCollection;
+    ExpandableListView expListView;
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private String[] navigation;
@@ -115,6 +125,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.portfolio_view_pager);
+
+        createGroupList();
+
+        createCollection();
 
         //------------------------------------------------------------------------------------------
         //---   Get Card Details
@@ -225,6 +239,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             public void run() {
 
+                expListView = (ExpandableListView) findViewById(R.id.laptop_list);
+
+                final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(PortfolioView.this, groupList, laptopCollection);
+                expListView.setAdapter(expListAdapter);
+
                 //------------------------------------------------------------------------------------------
                 //---   Layout
                 //------------------------------------------------------------------------------------------
@@ -259,6 +278,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             }
         });
 
+
         //------------------------------------------------------------------------------------------
         //---   If cards are already loaded, show right away (wait until activity is stable)
         //------------------------------------------------------------------------------------------
@@ -279,6 +299,79 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 //            }
 //        });
     }
+
+    private void createGroupList() {
+        groupList = new ArrayList<String>();
+        groupList.add("HP");
+        groupList.add("Dell");
+        groupList.add("Lenovo");
+        groupList.add("Sony");
+        groupList.add("HCL");
+        groupList.add("Samsung");
+    }
+
+    private void createCollection() {
+        // preparing laptops collection(child)
+        String[] hpModels = { "HP Pavilion G6-2014TX", "ProBook HP 4540",
+                "HP Envy 4-1025TX" };
+        String[] hclModels = { "HCL S2101", "HCL L2102", "HCL V2002" };
+        String[] lenovoModels = { "IdeaPad Z Series", "Essential G Series",
+                "ThinkPad X Series", "Ideapad Z Series" };
+        String[] sonyModels = { "VAIO E Series", "VAIO Z Series",
+                "VAIO S Series", "VAIO YB Series" };
+        String[] dellModels = { "Inspiron", "Vostro", "XPS" };
+        String[] samsungModels = { "NP Series", "Series 5", "SF Series" };
+
+        laptopCollection = new LinkedHashMap<String, List<String>>();
+
+        for (String laptop : groupList) {
+            if (laptop.equals("HP")) {
+                loadChild(hpModels);
+            } else if (laptop.equals("Dell"))
+                loadChild(dellModels);
+            else if (laptop.equals("Sony"))
+                loadChild(sonyModels);
+            else if (laptop.equals("HCL"))
+                loadChild(hclModels);
+            else if (laptop.equals("Samsung"))
+                loadChild(samsungModels);
+            else
+                loadChild(lenovoModels);
+
+            laptopCollection.put(laptop, childList);
+        }
+    }
+
+    private void loadChild(String[] laptopModels) {
+        childList = new ArrayList<String>();
+        for (String model : laptopModels)
+            childList.add(model);
+    }
+
+    private void setGroupIndicatorToRight() {
+        /* Get the screen width */
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+
+        expListView.setIndicatorBounds(width - getDipsFromPixel(35), width
+                - getDipsFromPixel(5));
+    }
+
+    // Convert pixel to dip
+    public int getDipsFromPixel(float pixels) {
+        // Get the screen's density scale
+        final float scale = getResources().getDisplayMetrics().density;
+        // Convert the dps to pixels, based on density scale
+        return (int) (pixels * scale + 0.5f);
+    }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
 
     //**********************************************************************************************
     //***   Custom Array Adapter for PortfolioPage
