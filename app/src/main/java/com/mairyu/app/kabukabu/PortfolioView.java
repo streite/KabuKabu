@@ -54,6 +54,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     private ArrayList<Stock> allStocks = new ArrayList<>();
     private ArrayAdapter<Stock> adapterStocks;
+    private ExpandableListAdapter expListAdapter;
 
     private ListView listViewAllStocks;
 
@@ -125,10 +126,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.portfolio_view_pager);
-
-        createGroupList();
-
-        createCollection();
 
         //------------------------------------------------------------------------------------------
         //---   Get Card Details
@@ -239,9 +236,12 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             public void run() {
 
+                createGroupList();
+                createCollection();
+
                 expListView = (ExpandableListView) findViewById(R.id.laptop_list);
 
-                final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(PortfolioView.this, groupList, laptopCollection);
+                expListAdapter = new ExpandableListAdapter(PortfolioView.this, groupList, laptopCollection);
                 expListView.setAdapter(expListAdapter);
 
                 //------------------------------------------------------------------------------------------
@@ -277,30 +277,12 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 txtCategory.setText(Category+" ("+SQLDBSize+")");
             }
         });
-
-
-        //------------------------------------------------------------------------------------------
-        //---   If cards are already loaded, show right away (wait until activity is stable)
-        //------------------------------------------------------------------------------------------
-
-//        findViewById(R.id.rlv_portfolio_view).post(new Runnable() {
-//
-//            public void run() {
-//
-//                allStocks = sqlHandler.getStocksByCategory(Category);
-//
-//                adapterStocks = new CustomDatabaseAdapter();
-//                listViewAllStocks.setAdapter(adapterStocks);
-//
-//                SQLDBSize = allStocks.size();
-//
-//                TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
-//                txtCategory.setText(Category+" ("+SQLDBSize+")");
-//            }
-//        });
     }
 
     private void createGroupList() {
+
+        allStocks = sqlHandler.getStocksByCategory(Category);
+
         groupList = new ArrayList<String>();
         groupList.add("HP");
         groupList.add("Dell");
@@ -308,6 +290,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         groupList.add("Sony");
         groupList.add("HCL");
         groupList.add("Samsung");
+
+        for (Stock stock : allStocks) {
+            groupList.add(stock.getTicker());
+        }
     }
 
     private void createCollection() {
@@ -365,13 +351,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         // Convert the dps to pixels, based on density scale
         return (int) (pixels * scale + 0.5f);
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
 
     //**********************************************************************************************
     //***   Custom Array Adapter for PortfolioPage
@@ -687,7 +666,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 }
 
                 break;
-
         }
     }
 
@@ -791,7 +769,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         String SQLFileName = "0";
 
         //------------------------------------------------------------------------------------------
-        //---   Show active SQL DB
+        //---   Show active Category
         //------------------------------------------------------------------------------------------
 
         TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
@@ -799,7 +777,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         txtCategory.setTextColor(ContextCompat.getColor(this, R.color.colorGrey3));
 
         //------------------------------------------------------------------------------------------
-        //---   Touch SQL -> Training
+        //---   Touch header -> Category
         //------------------------------------------------------------------------------------------
         txtCategory.setOnTouchListener(new View.OnTouchListener() {
 
@@ -833,7 +811,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         int id = item.getItemId();
 
         //------------------------------------------------------------------------------------------
-        //---   Pull down 'Settings' Menu
+        //---   Refresh Quotes -> Call API
         //------------------------------------------------------------------------------------------
         if (id == menu_refresh) {
 
@@ -847,7 +825,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     }
 
     //**********************************************************************************************
-    //***
+    //***   Method: Collect all Ticker for single API call
     //**********************************************************************************************
     private ArrayList<String> grabTickers() {
 
@@ -864,7 +842,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     }
 
     //**********************************************************************************************
-    //***   onActivityResult (returning from Preferences)
+    //***   onActivityResult (returning from API call)
     //**********************************************************************************************
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -879,11 +857,13 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //------------------------------------------------------------------------------------------
             if (requestCode == REQUEST_INFO) {
 
-                allStocks = sqlHandler.getStocksByCategory(Category);
-
                 adapterStocks = new CustomDatabaseAdapter();
                 listViewAllStocks.setAdapter(adapterStocks);
                 adapterStocks.notifyDataSetChanged();
+
+                expListAdapter = new ExpandableListAdapter(PortfolioView.this, groupList, laptopCollection);
+                expListView.setAdapter(expListAdapter);
+                expListAdapter.notifyDataSetChanged();
             }
 
             //------------------------------------------------------------------------------------------
@@ -891,34 +871,16 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //------------------------------------------------------------------------------------------
             if (requestCode == REQUEST_YAHOO) {
 
-                allStocks = sqlHandler.getStocksByCategory(Category);
-
                 adapterStocks = new CustomDatabaseAdapter();
                 listViewAllStocks.setAdapter(adapterStocks);
                 adapterStocks.notifyDataSetChanged();
+
+                expListAdapter = new ExpandableListAdapter(PortfolioView.this, groupList, laptopCollection);
+                expListView.setAdapter(expListAdapter);
+                expListAdapter.notifyDataSetChanged();
             }
         }
     }
-
-
-    //**********************************************************************************************
-    //***   CustomOnItemSelectedListener (for Spinner)
-    //**********************************************************************************************
-//    public class CustomOnItemSelectedListener implements OnItemSelectedListener {
-//
-//        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//            Toast.makeText(parent.getContext(),
-//                    "OnItemSelectedListener : " + parent.getItemAtPosition(pos).toString(),
-//                    Toast.LENGTH_SHORT).show();
-//
-//            Google_Sheet = parent.getItemAtPosition(pos).toString();
-//        }
-//
-//        @Override
-//        public void onNothingSelected(AdapterView<?> arg0) {
-//            // TODO Auto-generated method stub
-//        }
-//    }
 
     //**********************************************************************************************
     //***   Method: Refresh Card Layout
@@ -947,5 +909,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
         txtCategory.setText(Category+" ("+SQLDBSize+")");
+
+        expListAdapter = new ExpandableListAdapter(PortfolioView.this, groupList, laptopCollection);
+        expListView.setAdapter(expListAdapter);
+        expListAdapter.notifyDataSetChanged();
     }
 }
