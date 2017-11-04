@@ -25,6 +25,8 @@ public class SQLhandler extends SQLiteOpenHelper {
     private static final String COLUMN_DATE = "date";
     private static final String COLUMN_COMMISSION = "commission";
     private static final String COLUMN_LEVERAGE = "leverage";
+    private static final String COLUMN_WATCH = "watch";
+
 
     //**********************************************************************************************
     //***   onCreate (is only run when the database file did not exist and was just created)
@@ -45,9 +47,10 @@ public class SQLhandler extends SQLiteOpenHelper {
                 + COLUMN_SHARES + " INTEGER, "
                 + COLUMN_BASIS + " REAL, "
                 + COLUMN_DATE + " TEXT, "
-                + COLUMN_COMMISSION + " INTEGER"
-                + COLUMN_LEVERAGE + " TEXT, " +
-        ")";
+                + COLUMN_COMMISSION + " INTEGER, "
+                + COLUMN_LEVERAGE + " TEXT, "
+                + COLUMN_WATCH + " INTEGER " +
+                ")";
 
         Log.i("LOG: (SQL) ", "onCreate");
 
@@ -97,6 +100,7 @@ public class SQLhandler extends SQLiteOpenHelper {
         values.put(COLUMN_DATE, stock.getDate());
         values.put(COLUMN_COMMISSION, stock.getCommission());
         values.put(COLUMN_LEVERAGE, stock.getLeverage());
+        values.put(COLUMN_WATCH, stock.getWatch());
 
         long ID = database.insert(TABLE_NAME, null, values);
 
@@ -119,7 +123,7 @@ public class SQLhandler extends SQLiteOpenHelper {
                 {COLUMN_ID, COLUMN_COMPANY,COLUMN_TICKER,COLUMN_PRICE,COLUMN_CHANGE,COLUMN_PERC_CHANGE,
                         COLUMN_CATEGORY,COLUMN_SUBCATEGORY,
                         COLUMN_SHARES,COLUMN_BASIS,COLUMN_DATE,
-                        COLUMN_COMMISSION,COLUMN_LEVERAGE},COLUMN_ID + "=?",
+                        COLUMN_COMMISSION,COLUMN_LEVERAGE,COLUMN_WATCH},COLUMN_ID + "=?",
                 new String [] {String.valueOf(id)},null,null,null);
 
         if (cursor != null) {
@@ -145,6 +149,7 @@ public class SQLhandler extends SQLiteOpenHelper {
         stock.setDate(cursor.getString(10));
         stock.setCommission(Integer.parseInt(cursor.getString(11)));
         stock.setLeverage(cursor.getString(12));
+        stock.setWatch(Integer.parseInt(cursor.getString(13)));
 
         return stock;
     }
@@ -186,6 +191,7 @@ public class SQLhandler extends SQLiteOpenHelper {
                 stock.setDate(cursor.getString(10));
                 stock.setCommission(Integer.parseInt(cursor.getString(11)));
                 stock.setLeverage(cursor.getString(12));
+                stock.setWatch(Integer.parseInt(cursor.getString(13)));
 
                 stockArrayList.add(stock);
 
@@ -232,6 +238,7 @@ public class SQLhandler extends SQLiteOpenHelper {
                 stock.setDate(cursor.getString(10));
                 stock.setCommission(Integer.parseInt(cursor.getString(11)));
                 stock.setLeverage(cursor.getString(12));
+                stock.setWatch(Integer.parseInt(cursor.getString(13)));
 
                 stockArrayList.add(stock);
 
@@ -282,6 +289,7 @@ public class SQLhandler extends SQLiteOpenHelper {
                 stock.setDate(cursor.getString(10));
                 stock.setCommission(Integer.parseInt(cursor.getString(11)));
                 stock.setLeverage(cursor.getString(12));
+                stock.setWatch(Integer.parseInt(cursor.getString(13)));
 
                 stockArrayList.add(stock);
 
@@ -311,6 +319,7 @@ public class SQLhandler extends SQLiteOpenHelper {
         values.put(COLUMN_DATE, stock.getDate());
         values.put(COLUMN_COMMISSION, stock.getCommission());
         values.put(COLUMN_LEVERAGE, stock.getLeverage());
+        values.put(COLUMN_WATCH, stock.getWatch());
 
         return database.update(TABLE_NAME, values, COLUMN_ID + " = ? ",new String[]{String.valueOf(stock.getId())});
     }

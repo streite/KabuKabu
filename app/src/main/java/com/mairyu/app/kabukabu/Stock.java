@@ -16,6 +16,7 @@ public class Stock  {
     private String Volume;
     private int Commission;
     private String Leverage;
+    private int Watch;
 
 
     public Stock() {
@@ -34,6 +35,7 @@ public class Stock  {
         Volume = "";
         Commission = 0;
         Leverage = "";
+        Watch = 0;
     }
 
     public int getId() {
@@ -146,5 +148,13 @@ public class Stock  {
 
     public void setLeverage(String leverage) {
         Leverage = leverage;
+    }
+
+    public int getWatch() {
+        return Watch;
+    }
+
+    public void setWatch(int watch) {
+        Watch = watch;
     }
 }

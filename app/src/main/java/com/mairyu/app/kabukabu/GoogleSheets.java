@@ -254,7 +254,7 @@ public class GoogleSheets extends AppCompatActivity {
 
                         Log.i("LOG: (GS) ASYNC-TRY", "Google API Background ... READ");
 
-                        range = sheetsRange + "!A1:H"+"1000";
+                        range = sheetsRange + "!A1:K"+"1000";
 
                         response = this.mService.spreadsheets().values().get(sheetsID, range).execute();
 
@@ -293,7 +293,7 @@ public class GoogleSheets extends AppCompatActivity {
                         Stock currentStock;
                         int stackSize = allStocks.size();
 
-                        range = sheetsTab + "!A1:H" + stackSize;
+                        range = sheetsTab + "!A1:K" + stackSize;
 
                         List<List<Object>> writeValues = new ArrayList<>();
 
@@ -310,11 +310,13 @@ public class GoogleSheets extends AppCompatActivity {
                             data.add(currentStock.getTicker());
                             data.add(currentStock.getPrice());
                             data.add(currentStock.getCategory());
+                            data.add(currentStock.getSubcategory());
                             data.add(currentStock.getShares());
                             data.add(currentStock.getBasis());
                             data.add(currentStock.getDate());
                             data.add(currentStock.getCommission());
-
+                            data.add(currentStock.getLeverage());
+                            data.add(currentStock.getWatch());
 
                             writeValues.add(data);
                         }
@@ -327,7 +329,7 @@ public class GoogleSheets extends AppCompatActivity {
                         Log.i("LOG: (GS) ASYNC-TRY", "WRITE - requestBody " + requestBody);
                         Log.i("LOG: (GS) ASYNC-TRY", "WRITE - writeValues " + writeValues);
 
-                        String clearRange = sheetsTab + "!A1:H" + 500;
+                        String clearRange = sheetsTab + "!A1:K" + 500;
                         ClearValuesRequest clearBody = new ClearValuesRequest();
                         Sheets.Spreadsheets.Values.Clear clearRequest =
                                 mService.spreadsheets().values().clear(sheetsID,clearRange,clearBody);
