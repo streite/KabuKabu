@@ -572,7 +572,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                         Stock newStock = new Stock();
 
                         newStock.setTicker(edtPortfolioTicker.getText().toString());
-                        newStock.setGroup(PortfolioCategory);
+                        newStock.setCategory(PortfolioCategory);
                         newStock.setShares(Integer.parseInt(edtPortfolioShares.getText().toString()));
                         newStock.setBasis(Float.parseFloat(edtPortfolioBasis.getText().toString()));
                         newStock.setCommission(Integer.parseInt(edtPortfolioComission.getText().toString()));

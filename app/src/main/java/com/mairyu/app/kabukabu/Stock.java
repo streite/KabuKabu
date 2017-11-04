@@ -8,24 +8,14 @@ public class Stock  {
     private float Price;
     private String Change;
     private String PercChange;
-    private String Group;
+    private String Category;
+    private String Subcategory;
     private int Shares;
     private float Basis;
     private String Date;
     private String Volume;
     private int Commission;
-
-//    TextView txtStockTicker;
-//    TextView txtStockPrice;
-
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.stock);
-//
-//        txtStockTicker = (TextView) findViewById(R.id.txtStockTicker);
-//        txtStockPrice = (TextView) findViewById(R.id.txtStockPrice);
-//    }
+    private String Leverage;
 
 
     public Stock() {
@@ -36,26 +26,15 @@ public class Stock  {
         Price = 0;
         Change = "";
         PercChange = "";
-        Group = "";
+        Category = "";
+        Subcategory = "";
         Shares = 0;
         Basis = 0;
         Date = "";
         Volume = "";
         Commission = 0;
+        Leverage = "";
     }
-
-//    public Stock(String company, String ticker, float price, String group, int shares, float basis, String date, int commission) {
-//
-//        id = 0;
-//        Company = company;
-//        Ticker = ticker;
-//        Price = price;
-//        Group = group;
-//        Shares = shares;
-//        Basis = basis;
-//        Date = date;
-//        Commission = commission;
-//    }
 
     public int getId() {
         return id;
@@ -105,12 +84,20 @@ public class Stock  {
         PercChange = percChange;
     }
 
-    public String getGroup() {
-        return Group;
+    public String getCategory() {
+        return Category;
     }
 
-    public void setGroup(String group) {
-        Group = group;
+    public void setCategory(String group) {
+        Category = group;
+    }
+
+    public String getSubcategory() {
+        return Subcategory;
+    }
+
+    public void setSubcategory(String subcategory) {
+        Subcategory = subcategory;
     }
 
     public int getShares() {
@@ -151,5 +138,13 @@ public class Stock  {
 
     public void setCommission(int commission) {
         Commission = commission;
+    }
+
+    public String getLeverage() {
+        return Leverage;
+    }
+
+    public void setLeverage(String leverage) {
+        Leverage = leverage;
     }
 }

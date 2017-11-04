@@ -426,7 +426,7 @@ public class WSJ extends AppCompatActivity implements View.OnClickListener {
                 Stock newStock = new Stock();
 
                 newStock.setTicker(currentStock.getTicker());
-                newStock.setGroup("WSJ_LOSER");
+                newStock.setCategory("WSJ_LOSER");
                 newStock.setShares(0);
                 newStock.setBasis(currentStock.getPrice());
                 newStock.setCommission(10);

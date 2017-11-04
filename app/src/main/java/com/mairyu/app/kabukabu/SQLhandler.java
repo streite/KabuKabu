@@ -19,10 +19,12 @@ public class SQLhandler extends SQLiteOpenHelper {
     private static final String COLUMN_CHANGE = "change";
     private static final String COLUMN_PERC_CHANGE = "perc_change";
     private static final String COLUMN_CATEGORY = "category";
+    private static final String COLUMN_SUBCATEGORY = "subcategory";
     private static final String COLUMN_SHARES = "shares";
     private static final String COLUMN_BASIS = "basis";
     private static final String COLUMN_DATE = "date";
     private static final String COLUMN_COMMISSION = "commission";
+    private static final String COLUMN_LEVERAGE = "leverage";
 
     //**********************************************************************************************
     //***   onCreate (is only run when the database file did not exist and was just created)
@@ -39,11 +41,13 @@ public class SQLhandler extends SQLiteOpenHelper {
                 + COLUMN_CHANGE + " TEXT, "
                 + COLUMN_PERC_CHANGE + " TEXT, "
                 + COLUMN_CATEGORY + " TEXT, "
+                + COLUMN_SUBCATEGORY + " TEXT, "
                 + COLUMN_SHARES + " INTEGER, "
                 + COLUMN_BASIS + " REAL, "
                 + COLUMN_DATE + " TEXT, "
-                + COLUMN_COMMISSION + " INTEGER" +
-                ")";
+                + COLUMN_COMMISSION + " INTEGER"
+                + COLUMN_LEVERAGE + " TEXT, " +
+        ")";
 
         Log.i("LOG: (SQL) ", "onCreate");
 
@@ -86,11 +90,13 @@ public class SQLhandler extends SQLiteOpenHelper {
         values.put(COLUMN_PRICE, stock.getPrice());
         values.put(COLUMN_CHANGE, stock.getChange());
         values.put(COLUMN_PERC_CHANGE, stock.getChangePerc());
-        values.put(COLUMN_CATEGORY, stock.getGroup());
+        values.put(COLUMN_CATEGORY, stock.getCategory());
+        values.put(COLUMN_SUBCATEGORY, stock.getSubcategory());
         values.put(COLUMN_SHARES, stock.getShares());
         values.put(COLUMN_BASIS, stock.getBasis());
         values.put(COLUMN_DATE, stock.getDate());
         values.put(COLUMN_COMMISSION, stock.getCommission());
+        values.put(COLUMN_LEVERAGE, stock.getLeverage());
 
         long ID = database.insert(TABLE_NAME, null, values);
 
@@ -110,9 +116,10 @@ public class SQLhandler extends SQLiteOpenHelper {
         //---   Query from SQL
         //------------------------------------------------------------------------------------------
         Cursor cursor = database.query(TABLE_NAME, new String[]
-                {COLUMN_ID, COLUMN_COMPANY,COLUMN_TICKER,COLUMN_PRICE,COLUMN_CHANGE,COLUMN_PERC_CHANGE,COLUMN_CATEGORY,
+                {COLUMN_ID, COLUMN_COMPANY,COLUMN_TICKER,COLUMN_PRICE,COLUMN_CHANGE,COLUMN_PERC_CHANGE,
+                        COLUMN_CATEGORY,COLUMN_SUBCATEGORY,
                         COLUMN_SHARES,COLUMN_BASIS,COLUMN_DATE,
-                        COLUMN_COMMISSION},COLUMN_ID + "=?",
+                        COLUMN_COMMISSION,COLUMN_LEVERAGE},COLUMN_ID + "=?",
                 new String [] {String.valueOf(id)},null,null,null);
 
         if (cursor != null) {
@@ -131,11 +138,13 @@ public class SQLhandler extends SQLiteOpenHelper {
         stock.setPrice(Float.parseFloat(cursor.getString(3)));
         stock.setChange(cursor.getString(4));
         stock.setPercChange(cursor.getString(5));
-        stock.setGroup(cursor.getString(6));
-        stock.setShares(Integer.parseInt(cursor.getString(7)));
-        stock.setBasis(Float.parseFloat(cursor.getString(8)));
-        stock.setDate(cursor.getString(9));
-        stock.setCommission(Integer.parseInt(cursor.getString(10)));
+        stock.setCategory(cursor.getString(6));
+        stock.setSubcategory(cursor.getString(7));
+        stock.setShares(Integer.parseInt(cursor.getString(8)));
+        stock.setBasis(Float.parseFloat(cursor.getString(9)));
+        stock.setDate(cursor.getString(10));
+        stock.setCommission(Integer.parseInt(cursor.getString(11)));
+        stock.setLeverage(cursor.getString(12));
 
         return stock;
     }
@@ -170,11 +179,13 @@ public class SQLhandler extends SQLiteOpenHelper {
                 stock.setPrice(Float.parseFloat(cursor.getString(3)));
                 stock.setChange(cursor.getString(4));
                 stock.setPercChange(cursor.getString(5));
-                stock.setGroup(cursor.getString(6));
-                stock.setShares(Integer.parseInt(cursor.getString(7)));
-                stock.setBasis(Float.parseFloat(cursor.getString(8)));
-                stock.setDate(cursor.getString(9));
-                stock.setCommission(Integer.parseInt(cursor.getString(10)));
+                stock.setCategory(cursor.getString(6));
+                stock.setSubcategory(cursor.getString(7));
+                stock.setShares(Integer.parseInt(cursor.getString(8)));
+                stock.setBasis(Float.parseFloat(cursor.getString(9)));
+                stock.setDate(cursor.getString(10));
+                stock.setCommission(Integer.parseInt(cursor.getString(11)));
+                stock.setLeverage(cursor.getString(12));
 
                 stockArrayList.add(stock);
 
@@ -214,11 +225,13 @@ public class SQLhandler extends SQLiteOpenHelper {
                 stock.setPrice(Float.parseFloat(cursor.getString(3)));
                 stock.setChange(cursor.getString(4));
                 stock.setPercChange(cursor.getString(5));
-                stock.setGroup(cursor.getString(6));
-                stock.setShares(Integer.parseInt(cursor.getString(7)));
-                stock.setBasis(Float.parseFloat(cursor.getString(8)));
-                stock.setDate(cursor.getString(9));
-                stock.setCommission(Integer.parseInt(cursor.getString(10)));
+                stock.setCategory(cursor.getString(6));
+                stock.setSubcategory(cursor.getString(7));
+                stock.setShares(Integer.parseInt(cursor.getString(8)));
+                stock.setBasis(Float.parseFloat(cursor.getString(9)));
+                stock.setDate(cursor.getString(10));
+                stock.setCommission(Integer.parseInt(cursor.getString(11)));
+                stock.setLeverage(cursor.getString(12));
 
                 stockArrayList.add(stock);
 
@@ -262,11 +275,13 @@ public class SQLhandler extends SQLiteOpenHelper {
                 stock.setPrice(Float.parseFloat(cursor.getString(3)));
                 stock.setChange(cursor.getString(4));
                 stock.setPercChange(cursor.getString(5));
-                stock.setGroup(cursor.getString(6));
-                stock.setShares(Integer.parseInt(cursor.getString(7)));
-                stock.setBasis(Float.parseFloat(cursor.getString(8)));
-                stock.setDate(cursor.getString(9));
-                stock.setCommission(Integer.parseInt(cursor.getString(10)));
+                stock.setCategory(cursor.getString(6));
+                stock.setSubcategory(cursor.getString(7));
+                stock.setShares(Integer.parseInt(cursor.getString(8)));
+                stock.setBasis(Float.parseFloat(cursor.getString(9)));
+                stock.setDate(cursor.getString(10));
+                stock.setCommission(Integer.parseInt(cursor.getString(11)));
+                stock.setLeverage(cursor.getString(12));
 
                 stockArrayList.add(stock);
 
@@ -289,11 +304,13 @@ public class SQLhandler extends SQLiteOpenHelper {
         values.put(COLUMN_PRICE, stock.getPrice());
         values.put(COLUMN_CHANGE, stock.getChange());
         values.put(COLUMN_PERC_CHANGE, stock.getChangePerc());
-        values.put(COLUMN_CATEGORY, stock.getGroup());
+        values.put(COLUMN_CATEGORY, stock.getCategory());
+        values.put(COLUMN_SUBCATEGORY, stock.getSubcategory());
         values.put(COLUMN_SHARES, stock.getShares());
         values.put(COLUMN_BASIS, stock.getBasis());
         values.put(COLUMN_DATE, stock.getDate());
         values.put(COLUMN_COMMISSION, stock.getCommission());
+        values.put(COLUMN_LEVERAGE, stock.getLeverage());
 
         return database.update(TABLE_NAME, values, COLUMN_ID + " = ? ",new String[]{String.valueOf(stock.getId())});
     }

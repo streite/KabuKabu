@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     List<String> childList;
     Map<String, List<String>> laptopCollection;
 
-    String Google_Sheet = "TECH";
+    String Google_Sheet = "PORTFOLIO";
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;

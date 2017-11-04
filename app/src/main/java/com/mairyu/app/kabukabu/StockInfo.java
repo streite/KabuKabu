@@ -169,7 +169,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
 //        adapter.setDropDownViewResource(android.R.layout.spinner_drop_down);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
-        spinner.setSelection(Arrays.asList(CategoryArray).indexOf(tmpStock.getGroup()));
+        spinner.setSelection(Arrays.asList(CategoryArray).indexOf(tmpStock.getCategory()));
 
         return true;
     }
@@ -204,7 +204,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
             tmpStock.setShares(Integer.parseInt(edtStockInfoShares.getText().toString()));
             tmpStock.setBasis(Float.parseFloat(edtStockInfoBasis.getText().toString()));
             tmpStock.setCommission(Integer.parseInt(edtStockInfoComission.getText().toString()));
-            tmpStock.setGroup(PortfolioCategory);
+            tmpStock.setCategory(PortfolioCategory);
 
             sqlHandler.updateStock(tmpStock);
 

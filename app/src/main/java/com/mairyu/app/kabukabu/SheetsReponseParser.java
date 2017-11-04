@@ -44,7 +44,7 @@ public class SheetsReponseParser {
             sheetStock.setCompany(ListObject.get(0).toString());
             sheetStock.setTicker(ListObject.get(1).toString());
             sheetStock.setPrice(Float.parseFloat(ListObject.get(2).toString()));
-            sheetStock.setGroup(ListObject.get(3).toString());
+            sheetStock.setCategory(ListObject.get(3).toString());
             sheetStock.setShares(Integer.parseInt(ListObject.get(4).toString()));
             sheetStock.setBasis(Float.parseFloat(ListObject.get(5).toString()));
             sheetStock.setDate(ListObject.get(6).toString());

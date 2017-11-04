@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 public class PreferenceSettings extends AppCompatActivity {
 
     public static final String SQL_FILE_NAME = "KabuKabu.db";
-    public static final String SQL_VERSION = "5";
+    public static final String SQL_VERSION = "6";
 
     private static final String APP_SHARED_PREFS = PreferenceSettings.class.getSimpleName(); //  Name of the file -.xml
 
@@ -47,7 +47,7 @@ public class PreferenceSettings extends AppCompatActivity {
 
     public String getSQLStockDBVersion() {
 
-        return _sharedPrefs.getString(SQL_VERSION, "5");
+        return _sharedPrefs.getString(SQL_VERSION, "6");
     }
 
     public void setSQLStockDBVersion(String text) {

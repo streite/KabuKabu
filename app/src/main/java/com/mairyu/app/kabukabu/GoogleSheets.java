@@ -309,7 +309,7 @@ public class GoogleSheets extends AppCompatActivity {
                             data.add(currentStock.getCompany());
                             data.add(currentStock.getTicker());
                             data.add(currentStock.getPrice());
-                            data.add(currentStock.getGroup());
+                            data.add(currentStock.getCategory());
                             data.add(currentStock.getShares());
                             data.add(currentStock.getBasis());
                             data.add(currentStock.getDate());
