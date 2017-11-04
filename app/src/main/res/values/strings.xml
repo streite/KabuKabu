@@ -5,9 +5,9 @@
     <string name="action_search">Search</string>
 
     <string-array name="categories">
+        <item>INDEX ETF</item>
         <item>REGION ETF</item>
         <item>COMMODITY ETF</item>
-        <item>INDEX ETF</item>
         <item>OTHER ETF</item>
         <item>TECH</item>
         <item>FINANCE</item>

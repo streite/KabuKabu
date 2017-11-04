@@ -249,6 +249,53 @@ public class SQLhandler extends SQLiteOpenHelper {
     }
 
     //**********************************************************************************************
+    //***   METHOD: Retrieve all Stocks from a Subcategory
+    //**********************************************************************************************
+    public ArrayList<Stock> getStocksBySubcategory(String Subcategory) {
+
+        String selectAllQuery;
+
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        ArrayList<Stock> stockArrayList = new ArrayList<>();
+
+        selectAllQuery = "Select * FROM " + TABLE_NAME + " WHERE " + COLUMN_SUBCATEGORY + " =  \"" + Subcategory + "\"";
+
+        Cursor cursor = database.rawQuery(selectAllQuery, null);
+
+        if (cursor.moveToFirst()) {
+
+            do {
+
+                Stock stock = new Stock();
+
+                //----------------------------------------------------------------------------------
+                //---   Copy SQL to flashcard
+                //----------------------------------------------------------------------------------
+                stock.setId(Integer.parseInt(cursor.getString(0)));
+                stock.setCompany(cursor.getString(1));
+                stock.setTicker(cursor.getString(2));
+                stock.setPrice(Float.parseFloat(cursor.getString(3)));
+                stock.setChange(cursor.getString(4));
+                stock.setPercChange(cursor.getString(5));
+                stock.setCategory(cursor.getString(6));
+                stock.setSubcategory(cursor.getString(7));
+                stock.setShares(Integer.parseInt(cursor.getString(8)));
+                stock.setBasis(Float.parseFloat(cursor.getString(9)));
+                stock.setDate(cursor.getString(10));
+                stock.setCommission(Integer.parseInt(cursor.getString(11)));
+                stock.setLeverage(cursor.getString(12));
+                stock.setWatch(Integer.parseInt(cursor.getString(13)));
+
+                stockArrayList.add(stock);
+
+            } while (cursor.moveToNext());
+        }
+
+        return stockArrayList;
+    }
+
+    //**********************************************************************************************
     //***   METHOD: Retrieve all flashcards from SQL
     //**********************************************************************************************
     public ArrayList<Stock> getAllStocks(boolean random){

@@ -53,6 +53,8 @@ import static java.lang.StrictMath.abs;
 public class PortfolioView extends AppCompatActivity implements View.OnClickListener {
 
     private ArrayList<Stock> allStocks = new ArrayList<>();
+    private ArrayList<String> allSubcategories = new ArrayList<>();
+
     private ArrayAdapter<Stock> adapterStocks;
     private ExpandableListAdapter expListAdapter;
 
@@ -103,6 +105,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     Map<String, List<String>> laptopCollection;
     ExpandableListView expListView;
 
+    Map<String, String> SubcategoryMap = new HashMap<>();
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private String[] navigation;
@@ -126,6 +130,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.portfolio_view_pager);
+
+        SubcategoryMap.put("INDEX ETF", "DOW,NASDAQ,S&P");
+//        System.out.println(map.get(1)); // prints Foo
 
         //------------------------------------------------------------------------------------------
         //---   Get Card Details
@@ -279,20 +286,27 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    //------------------------------------------------------------------------------------------
+    //---
+    //------------------------------------------------------------------------------------------
+
     private void createGroupList() {
 
         allStocks = sqlHandler.getStocksByCategory(Category);
 
         groupList = new ArrayList<String>();
-        groupList.add("HP");
-        groupList.add("Dell");
-        groupList.add("Lenovo");
-        groupList.add("Sony");
-        groupList.add("HCL");
-        groupList.add("Samsung");
 
-        for (Stock stock : allStocks) {
-            groupList.add(stock.getTicker());
+        CategoryArray = SubcategoryMap.get(Category).split(",");
+
+//        groupList.add("HP");
+//        groupList.add("Dell");
+//        groupList.add("Lenovo");
+//        groupList.add("Sony");
+//        groupList.add("HCL");
+//        groupList.add("Samsung");
+
+        for (String c : CategoryArray) {
+            groupList.add(c);
         }
     }
 
