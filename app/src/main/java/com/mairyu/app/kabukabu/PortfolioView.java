@@ -13,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -287,9 +286,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     }
 
     //------------------------------------------------------------------------------------------
-    //---
+    //---   Create list of groups names
     //------------------------------------------------------------------------------------------
-
     private void createGroupList() {
 
         allStocks = sqlHandler.getStocksByCategory(Category);
@@ -310,6 +308,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    //------------------------------------------------------------------------------------------
+    //---   Create collection of subgroups
+    //------------------------------------------------------------------------------------------
     private void createCollection() {
         // preparing laptops collection(child)
         String[] hpModels = { "HP Pavilion G6-2014TX", "ProBook HP 4540",
@@ -324,19 +325,34 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         laptopCollection = new LinkedHashMap<String, List<String>>();
 
+
         for (String laptop : groupList) {
-            if (laptop.equals("HP")) {
-                loadChild(hpModels);
-            } else if (laptop.equals("Dell"))
-                loadChild(dellModels);
-            else if (laptop.equals("Sony"))
-                loadChild(sonyModels);
-            else if (laptop.equals("HCL"))
-                loadChild(hclModels);
-            else if (laptop.equals("Samsung"))
-                loadChild(samsungModels);
-            else
-                loadChild(lenovoModels);
+
+            allStocks = sqlHandler.getStocksBySubcategory(laptop);
+
+            String[] tmpList = new String[allStocks.size()];
+
+            for (int i = 0;i < allStocks.size();i++) {
+
+                Stock tmpStock = allStocks.get(i);
+
+                tmpList[i] = tmpStock.getTicker();
+
+//                if (laptop.equals("HP")) {
+//                    loadChild(hpModels);
+//                } else if (laptop.equals("Dell"))
+//                    loadChild(dellModels);
+//                else if (laptop.equals("Sony"))
+//                    loadChild(sonyModels);
+//                else if (laptop.equals("HCL"))
+//                    loadChild(hclModels);
+//                else if (laptop.equals("Samsung"))
+//                    loadChild(samsungModels);
+//                else
+//                    loadChild(lenovoModels);
+            }
+
+            loadChild(tmpList);
 
             laptopCollection.put(laptop, childList);
         }
@@ -348,23 +364,23 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             childList.add(model);
     }
 
-    private void setGroupIndicatorToRight() {
-        /* Get the screen width */
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int width = dm.widthPixels;
+//    private void setGroupIndicatorToRight() {
+//        /* Get the screen width */
+//        DisplayMetrics dm = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(dm);
+//        int width = dm.widthPixels;
+//
+//        expListView.setIndicatorBounds(width - getDipsFromPixel(35), width
+//                - getDipsFromPixel(5));
+//    }
 
-        expListView.setIndicatorBounds(width - getDipsFromPixel(35), width
-                - getDipsFromPixel(5));
-    }
-
-    // Convert pixel to dip
-    public int getDipsFromPixel(float pixels) {
-        // Get the screen's density scale
-        final float scale = getResources().getDisplayMetrics().density;
-        // Convert the dps to pixels, based on density scale
-        return (int) (pixels * scale + 0.5f);
-    }
+//    // Convert pixel to dip
+//    public int getDipsFromPixel(float pixels) {
+//        // Get the screen's density scale
+//        final float scale = getResources().getDisplayMetrics().density;
+//        // Convert the dps to pixels, based on density scale
+//        return (int) (pixels * scale + 0.5f);
+//    }
 
     //**********************************************************************************************
     //***   Custom Array Adapter for PortfolioPage

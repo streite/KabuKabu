@@ -2,7 +2,6 @@ package com.mairyu.app.kabukabu;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +17,19 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         private Map<String, List<String>> laptopCollections;
         private List<String> laptops;
 
-        public ExpandableListAdapter(Activity context, List<String> laptops,
-                                     Map<String, List<String>> laptopCollections) {
+        //------------------------------------------------------------------------------------------
+        //---   Constructor
+        //------------------------------------------------------------------------------------------
+        public ExpandableListAdapter(Activity context, List<String> laptops,Map<String, List<String>> laptopCollections) {
+
                 this.context = context;
                 this.laptopCollections = laptopCollections;
                 this.laptops = laptops;
         }
 
+        //------------------------------------------------------------------------------------------
+        //---   Constructor
+        //------------------------------------------------------------------------------------------
         public Object getChild(int groupPosition, int childPosition) {
                 return laptopCollections.get(laptops.get(groupPosition)).get(childPosition);
         }
@@ -34,6 +39,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
 
+        //------------------------------------------------------------------------------------------
+        //---   Constructor
+        //------------------------------------------------------------------------------------------
         public View getChildView(final int groupPosition, final int childPosition,
                                  boolean isLastChild, View convertView, ViewGroup parent) {
                 final String laptop = (String) getChild(groupPosition, childPosition);
@@ -43,7 +51,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         convertView = inflater.inflate(R.layout.child_item, null);
                 }
 
-                TextView item = (TextView) convertView.findViewById(R.id.laptop);
+                TextView item = (TextView) convertView.findViewById(R.id.portfolioListViewTicker);
 
                 item.setText(laptop);
                 return convertView;
@@ -65,17 +73,16 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 return groupPosition;
         }
 
-        public View getGroupView(int groupPosition, boolean isExpanded,
-                                 View convertView, ViewGroup parent) {
+        public View getGroupView(int groupPosition, boolean isExpanded,View convertView, ViewGroup parent) {
+
                 String laptopName = (String) getGroup(groupPosition);
                 if (convertView == null) {
                         LayoutInflater infalInflater = (LayoutInflater) context
                                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        convertView = infalInflater.inflate(R.layout.group_item,
-                                null);
+                        convertView = infalInflater.inflate(R.layout.group_item,null);
                 }
-                TextView item = (TextView) convertView.findViewById(R.id.laptop);
-                item.setTypeface(null, Typeface.BOLD);
+                TextView item = (TextView) convertView.findViewById(R.id.portfolioListViewGroupName);
+//                item.setTypeface(null, Typeface.BOLD);
                 item.setText(laptopName);
                 return convertView;
         }
