@@ -24,8 +24,8 @@
     </string-array>
 
     <string-array name="navigation">
-        <item>Main</item>
         <item>Google Sheets</item>
+        <item>Main</item>
         <item>WSJ</item>
         <item>Setting</item>
     </string-array>

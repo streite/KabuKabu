@@ -1,6 +1,7 @@
 package com.mairyu.app.kabukabu;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -56,8 +58,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     private ArrayAdapter<Stock> adapterStocks;
     private ExpandableListAdapter expListAdapter;
-
-    private ListView listViewAllStocks;
 
     EditText edtPortfolioTicker;
     EditText edtPortfolioShares;
@@ -130,7 +130,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.portfolio_view_pager);
 
-        SubcategoryMap.put("INDEX ETF", "DOW,NASDAQ,S&P");
+        SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P");
+        SubcategoryMap.put("REGION ETF","ASIA,EUROPE,OTHER");
+        SubcategoryMap.put("TECH","MISC");
+        SubcategoryMap.put("MUTUAL","GEO,COM,MISC");
+
 //        System.out.println(map.get(1)); // prints Foo
 
         //------------------------------------------------------------------------------------------
@@ -254,10 +258,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 //---   Layout
                 //------------------------------------------------------------------------------------------
 
-                listViewAllStocks = (ListView) findViewById(R.id.listViewAllStocks);
-
-                registerForContextMenu(listViewAllStocks);
-
                 btnPortfolioAdd = (Button) findViewById(R.id.btnPortfolioAdd);
                 btnPortfolioAdd.setOnClickListener(PortfolioView.this);
 
@@ -274,8 +274,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 allStocks = sqlHandler.getStocksByCategory(Category);
 
-                adapterStocks = new CustomDatabaseAdapter();
-                listViewAllStocks.setAdapter(adapterStocks);
+//                adapterStocks = new CustomDatabaseAdapter();
+//                listViewAllStocks.setAdapter(adapterStocks);
 
                 SQLDBSize = allStocks.size();
 
@@ -324,7 +324,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         String[] samsungModels = { "NP Series", "Series 5", "SF Series" };
 
         laptopCollection = new LinkedHashMap<String, List<String>>();
-
 
         for (String laptop : groupList) {
 
@@ -381,6 +380,180 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 //        // Convert the dps to pixels, based on density scale
 //        return (int) (pixels * scale + 0.5f);
 //    }
+
+    //**********************************************************************************************
+    //***   Custom Expandable Adapter for PortfolioPage
+    //**********************************************************************************************
+
+    private class ExpandableListAdapter extends BaseExpandableListAdapter {
+
+        private Activity context;
+        private Map<String, List<String>> laptopCollections;
+        private List<String> laptops;
+
+        //------------------------------------------------------------------------------------------
+        //---   Constructor
+        //------------------------------------------------------------------------------------------
+        public ExpandableListAdapter(Activity context, List<String> laptops,Map<String, List<String>> laptopCollections) {
+
+            this.context = context;
+            this.laptopCollections = laptopCollections;
+            this.laptops = laptops;
+        }
+
+        //------------------------------------------------------------------------------------------
+        //---   Constructor
+        //------------------------------------------------------------------------------------------
+        public Object getChild(int groupPosition, int childPosition) {
+            return laptopCollections.get(laptops.get(groupPosition)).get(childPosition);
+        }
+
+        public long getChildId(int groupPosition, int childPosition) {
+            return childPosition;
+        }
+
+
+        //------------------------------------------------------------------------------------------
+        //---   Child View (stock Info)
+        //------------------------------------------------------------------------------------------
+        public View getChildView(final int groupPosition, final int childPosition,boolean isLastChild,
+                                 View convertView, ViewGroup parent) {
+
+            final String Ticker = (String) getChild(groupPosition, childPosition);
+
+            LayoutInflater inflater = context.getLayoutInflater();
+
+            if (convertView == null) {
+                convertView = inflater.inflate(R.layout.child_item, null);
+            }
+
+            TextView itemView = (TextView) convertView.findViewById(R.id.portfolioListViewTicker);
+
+            itemView.setText(Ticker);
+
+
+
+
+
+
+            String SubCategory = laptops.get(groupPosition);
+
+            allStocks = sqlHandler.getStocksBySubcategory(SubCategory);
+
+            Stock currentStock = allStocks.get(childPosition);
+
+            DecimalFormat df1 = new DecimalFormat("#.#");
+            DecimalFormat df2 = new DecimalFormat("#.##");
+
+            Price = currentStock.getPrice();
+            Shares = currentStock.getShares();
+            ChangePerc = currentStock.getChangePerc();
+            Basis = currentStock.getBasis();
+            Comission = currentStock.getCommission();
+
+            //--------------------------------------------------------------------------------------
+            //---   Ticker
+            //------------------------------------------------------------------------------------------
+            TextView menuOption = (TextView) convertView.findViewById(R.id.portfolioListViewTicker);
+            menuOption.setText(currentStock.getTicker());
+            //--------------------------------------------------------------------------------------
+            //---   Price
+            //------------------------------------------------------------------------------------------
+            menuOption = (TextView) convertView.findViewById(R.id.portfolioListViewPrice);
+            String PriceFormat = String.format("%.02f", currentStock.getPrice());
+            menuOption.setText(PriceFormat);
+            //--------------------------------------------------------------------------------------
+            //---   Change (Percentage)
+            //------------------------------------------------------------------------------------------
+            portfolioListViewChangePerc = (TextView) convertView.findViewById(R.id.portfolioListViewChangePerc);
+            if (currentStock.getChangePerc().contains("+")) {
+                portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
+            } else {
+                portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+            }
+            ChangePerc = ChangePerc.replace("%", "");
+            if (ChangePerc.equals("")) {
+//                portfolioListViewChangePerc.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
+            } else {
+                String ChangePercFormat = String.format("%.02f", Float.parseFloat(ChangePerc));
+                portfolioListViewChangePerc.setText(ChangePercFormat + "%");
+            }
+            //--------------------------------------------------------------------------------------
+            //---   Gain/Loss
+            //--------------------------------------------------------------------------------------
+            menuOption = (TextView) convertView.findViewById(R.id.portfolioListViewGainLoss);
+            GainLoss = ((Price - Basis) * Shares) - Comission;
+            if (GainLoss >= 0) {
+                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
+            } else {
+                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+            }
+            String GainLossFormat = String.format("%.02f", GainLoss);
+            if (Shares < 1) {
+                menuOption.setText("----");
+            } else {
+                menuOption.setText(GainLossFormat);
+            }
+            //------------------------------------------------------------------------------------------
+            menuOption = (TextView) convertView.findViewById(R.id.portfolioListViewGainLossPerc);
+            if (Basis == 0) {
+                menuOption.setText("---");
+            } else {
+                if (Shares < 1) {
+                    GainLossPerc = ((Price - Basis) * 100) / Basis;
+                } else {
+                    GainLossPerc = (GainLoss * 100) / (Basis * Shares);
+                }
+                if (GainLossPerc >= 0) {
+                    menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
+                } else {
+                    menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+                }
+                String GainLossPercFormat = String.format("%.02f", GainLossPerc);
+                menuOption.setText(GainLossPercFormat + "%");
+            }
+
+            return convertView;
+        }
+
+        public int getChildrenCount(int groupPosition) {
+            return laptopCollections.get(laptops.get(groupPosition)).size();
+        }
+
+        public Object getGroup(int groupPosition) {
+            return laptops.get(groupPosition);
+        }
+
+        public int getGroupCount() {
+            return laptops.size();
+        }
+
+        public long getGroupId(int groupPosition) {
+            return groupPosition;
+        }
+
+        public View getGroupView(int groupPosition, boolean isExpanded,View convertView, ViewGroup parent) {
+
+            String laptopName = (String) getGroup(groupPosition);
+            if (convertView == null) {
+                LayoutInflater infalInflater = (LayoutInflater) context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = infalInflater.inflate(R.layout.group_item,null);
+            }
+            TextView item = (TextView) convertView.findViewById(R.id.portfolioListViewGroupName);
+//                item.setTypeface(null, Typeface.BOLD);
+            item.setText(laptopName);
+            return convertView;
+        }
+
+        public boolean hasStableIds() {
+            return true;
+        }
+
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
+            return true;
+        }
+    }
 
     //**********************************************************************************************
     //***   Custom Array Adapter for PortfolioPage
@@ -887,10 +1060,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //------------------------------------------------------------------------------------------
             if (requestCode == REQUEST_INFO) {
 
-                adapterStocks = new CustomDatabaseAdapter();
-                listViewAllStocks.setAdapter(adapterStocks);
-                adapterStocks.notifyDataSetChanged();
-
                 expListAdapter = new ExpandableListAdapter(PortfolioView.this, groupList, laptopCollection);
                 expListView.setAdapter(expListAdapter);
                 expListAdapter.notifyDataSetChanged();
@@ -900,10 +1069,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //---   Return from YAHOO
             //------------------------------------------------------------------------------------------
             if (requestCode == REQUEST_YAHOO) {
-
-                adapterStocks = new CustomDatabaseAdapter();
-                listViewAllStocks.setAdapter(adapterStocks);
-                adapterStocks.notifyDataSetChanged();
 
                 expListAdapter = new ExpandableListAdapter(PortfolioView.this, groupList, laptopCollection);
                 expListView.setAdapter(expListAdapter);
@@ -921,7 +1086,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   Layout
         //------------------------------------------------------------------------------------------
 
-        listViewAllStocks = (ListView) view.findViewById(R.id.listViewAllStocks);
+//        listViewAllStocks = (ListView) view.findViewById(listViewAllStocks);
     }
 
     //**********************************************************************************************
@@ -930,10 +1095,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     private void refreshCard () {
 
         allStocks = sqlHandler.getStocksByCategory(Category);
-
-        adapterStocks = new CustomDatabaseAdapter();
-        listViewAllStocks.setAdapter(adapterStocks);
-        adapterStocks.notifyDataSetChanged();
 
         SQLDBSize = allStocks.size();
 
