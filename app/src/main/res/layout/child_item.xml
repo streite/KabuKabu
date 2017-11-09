@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:id="@+id/child_item_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
      
@@ -9,9 +10,8 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_weight="20"
-        android:background="@drawable/gradient_light_grey_bg"
         android:paddingBottom="5dp"
-        android:paddingLeft="25dp"
+        android:paddingLeft="35dp"
         android:paddingTop="5dp"
         android:text="TICKER"
         android:textColor="@color/colorGrey1"

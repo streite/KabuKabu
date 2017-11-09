@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
@@ -31,9 +32,9 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     private ArrayAdapter<Stock> adapterStocks;
     private ExpandableListAdapter expListAdapter;
+    private ArrayAdapter<String> Portfolio_SubCategory_Adapter;
 
     EditText edtPortfolioTicker;
     EditText edtPortfolioShares;
@@ -75,8 +77,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     private Toolbar mToolbar;
 
     private Spinner Portfolio_Spinner;
+    private Spinner Portfolio_SubCategory_Spinner;
 
     private String[] CategoryArray;
+    private String[] SubCategoryArray;
 
     private PreferenceSettings _appPrefs;
 
@@ -90,6 +94,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     int SQLDBSize;
     String Category;
     String PortfolioCategory;
+    String PortfolioSubCategory;
 
     float Price;
     int Shares;
@@ -294,7 +299,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         groupList = new ArrayList<String>();
 
-        CategoryArray = SubcategoryMap.get(Category).split(",");
+        SubCategoryArray = SubcategoryMap.get(Category).split(",");
 
 //        groupList.add("HP");
 //        groupList.add("Dell");
@@ -303,7 +308,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 //        groupList.add("HCL");
 //        groupList.add("Samsung");
 
-        for (String c : CategoryArray) {
+        for (String c : SubCategoryArray) {
             groupList.add(c);
         }
     }
@@ -391,6 +396,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         private Map<String, List<String>> laptopCollections;
         private List<String> laptops;
 
+        private int lastExpandedGroupPosition = -1;
+
         //------------------------------------------------------------------------------------------
         //---   Constructor
         //------------------------------------------------------------------------------------------
@@ -401,6 +408,20 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             this.laptops = laptops;
         }
 
+        //------------------------------------------------------------------------------------------
+        //---   Collapse last group, when new group is expanded
+        //------------------------------------------------------------------------------------------
+        @Override
+        public void onGroupExpanded(int groupPosition){
+            //collapse the old expanded group, if not the same
+            //as new group to expand
+            if(groupPosition != lastExpandedGroupPosition){
+                expListView.collapseGroup(lastExpandedGroupPosition);
+            }
+
+            super.onGroupExpanded(groupPosition);
+            lastExpandedGroupPosition = groupPosition;
+        }
         //------------------------------------------------------------------------------------------
         //---   Constructor
         //------------------------------------------------------------------------------------------
@@ -426,6 +447,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.child_item, null);
             }
+
+            RelativeLayout rlhDataBase = (RelativeLayout) convertView.findViewById(R.id.child_item_view);
+            rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_light_grey_bg, null));
 
             TextView itemView = (TextView) convertView.findViewById(R.id.portfolioListViewTicker);
 
@@ -532,17 +556,28 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             return groupPosition;
         }
 
+        //------------------------------------------------------------------------------------------
+        //---   Group View (stock Info)
+        //------------------------------------------------------------------------------------------
         public View getGroupView(int groupPosition, boolean isExpanded,View convertView, ViewGroup parent) {
 
             String laptopName = (String) getGroup(groupPosition);
+
             if (convertView == null) {
-                LayoutInflater infalInflater = (LayoutInflater) context
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = infalInflater.inflate(R.layout.group_item,null);
             }
+
+            RelativeLayout rlhDataBase = (RelativeLayout) convertView.findViewById(R.id.group_item_view);
+            rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_dark_grey_bg, null));
+
             TextView item = (TextView) convertView.findViewById(R.id.portfolioListViewGroupName);
+
 //                item.setTypeface(null, Typeface.BOLD);
+
             item.setText(laptopName);
+
             return convertView;
         }
 
@@ -736,6 +771,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 // otherwise Keyboard doesn't pop up
                 popupWindow.setFocusable(true);
+//                popupWindow.update();
 
                 popupWindow.showAtLocation(findViewById(R.id.rlv_portfolio_view_pager),
                         Gravity.CENTER, SQL_POPUP_GRAVITY_X, SQL_POPUP_GRAVITY_Y);
@@ -752,7 +788,15 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 btnPortfolioAdd = (Button) popupView.findViewById(R.id.btnPortfolioAdd);
 
                 //----------------------------------------------------------------------------------
-                //---   Spinner
+                //---   Soft keyboard popping up
+                //----------------------------------------------------------------------------------
+
+                edtPortfolioTicker.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(edtPortfolioTicker, InputMethodManager.SHOW_IMPLICIT);
+
+                //----------------------------------------------------------------------------------
+                //---   Category Spinner
                 //----------------------------------------------------------------------------------
                 Portfolio_Spinner = (Spinner) popupView.findViewById(R.id.spnPortfolioCategory);
                 Portfolio_Spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
@@ -766,6 +810,17 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 Portfolio_Spinner.setSelection(Arrays.asList(CategoryArray).indexOf(Category));
 
                 //----------------------------------------------------------------------------------
+                //---   Subcategory Spinner
+                //----------------------------------------------------------------------------------
+                Portfolio_SubCategory_Spinner = (Spinner) popupView.findViewById(R.id.spnPortfolioSubCategory);
+                Portfolio_SubCategory_Spinner.setOnItemSelectedListener(new PortfolioSubCategoryOnItemSelectedListener());
+
+                Portfolio_SubCategory_Adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, SubCategoryArray);
+                Portfolio_SubCategory_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                Portfolio_SubCategory_Spinner.setAdapter(Portfolio_SubCategory_Adapter);
+//                Portfolio_SubCategory_Spinner.setSelection(Arrays.asList(CategoryArray).indexOf(Category));
+
+                //----------------------------------------------------------------------------------
                 //---
                 //----------------------------------------------------------------------------------
                 btnPortfolioAdd.setOnClickListener(new View.OnClickListener() {
@@ -776,6 +831,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                         newStock.setTicker(edtPortfolioTicker.getText().toString());
                         newStock.setCategory(PortfolioCategory);
+                        newStock.setSubcategory(PortfolioSubCategory);
                         newStock.setShares(Integer.parseInt(edtPortfolioShares.getText().toString()));
                         newStock.setBasis(Float.parseFloat(edtPortfolioBasis.getText().toString()));
                         newStock.setCommission(Integer.parseInt(edtPortfolioComission.getText().toString()));
@@ -878,11 +934,21 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     public class CustomOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
-            Toast.makeText(parent.getContext(),
-                    "OnItemSelectedListener : " + parent.getItemAtPosition(pos).toString(),
-                    Toast.LENGTH_SHORT).show();
 
             PortfolioCategory = parent.getItemAtPosition(pos).toString();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+            // TODO Auto-generated method stub
+        }
+    }
+
+    public class PortfolioSubCategoryOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
+
+            PortfolioSubCategory = parent.getItemAtPosition(pos).toString();
         }
 
         @Override

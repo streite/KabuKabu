@@ -55,9 +55,10 @@
         android:id="@+id/llhCategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/llhTicker"
         android:background="@drawable/gradient_red_bg"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_below="@+id/llhTicker"
+        android:layout_alignParentStart="true">
 
         <TextView
             android:id="@+id/txtPortfolioCategory"
@@ -87,10 +88,45 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/llhSubCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_red_bg"
+        android:orientation="horizontal"
+        android:layout_below="@+id/llhCategory"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:id="@+id/txtPortfolioSubCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="SubCategory: "
+            android:textColor="@color/colorRed1"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:textSize="18sp"
+            android:textStyle="bold|italic" />
+
+        <Spinner
+            android:id="@+id/spnPortfolioSubCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/gradient_dark_red_bg"
+            android:dropDownWidth="50dp"
+            android:layout_toRightOf="@+id/txtPortfolioSubCategory"
+            android:entries="@array/categories"
+            android:gravity="center"
+            android:padding="10dp"
+            android:spinnerMode="dialog" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/llhShares"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/llhCategory"
+        android:layout_below="@id/llhSubCategory"
         android:background="@drawable/gradient_red_bg"
         android:orientation="horizontal">
 
