@@ -411,17 +411,17 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
         //---   Collapse last group, when new group is expanded
         //------------------------------------------------------------------------------------------
-        @Override
-        public void onGroupExpanded(int groupPosition){
-            //collapse the old expanded group, if not the same
-            //as new group to expand
-            if(groupPosition != lastExpandedGroupPosition){
-                expListView.collapseGroup(lastExpandedGroupPosition);
-            }
-
-            super.onGroupExpanded(groupPosition);
-            lastExpandedGroupPosition = groupPosition;
-        }
+//        @Override
+//        public void onGroupExpanded(int groupPosition){
+//            //collapse the old expanded group, if not the same
+//            //as new group to expand
+//            if(groupPosition != lastExpandedGroupPosition){
+//                expListView.collapseGroup(lastExpandedGroupPosition);
+//            }
+//
+//            super.onGroupExpanded(groupPosition);
+//            lastExpandedGroupPosition = groupPosition;
+//        }
         //------------------------------------------------------------------------------------------
         //---   Constructor
         //------------------------------------------------------------------------------------------
@@ -1084,7 +1084,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
         if (id == menu_refresh) {
 
-            Intent intentYahoo = new Intent(PortfolioView.this, YahooAPI.class);
+            Intent intentYahoo = new Intent(PortfolioView.this, EtradeAPI.class);
             ArrayList<String> TickerList = grabTickers();
             intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerList);
             startActivityForResult(intentYahoo,REQUEST_YAHOO);

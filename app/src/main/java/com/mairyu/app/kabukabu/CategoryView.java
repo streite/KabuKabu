@@ -2,7 +2,10 @@ package com.mairyu.app.kabukabu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -100,5 +103,62 @@ public class CategoryView extends AppCompatActivity {
 
             return itemView;
         }
+    }
+
+    //**********************************************************************************************
+    //***   onCreateOptionsMenu (Toolbar)
+    //**********************************************************************************************
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        getSupportActionBar().setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(),
+                R.drawable.gradient_dark_grey_bg, null));
+
+        MenuItem menu_spinner = menu.findItem(R.id.menu_spinner);
+        menu_spinner.setVisible(false);
+
+        MenuItem menu_edit = menu.findItem(R.id.menu_edit);
+        menu_edit.setVisible(false);
+
+        MenuItem menu_refresh = menu.findItem(R.id.menu_refresh);
+        menu_refresh.setVisible(false);
+
+        //------------------------------------------------------------------------------------------
+        //---   Touch header -> Category
+        //------------------------------------------------------------------------------------------
+//        txtCategory.setOnTouchListener(new View.OnTouchListener() {
+//
+//            @Override
+//            public boolean onTouch(View arg0, MotionEvent arg1) {
+//
+//                switch (arg1.getAction()) {
+//
+//                    case MotionEvent.ACTION_DOWN: {
+//
+//                        Intent intentTraining = new Intent(CategoryView.this, MainActivity.class);
+//                        startActivity(intentTraining);
+//
+//                        break;
+//                    }
+//                }
+//
+//                return true;
+//            }
+//        });
+
+        return true;
+    }
+
+    //**********************************************************************************************
+    //***   onOptionsItemSelected (Toolbar)
+    //**********************************************************************************************
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        return super.onOptionsItemSelected(item);
     }
 }

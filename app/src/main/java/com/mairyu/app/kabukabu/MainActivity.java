@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                     //--------------------------------------------------------------------------------------
                     case R.id.btnYahoo:
 
-                        Intent intentSheet = new Intent(MainActivity.this, YahooAPI.class);
+                        Intent intentSheet = new Intent(MainActivity.this, EtradeAPI.class);
                         intentSheet.putExtra("SHEETS_ID", "1nISn67Vft5ncSsnNfTRmFM2okQO8ttCrBtmWhFTu4bM");
                         intentSheet.putExtra("SHEETS_TAB", Google_Sheet);
                         intentSheet.putExtra("SHEETS_RANGE", Google_Sheet);
