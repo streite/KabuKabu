@@ -135,9 +135,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.portfolio_view_pager);
 
-        SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P");
-        SubcategoryMap.put("REGION ETF","ASIA,EUROPE,OTHER");
+        SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P,MISC");
+        SubcategoryMap.put("REGION ETF","ASIA,EUROPE,MISC");
+        SubcategoryMap.put("COMMODITY ETF","FOSSIL,METAL,AGR,MISC");
         SubcategoryMap.put("TECH","MISC");
+        SubcategoryMap.put("FINANCE","BANK,WALL,PEER,MISC");
         SubcategoryMap.put("MUTUAL","GEO,COM,MISC");
 
 //        System.out.println(map.get(1)); // prints Foo
@@ -432,7 +434,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         public long getChildId(int groupPosition, int childPosition) {
             return childPosition;
         }
-
 
         //------------------------------------------------------------------------------------------
         //---   Child View (stock Info)
