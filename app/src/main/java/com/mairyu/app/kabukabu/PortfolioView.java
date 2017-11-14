@@ -127,6 +127,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     static final int REQUEST_YAHOO = 2000;
 
     //http://www.nasdaq.com/symbol/aapl/option-chain
+//    https://finance.yahoo.com/calendar/earnings?&day=2017-11-14
+//    https://eresearch.fidelity.com/eresearch/conferenceCalls.jhtml?tab=earnings&begindate=11/14/2017
+//    http://www.nasdaq.com/earnings/earnings-calendar.aspx?date=2017-Nov-14
+
     //**********************************************************************************************
     //***   onCreate
     //**********************************************************************************************
