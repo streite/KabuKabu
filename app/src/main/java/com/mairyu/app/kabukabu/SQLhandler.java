@@ -251,7 +251,7 @@ public class SQLhandler extends SQLiteOpenHelper {
     //**********************************************************************************************
     //***   METHOD: Retrieve all Stocks from a Subcategory
     //**********************************************************************************************
-    public ArrayList<Stock> getStocksBySubcategory(String Subcategory) {
+    public ArrayList<Stock> getStocksBySubcategory(String Category, String Subcategory) {
 
         String selectAllQuery;
 
@@ -259,7 +259,8 @@ public class SQLhandler extends SQLiteOpenHelper {
 
         ArrayList<Stock> stockArrayList = new ArrayList<>();
 
-        selectAllQuery = "Select * FROM " + TABLE_NAME + " WHERE " + COLUMN_SUBCATEGORY + " =  \"" + Subcategory + "\"";
+        selectAllQuery = "Select * FROM " + TABLE_NAME + " WHERE " + COLUMN_SUBCATEGORY + " =  \"" + Subcategory +
+                                                        "\" AND " + COLUMN_CATEGORY + " =  \"" + Category + "\"";
 
         Cursor cursor = database.rawQuery(selectAllQuery, null);
 

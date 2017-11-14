@@ -30,6 +30,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -79,7 +80,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     private Spinner Portfolio_SubCategory_Spinner;
 
     private String[] CategoryArray;
-    private String[] SubCategoryArray;
+    private String[] SubcategoryArray;
 
     private PreferenceSettings _appPrefs;
 
@@ -102,10 +103,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     String ChangePerc;
     float Basis;
     int Comission;
+    String Leverage;
 
-    List<String> groupList;
+    List<String> SubcategoryList;
     List<String> childList;
-    Map<String, List<String>> laptopCollection;
+    Map<String, List<String>> subgroupCollection;
     ExpandableListView expListView;
 
     Map<String, String> SubcategoryMap = new HashMap<>();
@@ -136,9 +138,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P,MISC");
         SubcategoryMap.put("REGION ETF","ASIA,EUROPE,LATIN AMERICA,MISC");
-        SubcategoryMap.put("COMMODITY ETF","FOSSIL,METAL,AGR,MISC");
-        SubcategoryMap.put("TECH","MISC");
-        SubcategoryMap.put("FINANCE","BANK,WALL,PEER,MISC");
+        SubcategoryMap.put("COMMODITY ETF","METAL,AGRICULTURE,ENERGY,MISC");
+        SubcategoryMap.put("TECH","SEMICONDUCTOR,WWW,ELECTRONICS,MISC");
+        SubcategoryMap.put("CONSUME","COMMUNICATION,MECHANDISE,MEDIA,ENTERTAINMENT,FOOD,MISC");
+        SubcategoryMap.put("FINANCE","WALL STREET,BANK,PEER,MISC");
+        SubcategoryMap.put("TRANSPORTATION","CAR,AIRLINE,MISC");
         SubcategoryMap.put("MUTUAL","GEO,COM,MISC");
 
 //        System.out.println(map.get(1)); // prints Foo
@@ -252,12 +256,12 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             public void run() {
 
-                createGroupList();
-                createCollection();
+                createSubcategoryList();
+                createSubgroupList();
 
                 expListView = (ExpandableListView) findViewById(R.id.laptop_list);
 
-                expListAdapter = new ExpandableListAdapter(PortfolioView.this, groupList, laptopCollection);
+                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
                 expListView.setAdapter(expListAdapter);
 
                 //------------------------------------------------------------------------------------------
@@ -299,100 +303,52 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     }
 
     //------------------------------------------------------------------------------------------
-    //---   Create list of groups names
+    //---   Create list of all Subcategories in this group
     //------------------------------------------------------------------------------------------
-    private void createGroupList() {
+    private void createSubcategoryList() {
 
-        allStocks = sqlHandler.getStocksByCategory(Category);
+        SubcategoryList = new ArrayList<String>();
 
-        groupList = new ArrayList<String>();
+        SubcategoryArray = SubcategoryMap.get(Category).split(",");
 
-        SubCategoryArray = SubcategoryMap.get(Category).split(",");
+        for (String SubCategory : SubcategoryArray) {
 
-//        groupList.add("HP");
-//        groupList.add("Dell");
-//        groupList.add("Lenovo");
-//        groupList.add("Sony");
-//        groupList.add("HCL");
-//        groupList.add("Samsung");
-
-        for (String c : SubCategoryArray) {
-            groupList.add(c);
+            SubcategoryList.add(SubCategory);
         }
     }
 
     //------------------------------------------------------------------------------------------
     //---   Create collection of subgroups
     //------------------------------------------------------------------------------------------
-    private void createCollection() {
-        // preparing laptops collection(child)
-        String[] hpModels = { "HP Pavilion G6-2014TX", "ProBook HP 4540",
-                "HP Envy 4-1025TX" };
-        String[] hclModels = { "HCL S2101", "HCL L2102", "HCL V2002" };
-        String[] lenovoModels = { "IdeaPad Z Series", "Essential G Series",
-                "ThinkPad X Series", "Ideapad Z Series" };
-        String[] sonyModels = { "VAIO E Series", "VAIO Z Series",
-                "VAIO S Series", "VAIO YB Series" };
-        String[] dellModels = { "Inspiron", "Vostro", "XPS" };
-        String[] samsungModels = { "NP Series", "Series 5", "SF Series" };
+    private void createSubgroupList() {
 
-        laptopCollection = new LinkedHashMap<String, List<String>>();
+        subgroupCollection = new LinkedHashMap<String, List<String>>();
 
-        for (String laptop : groupList) {
+        for (String subCategory : SubcategoryList) {
 
-            allStocks = sqlHandler.getStocksBySubcategory(laptop);
+            allStocks = sqlHandler.getStocksBySubcategory(Category,subCategory);
 
             String[] tmpList = new String[allStocks.size()];
 
-            for (int i = 0;i < allStocks.size();i++) {
+            for (int i = 0; i < allStocks.size(); i++) {
 
                 Stock tmpStock = allStocks.get(i);
 
                 tmpList[i] = tmpStock.getTicker();
-
-//                if (laptop.equals("HP")) {
-//                    loadChild(hpModels);
-//                } else if (laptop.equals("Dell"))
-//                    loadChild(dellModels);
-//                else if (laptop.equals("Sony"))
-//                    loadChild(sonyModels);
-//                else if (laptop.equals("HCL"))
-//                    loadChild(hclModels);
-//                else if (laptop.equals("Samsung"))
-//                    loadChild(samsungModels);
-//                else
-//                    loadChild(lenovoModels);
             }
 
             loadChild(tmpList);
 
-            laptopCollection.put(laptop, childList);
+            subgroupCollection.put(subCategory, childList);
         }
     }
 
     private void loadChild(String[] laptopModels) {
+
         childList = new ArrayList<String>();
         for (String model : laptopModels)
             childList.add(model);
     }
-
-//    private void setGroupIndicatorToRight() {
-//        /* Get the screen width */
-//        DisplayMetrics dm = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(dm);
-//        int width = dm.widthPixels;
-//
-//        expListView.setIndicatorBounds(width - getDipsFromPixel(35), width
-//                - getDipsFromPixel(5));
-//    }
-
-//    // Convert pixel to dip
-//    public int getDipsFromPixel(float pixels) {
-//        // Get the screen's density scale
-//        final float scale = getResources().getDisplayMetrics().density;
-//        // Convert the dps to pixels, based on density scale
-//        return (int) (pixels * scale + 0.5f);
-//    }
 
     //**********************************************************************************************
     //***   Custom Expandable Adapter for PortfolioPage
@@ -478,14 +434,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             itemView.setText(Ticker);
 
-
-
-
-
-
             String SubCategory = laptops.get(groupPosition);
 
-            allStocks = sqlHandler.getStocksBySubcategory(SubCategory);
+            allStocks = sqlHandler.getStocksBySubcategory(Category,SubCategory);
 
             Stock currentStock = allStocks.get(childPosition);
 
@@ -497,12 +448,26 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             ChangePerc = currentStock.getChangePerc();
             Basis = currentStock.getBasis();
             Comission = currentStock.getCommission();
+            Leverage = currentStock.getLeverage();
+
+            //--------------------------------------------------------------------------------------
+            //---   Leverage Indicator
+            //------------------------------------------------------------------------------------------
+            ImageView childLeverage = (ImageView) convertView.findViewById(R.id.portfolioListViewLeverage);
+
+            switch (Leverage) {
+
+                case "3": childLeverage.setImageResource(R.mipmap.ic_3_green); break;
+                case "0": childLeverage.setVisibility(View.GONE); break;
+                case "-3": childLeverage.setImageResource(R.mipmap.ic_3_red); break;
+            }
 
             //--------------------------------------------------------------------------------------
             //---   Ticker
             //------------------------------------------------------------------------------------------
             TextView menuOption = (TextView) convertView.findViewById(R.id.portfolioListViewTicker);
             menuOption.setText(currentStock.getTicker());
+
             //--------------------------------------------------------------------------------------
             //---   Price
             //------------------------------------------------------------------------------------------
@@ -738,7 +703,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 Portfolio_SubCategory_Spinner = (Spinner) popupView.findViewById(R.id.spnPortfolioSubCategory);
                 Portfolio_SubCategory_Spinner.setOnItemSelectedListener(new PortfolioSubCategoryOnItemSelectedListener());
 
-                Portfolio_SubCategory_Adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, SubCategoryArray);
+                Portfolio_SubCategory_Adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, SubcategoryArray);
                 Portfolio_SubCategory_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 Portfolio_SubCategory_Spinner.setAdapter(Portfolio_SubCategory_Adapter);
 //                Portfolio_SubCategory_Spinner.setSelection(Arrays.asList(CategoryArray).indexOf(Category));
@@ -1049,7 +1014,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //------------------------------------------------------------------------------------------
             if (requestCode == REQUEST_INFO) {
 
-                expListAdapter = new ExpandableListAdapter(PortfolioView.this, groupList, laptopCollection);
+                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
                 expListView.setAdapter(expListAdapter);
                 expListAdapter.notifyDataSetChanged();
             }
@@ -1059,7 +1024,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //------------------------------------------------------------------------------------------
             if (requestCode == REQUEST_YAHOO) {
 
-                expListAdapter = new ExpandableListAdapter(PortfolioView.this, groupList, laptopCollection);
+                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
                 expListView.setAdapter(expListAdapter);
                 expListAdapter.notifyDataSetChanged();
             }
@@ -1090,7 +1055,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
         txtCategory.setText(Category+" ("+SQLDBSize+")");
 
-        expListAdapter = new ExpandableListAdapter(PortfolioView.this, groupList, laptopCollection);
+        expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
         expListView.setAdapter(expListAdapter);
         expListAdapter.notifyDataSetChanged();
     }
