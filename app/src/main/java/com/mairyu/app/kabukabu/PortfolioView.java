@@ -462,7 +462,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             switch (Leverage) {
 
                 case "3": childLeverage.setImageResource(R.mipmap.ic_3_green); break;
+                case "2": childLeverage.setImageResource(R.mipmap.ic_2_green); break;
                 case "0": childLeverage.setVisibility(View.GONE); break;
+                case "-2": childLeverage.setImageResource(R.mipmap.ic_2_red); break;
                 case "-3": childLeverage.setImageResource(R.mipmap.ic_3_red); break;
             }
 
