@@ -5,40 +5,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
      
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/portfolioListViewLeverage"
-        android:layout_alignParentLeft="true"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        android:src="@mipmap/ic_3_green" />
-
-    <TextView
-        android:id="@+id/portfolioListViewTicker"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="20"
-        android:paddingBottom="5dp"
-        android:paddingLeft="35dp"
-        android:paddingTop="5dp"
-        android:text="TICKER"
-        android:textColor="@color/colorGrey1"
-        android:textSize="18sp"
-        android:textStyle="italic" />
-
-    <LinearLayout
-        android:id="@+id/llhGainLoss"
+    <RelativeLayout
+        android:id="@+id/rlvPortfolioViewLeftIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/llhPrice"
-        android:paddingRight="25dp"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical"
+        android:layout_weight="40"
+        android:padding="3dp">
+
+        <ImageView
+            android:id="@+id/portfolioListViewLeverage"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:src="@mipmap/ic_3_green" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlvPortfolioViewTickerInfo"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/rlvPortfolioViewLeftIcon"
+        android:orientation="vertical"
+        android:layout_weight="20"
+        android:padding="3dp">
+
+        <TextView
+            android:id="@+id/portfolioListViewTicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingBottom="1dp"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:text="TICKER"
+            android:textColor="@color/colorGrey1"
+            android:textSize="18sp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/portfolioListViewName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/portfolioListViewTicker"
+            android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:text="NAME"
+            android:textColor="@color/colorGrey1"
+            android:textSize="10sp"
+            android:textStyle="italic" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlvPortfolioViewGainLoss"
+        android:layout_width="50pt"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/rlvPortfolioViewTickerInfo"
+        android:paddingRight="5dp"
+        android:layout_weight="20"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/portfolioListViewGainLoss"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:paddingRight="15dp"
             android:text="G/L"
             android:textColor="@color/colorGrey1"
@@ -49,25 +86,30 @@
             android:id="@+id/portfolioListViewGainLossPerc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/portfolioListViewGainLoss"
             android:paddingRight="15dp"
             android:text="G/L %%%"
             android:textColor="@color/colorGrey1"
             android:textSize="14sp"
             android:textStyle="italic" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/llhPrice"
-        android:layout_width="100dp"
+    <RelativeLayout
+        android:id="@+id/rlvPortfolioViewPrice"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/rlvPortfolioViewGainLoss"
         android:layout_alignParentRight="true"
+        android:layout_weight="20"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/portfolioListViewPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:paddingRight="15dp"
             android:text="PRICE"
             android:textColor="@color/colorGrey1"
@@ -78,12 +120,14 @@
             android:id="@+id/portfolioListViewChangePerc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/portfolioListViewPrice"
             android:paddingRight="15dp"
             android:text="PERC"
             android:textColor="@color/colorGrey1"
             android:textSize="14sp"
             android:textStyle="italic" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

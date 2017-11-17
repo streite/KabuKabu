@@ -13,17 +13,15 @@ public class EtradeResponseParser {
         ArrayList<String> ExampleSentences = new ArrayList<>();
         ArrayList<Stock> allDictItems = new ArrayList<>();
 
-        String FullSnippet,PartSnippet,Snippet;
+        String FullSnippet,PartSnippet,Color;
         String Ticker,Price,Change,ChangePerc,Volume;
 
         int first = TatoebaResponse.indexOf("quotes_content_left_flashdata");
         int last = TatoebaResponse.lastIndexOf("Updates every 7 Seconds");
         FullSnippet = TatoebaResponse.substring(first,last);
         first = FullSnippet.indexOf("flashevengr");
-        last = FullSnippet.lastIndexOf("table");
+        last = FullSnippet.lastIndexOf("table") + 8;
         FullSnippet = FullSnippet.substring(first,last);
-
-        Snippet = FullSnippet;
 
         //------------------------------------------------------------------------------------------
 
@@ -32,16 +30,18 @@ public class EtradeResponseParser {
             Stock tmpStock = new Stock();
 
             first = FullSnippet.indexOf("symbol");
-            last = FullSnippet.indexOf("reference");
+            last = FullSnippet.indexOf("table");
             PartSnippet = FullSnippet.substring(first, last);
-            int Pointer = last + 1;
 
             first = PartSnippet.indexOf(">") + 1;
             last = PartSnippet.indexOf("<") - 0;
             Ticker = PartSnippet.substring(first,last);
-//            tmpStock.setCompany(Ticker.substring(0,Ticker.indexOf("(")-1));
             tmpStock.setTicker(Ticker);
             PartSnippet = PartSnippet.substring(last,PartSnippet.length());
+
+            first = PartSnippet.indexOf("color:") + 6;
+            last = PartSnippet.substring(first,PartSnippet.length()).indexOf("id=") - 2 + first;
+            Color = PartSnippet.substring(first, last);
 
             first = PartSnippet.indexOf("lastsale") + 11;
             last = PartSnippet.substring(first,PartSnippet.length()).indexOf("label") - 2 + first;
@@ -53,6 +53,8 @@ public class EtradeResponseParser {
             last = PartSnippet.substring(first,PartSnippet.length()).indexOf("label") - 8 + first;
             Change = PartSnippet.substring(first, last);
             if (Change.equals("unch")) { Change = "0"; }
+            if (Color.equals("Red")) { Change = "-" + Change; }
+            else { Change = "+" + Change; }
             tmpStock.setChange(Change);
             PartSnippet = PartSnippet.substring(last,PartSnippet.length());
 
@@ -60,6 +62,8 @@ public class EtradeResponseParser {
             last = PartSnippet.substring(first,PartSnippet.length()).indexOf("label") - 2 + first;
             ChangePerc = PartSnippet.substring(first, last);
             if (ChangePerc.equals("unch")) { ChangePerc = "0"; }
+            if (Color.equals("Red")) { ChangePerc = "-" + ChangePerc; }
+            else { ChangePerc = "+" + ChangePerc; }
             tmpStock.setPercChange(ChangePerc);
             PartSnippet = PartSnippet.substring(last,PartSnippet.length());
 
@@ -68,14 +72,14 @@ public class EtradeResponseParser {
             Volume = PartSnippet.substring(first, last);
             tmpStock.setVolume(Volume);
 
-            FullSnippet = FullSnippet.substring(Pointer,FullSnippet.length());
+            FullSnippet = FullSnippet.substring(FullSnippet.indexOf("symbol")+1);
 
             allDictItems.add(tmpStock);
 
-            if (Snippet.indexOf("flashevengr") > 0) {
-
-                Snippet = Snippet.substring(Snippet.indexOf("flashevengr"));
-            }
+//            if (Snippet.indexOf("flashevengr") > 0) {
+//
+//                Snippet = Snippet.substring(Snippet.indexOf("flashevengr"));
+//            }
         }
 
         return allDictItems;

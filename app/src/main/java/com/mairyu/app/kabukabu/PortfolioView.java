@@ -463,7 +463,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 case "3": childLeverage.setImageResource(R.mipmap.ic_3_green); break;
                 case "2": childLeverage.setImageResource(R.mipmap.ic_2_green); break;
-                case "0": childLeverage.setVisibility(View.GONE); break;
+                case "0": childLeverage.setVisibility(View.INVISIBLE); break;
                 case "-2": childLeverage.setImageResource(R.mipmap.ic_2_red); break;
                 case "-3": childLeverage.setImageResource(R.mipmap.ic_3_red); break;
             }
@@ -475,11 +475,18 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             menuOption.setText(currentStock.getTicker());
 
             //--------------------------------------------------------------------------------------
+            //---   Company Name
+            //------------------------------------------------------------------------------------------
+            TextView portfolioListViewName = (TextView) convertView.findViewById(R.id.portfolioListViewName);
+            portfolioListViewName.setText(currentStock.getCompany());
+
+            //--------------------------------------------------------------------------------------
             //---   Price
             //------------------------------------------------------------------------------------------
             menuOption = (TextView) convertView.findViewById(R.id.portfolioListViewPrice);
             String PriceFormat = String.format("%.02f", currentStock.getPrice());
             menuOption.setText(PriceFormat);
+
             //--------------------------------------------------------------------------------------
             //---   Change (Percentage)
             //------------------------------------------------------------------------------------------
@@ -496,6 +503,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 String ChangePercFormat = String.format("%.02f", Float.parseFloat(ChangePerc));
                 portfolioListViewChangePerc.setText(ChangePercFormat + "%");
             }
+
             //--------------------------------------------------------------------------------------
             //---   Gain/Loss
             //--------------------------------------------------------------------------------------
