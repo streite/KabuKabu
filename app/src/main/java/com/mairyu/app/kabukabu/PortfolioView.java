@@ -143,10 +143,13 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P,MISC");
         SubcategoryMap.put("REGION ETF","ASIA,EUROPE,LATIN AMERICA,MISC");
         SubcategoryMap.put("COMMODITY ETF","METAL,AGRICULTURE,ENERGY,MISC");
+        SubcategoryMap.put("OTHER ETF","MISC");
         SubcategoryMap.put("TECH","SEMICONDUCTOR,WWW,ELECTRONICS,MISC");
-        SubcategoryMap.put("CONSUME","COMMUNICATION,MECHANDISE,MEDIA,ENTERTAINMENT,FOOD,MISC");
+        SubcategoryMap.put("CONSUME","COMMUNICATION,MERCHANDISE,MEDIA,ENTERTAINMENT,FOOD,MISC");
         SubcategoryMap.put("FINANCE","WALL STREET,BANK,PEER,MISC");
         SubcategoryMap.put("TRANSPORTATION","CAR,AIRLINE,MISC");
+        SubcategoryMap.put("DEFENSE","MISC");
+        SubcategoryMap.put("HEALTH","DRUGS,INSURANCE,MISC");
         SubcategoryMap.put("MUTUAL","GEO,COM,MISC");
 
 //        System.out.println(map.get(1)); // prints Foo
