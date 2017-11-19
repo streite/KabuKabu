@@ -143,16 +143,15 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P,MISC");
         SubcategoryMap.put("REGION ETF","ASIA,EUROPE,LATIN AMERICA,MISC");
         SubcategoryMap.put("COMMODITY ETF","METAL,AGRICULTURE,ENERGY,MISC");
-        SubcategoryMap.put("OTHER ETF","MISC");
+        SubcategoryMap.put("OTHER ETF","REAL ESTATE,TECH");
         SubcategoryMap.put("TECH","SEMICONDUCTOR,WWW,ELECTRONICS,MISC");
         SubcategoryMap.put("CONSUME","COMMUNICATION,MERCHANDISE,MEDIA,ENTERTAINMENT,FOOD,MISC");
         SubcategoryMap.put("FINANCE","WALL STREET,BANK,PEER,MISC");
         SubcategoryMap.put("TRANSPORTATION","CAR,AIRLINE,MISC");
         SubcategoryMap.put("DEFENSE","MISC");
+        SubcategoryMap.put("MISC","MISC");
         SubcategoryMap.put("HEALTH","DRUGS,INSURANCE,MISC");
         SubcategoryMap.put("MUTUAL","GEO,COM,MISC");
-
-//        System.out.println(map.get(1)); // prints Foo
 
         //------------------------------------------------------------------------------------------
         //---   Get Card Details
@@ -244,6 +243,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 refreshCard();
 
+                //--------------------------------------------------------------------------------------
+                //---   Update Category Header
+                //--------------------------------------------------------------------------------------
                 TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
                 txtCategory.setText(Category + " (" + SQLDBSize + ")");
             }
@@ -600,25 +602,35 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     //**********************************************************************************************
     private class CardViewPagerAdapter extends FragmentPagerAdapter {
 
-//        HashMap<Integer,String> mFragmentTags = new HashMap<Integer,String>();
-
+        //------------------------------------------------------------------------------------------
+        //---   Constructor
+        //------------------------------------------------------------------------------------------
         public CardViewPagerAdapter(FragmentManager fm) {
 
             super(fm);
         }
 
+        //------------------------------------------------------------------------------------------
+        //---
+        //------------------------------------------------------------------------------------------
         @Override
         public Fragment getItem(int position) {
 
             return new PortfolioViewFragment();
         }
 
+        //------------------------------------------------------------------------------------------
+        //---   How many pages?
+        //------------------------------------------------------------------------------------------
         @Override
         public int getCount() {
 
             return getResources().getStringArray(R.array.categories).length;
         }
 
+        //------------------------------------------------------------------------------------------
+        //---
+        //------------------------------------------------------------------------------------------
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
 
@@ -634,6 +646,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             return obj;
         }
 
+        //------------------------------------------------------------------------------------------
+        //---
+        //------------------------------------------------------------------------------------------
         public Fragment getFragment(int position) {
 
             String tag = mFragmentTags.get(position);
@@ -1057,7 +1072,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   Layout
         //------------------------------------------------------------------------------------------
 
-//        listViewAllStocks = (ListView) view.findViewById(listViewAllStocks);
+        expListView = (ExpandableListView) view.findViewById(R.id.laptop_list);
     }
 
     //**********************************************************************************************
@@ -1067,10 +1082,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         allStocks = sqlHandler.getStocksByCategory(Category);
 
-        SQLDBSize = allStocks.size();
-
-        TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
-        txtCategory.setText(Category+" ("+SQLDBSize+")");
+        createSubcategoryList();
+        createSubgroupList();
 
         expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
         expListView.setAdapter(expListAdapter);

@@ -27,14 +27,14 @@ public class Navigator implements ListView.OnItemClickListener {
 
         switch(position) {
 
-            case 0:
+            case 1:
 
                 Intent intentMain = new Intent(mActivity, MainActivity.class);
                 mActivity.startActivity(intentMain);
 
                 break;
 
-            case 1:
+            case 0:
 
                 Intent intentFront = new Intent(mActivity, GoogleSheets.class);
                 mActivity.startActivity(intentFront);

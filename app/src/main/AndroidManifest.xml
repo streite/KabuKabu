@@ -30,7 +30,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Stock" />
         //------------------------------------------------------------------------------------------
         <activity android:name=".WSJ" />
         //------------------------------------------------------------------------------------------
@@ -51,12 +50,6 @@
             android:name=".PortfolioView"
             android:label=""
             android:theme="@style/MyMaterialTheme" />
-        //------------------------------------------------------------------------------------------
-        <activity
-            android:name=".PortfolioViewExpand"
-            android:label=""
-            android:theme="@style/MyMaterialTheme" />
-        //------------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------
         <activity
             android:name=".StockInfo"

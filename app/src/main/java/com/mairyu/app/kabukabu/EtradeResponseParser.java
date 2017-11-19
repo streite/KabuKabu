@@ -46,6 +46,7 @@ public class EtradeResponseParser {
             first = PartSnippet.indexOf("lastsale") + 11;
             last = PartSnippet.substring(first,PartSnippet.length()).indexOf("label") - 2 + first;
             Price = PartSnippet.substring(first, last);
+            Price = Price.replace(",","");
             tmpStock.setPrice(Float.parseFloat(Price));
             PartSnippet = PartSnippet.substring(last,PartSnippet.length());
 
