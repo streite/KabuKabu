@@ -36,6 +36,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ import static java.lang.StrictMath.abs;
 public class PortfolioView extends AppCompatActivity implements View.OnClickListener {
 
     private ArrayList<Stock> allStocks = new ArrayList<>();
+    private ArrayList<Stock> allSubStocks = new ArrayList<>();
     private ArrayList<String> allSubcategories = new ArrayList<>();
 
     private ArrayAdapter<Stock> adapterStocks;
@@ -145,12 +147,12 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         SubcategoryMap.put("COMMODITY ETF","METAL,AGRICULTURE,ENERGY,MISC");
         SubcategoryMap.put("OTHER ETF","REAL ESTATE,TECH");
         SubcategoryMap.put("TECH","SEMICONDUCTOR,WWW,ELECTRONICS,MISC");
-        SubcategoryMap.put("CONSUME","COMMUNICATION,MERCHANDISE,MEDIA,ENTERTAINMENT,FOOD,MISC");
         SubcategoryMap.put("FINANCE","WALL STREET,BANK,PEER,MISC");
-        SubcategoryMap.put("TRANSPORTATION","CAR,AIRLINE,MISC");
+        SubcategoryMap.put("CONSUME","COMMUNICATION,MERCHANDISE,MEDIA,ENTERTAINMENT,FOOD,MISC");
         SubcategoryMap.put("DEFENSE","MISC");
-        SubcategoryMap.put("MISC","MISC");
         SubcategoryMap.put("HEALTH","DRUGS,INSURANCE,MISC");
+        SubcategoryMap.put("TRANSPORTATION","CAR,AIRLINE,MISC");
+        SubcategoryMap.put("MISC","MISC");
         SubcategoryMap.put("MUTUAL","GEO,COM,MISC");
 
         //------------------------------------------------------------------------------------------
@@ -273,6 +275,29 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
                 expListView.setAdapter(expListAdapter);
 
+                expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                    public boolean onChildClick(ExpandableListView parent, View v,
+                                                int groupPosition, int childPosition, long id) {
+                        final String selected = (String) expListAdapter.getChild(
+                                groupPosition, childPosition);
+                        Toast.makeText(getBaseContext(), selected, Toast.LENGTH_SHORT)
+                                .show();
+
+                        return true;
+                    }
+                });
+
+                expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        //Message
+                        Toast.makeText(getBaseContext(), position+"", Toast.LENGTH_SHORT).show();
+
+                        return true;
+                    }
+                });
+
                 //------------------------------------------------------------------------------------------
                 //---   Layout
                 //------------------------------------------------------------------------------------------
@@ -302,7 +327,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 txtCategory.setText(Category+" ("+SQLDBSize+")");
 
 
-                Intent intentYahoo = new Intent(PortfolioView.this, EtradeAPI.class);
+                Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
                 ArrayList<String> TickerList = grabTickers();
                 intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerList);
                 startActivityForResult(intentYahoo,REQUEST_YAHOO);
@@ -335,13 +360,13 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         for (String subCategory : SubcategoryList) {
 
-            allStocks = sqlHandler.getStocksBySubcategory(Category,subCategory);
+            allSubStocks = sqlHandler.getStocksBySubcategory(Category,subCategory);
 
-            String[] tmpList = new String[allStocks.size()];
+            String[] tmpList = new String[allSubStocks.size()];
 
-            for (int i = 0; i < allStocks.size(); i++) {
+            for (int i = 0; i < allSubStocks.size(); i++) {
 
-                Stock tmpStock = allStocks.get(i);
+                Stock tmpStock = allSubStocks.get(i);
 
                 tmpList[i] = tmpStock.getTicker();
             }
@@ -397,7 +422,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 //        }
 
         //------------------------------------------------------------------------------------------
-        //---   Update quotes, when new group is expanded
+        //---   Group is expanded
         //------------------------------------------------------------------------------------------
         @Override
         public void onGroupExpanded(int groupPosition){
@@ -412,9 +437,19 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         }
 
         //------------------------------------------------------------------------------------------
-        //---   Constructor
+        //---   Group is collapsed
+        //------------------------------------------------------------------------------------------
+//        @Override
+//        public void onGroupCollapse(int groupPosition){
+//
+//            super.onGroupCollapsed(groupPosition);
+//        }
+
+        //------------------------------------------------------------------------------------------
+        //---
         //------------------------------------------------------------------------------------------
         public Object getChild(int groupPosition, int childPosition) {
+
             return laptopCollections.get(laptops.get(groupPosition)).get(childPosition);
         }
 
@@ -445,9 +480,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             String SubCategory = laptops.get(groupPosition);
 
-            allStocks = sqlHandler.getStocksBySubcategory(Category,SubCategory);
+            allSubStocks = sqlHandler.getStocksBySubcategory(Category,SubCategory);
 
-            Stock currentStock = allStocks.get(childPosition);
+            Stock currentStock = allSubStocks.get(childPosition);
 
             DecimalFormat df1 = new DecimalFormat("#.#");
             DecimalFormat df2 = new DecimalFormat("#.##");
@@ -488,9 +523,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //--------------------------------------------------------------------------------------
             //---   Price
             //------------------------------------------------------------------------------------------
-            menuOption = (TextView) convertView.findViewById(R.id.portfolioListViewPrice);
+            TextView portfolioListViewPrice = (TextView) convertView.findViewById(R.id.portfolioListViewPrice);
             String PriceFormat = String.format("%.02f", currentStock.getPrice());
-            menuOption.setText(PriceFormat);
+            portfolioListViewPrice.setText(PriceFormat);
 
             //--------------------------------------------------------------------------------------
             //---   Change (Percentage)
@@ -589,10 +624,12 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         }
 
         public boolean hasStableIds() {
+
             return true;
         }
 
         public boolean isChildSelectable(int groupPosition, int childPosition) {
+
             return true;
         }
     }
@@ -1004,7 +1041,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
         if (id == menu_refresh) {
 
-            Intent intentYahoo = new Intent(PortfolioView.this, EtradeAPI.class);
+            Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
             ArrayList<String> TickerList = grabTickers();
             intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerList);
             startActivityForResult(intentYahoo,REQUEST_YAHOO);
@@ -1069,6 +1106,13 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     private void refreshView(View view) {
 
         //------------------------------------------------------------------------------------------
+        //---   Update Category Header
+        //------------------------------------------------------------------------------------------
+
+        TextView txtCategory = (TextView) view.findViewById(R.id.txtCategory);
+        txtCategory.setText(Category + " (" + allSubStocks.size() + ")");
+
+        //------------------------------------------------------------------------------------------
         //---   Layout
         //------------------------------------------------------------------------------------------
 
@@ -1080,7 +1124,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     //**********************************************************************************************
     private void refreshCard () {
 
-        allStocks = sqlHandler.getStocksByCategory(Category);
+//        allSubStocks = sqlHandler.getStocksByCategory(Category);
 
         createSubcategoryList();
         createSubgroupList();
