@@ -1131,7 +1131,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             }
 
             //------------------------------------------------------------------------------------------
-            //---   Return from YAHOO
+            //---   Return from YAHOO2
             //------------------------------------------------------------------------------------------
             if (requestCode == REQUEST_YAHOO2) {
 
@@ -1151,7 +1151,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             }
 
             //------------------------------------------------------------------------------------------
-            //---   Return from YAHOO
+            //---   Return from YAHOO3
             //------------------------------------------------------------------------------------------
             if (requestCode == REQUEST_YAHOO3) {
 
