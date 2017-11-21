@@ -3,6 +3,7 @@ package com.mairyu.app.kabukabu;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -98,6 +99,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     String PortfolioCategory;
     String PortfolioSubCategory;
 
+    ArrayList<String> TickerList;
+
     float Price;
     int Shares;
     float GainLoss;
@@ -127,6 +130,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     static final int REQUEST_INFO = 1000;
     static final int REQUEST_YAHOO = 2000;
+    static final int REQUEST_YAHOO2 = 2001;
+    static final int REQUEST_YAHOO3 = 2002;
 
     //http://www.nasdaq.com/symbol/aapl/option-chain
 //    https://finance.yahoo.com/calendar/earnings?&day=2017-11-14
@@ -326,12 +331,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
                 txtCategory.setText(Category+" ("+SQLDBSize+")");
 
-
                 Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
-                ArrayList<String> TickerList = grabTickers();
-                intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerList);
+                TickerList = grabTickers();
+                ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(0, TickerList.size()));
+                intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
                 startActivityForResult(intentYahoo,REQUEST_YAHOO);
-
             }
         });
     }
@@ -542,6 +546,15 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             } else {
                 String ChangePercFormat = String.format("%.02f", Float.parseFloat(ChangePerc));
                 portfolioListViewChangePerc.setText(ChangePercFormat + "%");
+
+                ChangePerc = ChangePerc.replace("+", "");
+
+                if (Float.parseFloat(ChangePerc) > 1) {
+                    rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.colorGreyGreen, null));
+                }
+                if (Float.parseFloat(ChangePerc) < -1) {
+                    rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.colorGreyRed, null));
+                }
             }
 
             //--------------------------------------------------------------------------------------
@@ -583,14 +596,17 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         }
 
         public int getChildrenCount(int groupPosition) {
+
             return laptopCollections.get(laptops.get(groupPosition)).size();
         }
 
         public Object getGroup(int groupPosition) {
+
             return laptops.get(groupPosition);
         }
 
         public int getGroupCount() {
+
             return laptops.size();
         }
 
@@ -601,9 +617,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
         //---   Group View (stock Info)
         //------------------------------------------------------------------------------------------
-        public View getGroupView(int groupPosition, boolean isExpanded,View convertView, ViewGroup parent) {
+        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 
-            String laptopName = (String) getGroup(groupPosition);
+            String GroupName = (String) getGroup(groupPosition);
 
             if (convertView == null) {
 
@@ -614,11 +630,17 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             RelativeLayout rlhDataBase = (RelativeLayout) convertView.findViewById(R.id.group_item_view);
             rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_dark_grey_bg, null));
 
-            TextView item = (TextView) convertView.findViewById(R.id.portfolioListViewGroupName);
+            TextView GroupHeader = (TextView) convertView.findViewById(R.id.portfolioListViewGroupName);
 
-//                item.setTypeface(null, Typeface.BOLD);
+            //--------------------------------------------------------------------------------------
+            //---   Update Category Header
+            //--------------------------------------------------------------------------------------
 
-            item.setText(laptopName);
+            GroupName = (GroupName + " (" + allSubStocks.size() + ")");
+
+            GroupHeader.setTypeface(null, Typeface.BOLD);
+
+            GroupHeader.setText(GroupName);
 
             return convertView;
         }
@@ -1093,6 +1115,46 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //------------------------------------------------------------------------------------------
             if (requestCode == REQUEST_YAHOO) {
 
+                if (TickerList.size() > 25) {
+
+                    Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
+                    ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(25, TickerList.size()));
+                    intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
+                    startActivityForResult(intentYahoo, REQUEST_YAHOO2);
+
+                } else {
+
+                    expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
+                    expListView.setAdapter(expListAdapter);
+                    expListAdapter.notifyDataSetChanged();
+                }
+            }
+
+            //------------------------------------------------------------------------------------------
+            //---   Return from YAHOO
+            //------------------------------------------------------------------------------------------
+            if (requestCode == REQUEST_YAHOO2) {
+
+                if (TickerList.size() > 50) {
+
+                    Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
+                    ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(50, TickerList.size()));
+                    intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
+                    startActivityForResult(intentYahoo, REQUEST_YAHOO3);
+
+                } else {
+
+                    expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
+                    expListView.setAdapter(expListAdapter);
+                    expListAdapter.notifyDataSetChanged();
+                }
+            }
+
+            //------------------------------------------------------------------------------------------
+            //---   Return from YAHOO
+            //------------------------------------------------------------------------------------------
+            if (requestCode == REQUEST_YAHOO3) {
+
                 expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
                 expListView.setAdapter(expListAdapter);
                 expListAdapter.notifyDataSetChanged();
@@ -1109,8 +1171,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   Update Category Header
         //------------------------------------------------------------------------------------------
 
-        TextView txtCategory = (TextView) view.findViewById(R.id.txtCategory);
-        txtCategory.setText(Category + " (" + allSubStocks.size() + ")");
+//        TextView txtCategory = (TextView) view.findViewById(R.id.txtCategory);
+//        txtCategory.setText(Category + " (" + allSubStocks.size() + ")");
 
         //------------------------------------------------------------------------------------------
         //---   Layout

@@ -31,6 +31,8 @@
     <color name="colorGrey2">#B6B6B4</color>
     <color name="colorGrey3">#D1D0CE</color>
     <color name="colorGrey4">#E5E4E2</color>
+    <color name="colorGreyRed">#f0e4e2</color>
+    <color name="colorGreyGreen">#e5f0e2</color>
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
