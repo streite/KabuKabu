@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        expListView = (ExpandableListView) findViewById(R.id.laptop_list);
+        expListView = (ExpandableListView) findViewById(R.id.StockExpandList);
 
 //        final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(
 //                this, groupList, laptopCollection);

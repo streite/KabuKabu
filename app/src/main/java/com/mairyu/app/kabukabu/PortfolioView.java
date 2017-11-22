@@ -275,7 +275,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 createSubcategoryList();
                 createSubgroupList();
 
-                expListView = (ExpandableListView) findViewById(R.id.laptop_list);
+                expListView = (ExpandableListView) findViewById(R.id.StockExpandList);
 
                 expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
                 expListView.setAdapter(expListAdapter);
@@ -284,10 +284,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                     public boolean onChildClick(ExpandableListView parent, View v,
                                                 int groupPosition, int childPosition, long id) {
-                        final String selected = (String) expListAdapter.getChild(
-                                groupPosition, childPosition);
-                        Toast.makeText(getBaseContext(), selected, Toast.LENGTH_SHORT)
-                                .show();
+
+                        final String selected = (String) expListAdapter.getChild(groupPosition, childPosition);
+
+                        Toast.makeText(getBaseContext(), selected, Toast.LENGTH_SHORT).show();
 
                         return true;
                     }
@@ -465,20 +465,20 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   Child View (stock Info)
         //------------------------------------------------------------------------------------------
         public View getChildView(final int groupPosition, final int childPosition,boolean isLastChild,
-                                 View convertView, ViewGroup parent) {
-
-            final String Ticker = (String) getChild(groupPosition, childPosition);
+                                 View childView, ViewGroup parent) {
 
             LayoutInflater inflater = context.getLayoutInflater();
 
-            if (convertView == null) {
-                convertView = inflater.inflate(R.layout.child_item, null);
+            if (childView == null) {
+                childView = inflater.inflate(R.layout.child_item, null);
             }
 
-            RelativeLayout rlhDataBase = (RelativeLayout) convertView.findViewById(R.id.child_item_view);
+            RelativeLayout rlhDataBase = (RelativeLayout) childView.findViewById(R.id.child_item_view);
             rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_light_grey_bg, null));
 
-            TextView itemView = (TextView) convertView.findViewById(R.id.portfolioListViewTicker);
+            final String Ticker = (String) getChild(groupPosition, childPosition);
+
+            TextView itemView = (TextView) childView.findViewById(R.id.portfolioListViewTicker);
 
             itemView.setText(Ticker);
 
@@ -501,13 +501,15 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //--------------------------------------------------------------------------------------
             //---   Leverage Indicator
             //------------------------------------------------------------------------------------------
-            ImageView childLeverage = (ImageView) convertView.findViewById(R.id.portfolioListViewLeverage);
+            ImageView childLeverage = (ImageView) childView.findViewById(R.id.portfolioListViewLeverage);
 
             switch (Leverage) {
 
                 case "3": childLeverage.setImageResource(R.mipmap.ic_3_green); break;
                 case "2": childLeverage.setImageResource(R.mipmap.ic_2_green); break;
+                case "1": childLeverage.setImageResource(R.mipmap.ic_1_green); break;
                 case "0": childLeverage.setVisibility(View.INVISIBLE); break;
+                case "-1": childLeverage.setImageResource(R.mipmap.ic_1_red); break;
                 case "-2": childLeverage.setImageResource(R.mipmap.ic_2_red); break;
                 case "-3": childLeverage.setImageResource(R.mipmap.ic_3_red); break;
             }
@@ -515,26 +517,26 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //--------------------------------------------------------------------------------------
             //---   Ticker
             //------------------------------------------------------------------------------------------
-            TextView menuOption = (TextView) convertView.findViewById(R.id.portfolioListViewTicker);
-            menuOption.setText(currentStock.getTicker());
+            TextView portfolioListViewTicker = (TextView) childView.findViewById(R.id.portfolioListViewTicker);
+            portfolioListViewTicker.setText(currentStock.getTicker());
 
             //--------------------------------------------------------------------------------------
             //---   Company Name
             //------------------------------------------------------------------------------------------
-            TextView portfolioListViewName = (TextView) convertView.findViewById(R.id.portfolioListViewName);
+            TextView portfolioListViewName = (TextView) childView.findViewById(R.id.portfolioListViewName);
             portfolioListViewName.setText(currentStock.getCompany());
 
             //--------------------------------------------------------------------------------------
             //---   Price
             //------------------------------------------------------------------------------------------
-            TextView portfolioListViewPrice = (TextView) convertView.findViewById(R.id.portfolioListViewPrice);
+            TextView portfolioListViewPrice = (TextView) childView.findViewById(R.id.portfolioListViewPrice);
             String PriceFormat = String.format("%.02f", currentStock.getPrice());
             portfolioListViewPrice.setText(PriceFormat);
 
             //--------------------------------------------------------------------------------------
             //---   Change (Percentage)
             //------------------------------------------------------------------------------------------
-            portfolioListViewChangePerc = (TextView) convertView.findViewById(R.id.portfolioListViewChangePerc);
+            portfolioListViewChangePerc = (TextView) childView.findViewById(R.id.portfolioListViewChangePerc);
             if (currentStock.getChangePerc().contains("+")) {
                 portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
             } else {
@@ -558,9 +560,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             }
 
             //--------------------------------------------------------------------------------------
-            //---   Gain/Loss
+            //---   Gain/Loss ($)
             //--------------------------------------------------------------------------------------
-            menuOption = (TextView) convertView.findViewById(R.id.portfolioListViewGainLoss);
+            TextView menuOption = (TextView) childView.findViewById(R.id.portfolioListViewGainLoss);
             GainLoss = ((Price - Basis) * Shares) - Comission;
             if (GainLoss >= 0) {
                 menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
@@ -573,26 +575,38 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             } else {
                 menuOption.setText(GainLossFormat);
             }
-            //------------------------------------------------------------------------------------------
-            menuOption = (TextView) convertView.findViewById(R.id.portfolioListViewGainLossPerc);
+            //--------------------------------------------------------------------------------------
+            //---   Gain/Loss (%)
+            //--------------------------------------------------------------------------------------
+            TextView portfolioListViewGainLossPerc = (TextView) childView.findViewById(R.id.portfolioListViewGainLossPerc);
+
             if (Basis == 0) {
-                menuOption.setText("---");
+
+                portfolioListViewGainLossPerc.setText("---");
+
+
             } else {
+
                 if (Shares < 1) {
                     GainLossPerc = ((Price - Basis) * 100) / Basis;
                 } else {
                     GainLossPerc = (GainLoss * 100) / (Basis * Shares);
                 }
                 if (GainLossPerc >= 0) {
-                    menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
+                    portfolioListViewGainLossPerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
                 } else {
-                    menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+                    portfolioListViewGainLossPerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
                 }
                 String GainLossPercFormat = String.format("%.02f", GainLossPerc);
-                menuOption.setText(GainLossPercFormat + "%");
+                portfolioListViewGainLossPerc.setText(GainLossPercFormat + "%");
+
+                if ((GainLossPerc < 0) && (Shares < 1) && (Basis != 0)) {
+                    portfolioListViewTicker.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+                    portfolioListViewTicker.setTypeface(null, Typeface.BOLD);
+                }
             }
 
-            return convertView;
+            return childView;
         }
 
         public int getChildrenCount(int groupPosition) {
@@ -617,20 +631,20 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
         //---   Group View (stock Info)
         //------------------------------------------------------------------------------------------
-        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        public View getGroupView(int groupPosition, boolean isExpanded, View groupView, ViewGroup parent) {
 
             String GroupName = (String) getGroup(groupPosition);
 
-            if (convertView == null) {
+            if (groupView == null) {
 
                 LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = infalInflater.inflate(R.layout.group_item,null);
+                groupView = infalInflater.inflate(R.layout.group_item,null);
             }
 
-            RelativeLayout rlhDataBase = (RelativeLayout) convertView.findViewById(R.id.group_item_view);
+            RelativeLayout rlhDataBase = (RelativeLayout) groupView.findViewById(R.id.group_item_view);
             rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_dark_grey_bg, null));
 
-            TextView GroupHeader = (TextView) convertView.findViewById(R.id.portfolioListViewGroupName);
+            TextView GroupHeader = (TextView) groupView.findViewById(R.id.portfolioListViewGroupName);
 
             //--------------------------------------------------------------------------------------
             //---   Update Category Header
@@ -642,7 +656,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             GroupHeader.setText(GroupName);
 
-            return convertView;
+            return groupView;
         }
 
         public boolean hasStableIds() {
@@ -1178,7 +1192,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   Layout
         //------------------------------------------------------------------------------------------
 
-        expListView = (ExpandableListView) view.findViewById(R.id.laptop_list);
+        expListView = (ExpandableListView) view.findViewById(R.id.StockExpandList);
     }
 
     //**********************************************************************************************
