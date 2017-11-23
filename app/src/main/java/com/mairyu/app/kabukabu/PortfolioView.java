@@ -39,14 +39,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.util.Log.i;
 import static com.mairyu.app.kabukabu.R.id.menu_refresh;
 import static com.mairyu.app.kabukabu.R.id.pager;
 import static java.lang.StrictMath.abs;
@@ -127,6 +133,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     static final int SQL_POPUP_GRAVITY_Y = 0;
 
     private PopupWindow popupWindow;
+
+    DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
 
     static final int REQUEST_INFO = 1000;
     static final int REQUEST_YAHOO = 2000;
@@ -277,7 +285,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 expListView = (ExpandableListView) findViewById(R.id.StockExpandList);
 
-                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
+//                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
                 expListView.setAdapter(expListAdapter);
 
                 expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -520,11 +528,17 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             TextView portfolioListViewTicker = (TextView) childView.findViewById(R.id.portfolioListViewTicker);
             portfolioListViewTicker.setText(currentStock.getTicker());
 
+            portfolioListViewTicker.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
+            portfolioListViewTicker.setTypeface(null, Typeface.NORMAL);
+
             //--------------------------------------------------------------------------------------
             //---   Company Name
             //------------------------------------------------------------------------------------------
             TextView portfolioListViewName = (TextView) childView.findViewById(R.id.portfolioListViewName);
             portfolioListViewName.setText(currentStock.getCompany());
+
+            portfolioListViewName.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
+            portfolioListViewName.setTypeface(null, Typeface.NORMAL);
 
             //--------------------------------------------------------------------------------------
             //---   Price
@@ -584,7 +598,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 portfolioListViewGainLossPerc.setText("---");
 
-
             } else {
 
                 if (Shares < 1) {
@@ -603,7 +616,39 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 if ((GainLossPerc < 0) && (Shares < 1) && (Basis != 0)) {
                     portfolioListViewTicker.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
                     portfolioListViewTicker.setTypeface(null, Typeface.BOLD);
+
+                    portfolioListViewName.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+                    portfolioListViewName.setTypeface(null, Typeface.BOLD);
                 }
+
+                //--------------------------------------------------------------------------------------
+                //---   Wash Sale
+                //--------------------------------------------------------------------------------------
+                Calendar calendarNow = Calendar.getInstance();
+                Date rightNow = calendarNow.getTime();
+
+                try {
+
+                    if (currentStock.getWatch() == 1) {
+
+                        String sleepDateString = currentStock.getDate();
+                        Date sleepDateStamp = df.parse(sleepDateString);
+
+                        long diff = Math.round((rightNow.getTime() - sleepDateStamp.getTime()) / (double) 86400000);
+
+                        if (diff < 30) {
+
+                            childLeverage.setImageResource(R.mipmap.ic_snooze_blue);
+
+                            rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.colorGreyBlue, null));
+                        }
+                    }
+
+                } catch (ParseException e) {
+
+                    i("LOG: (TP) CATCH", "Bad Date ");
+                }
+
             }
 
             return childView;
@@ -1079,7 +1124,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
             ArrayList<String> TickerList = grabTickers();
-            intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerList);
+            ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(0, TickerList.size()));
+            intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
             startActivityForResult(intentYahoo,REQUEST_YAHOO);
         }
 
@@ -1141,6 +1187,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                     expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
                     expListView.setAdapter(expListAdapter);
                     expListAdapter.notifyDataSetChanged();
+
+                    expListView.expandGroup(0);
                 }
             }
 
