@@ -19,11 +19,13 @@ public class EarningsAPI extends AppCompatActivity {
 
     ArrayList<Earning> allEarningItems = new ArrayList<>();
 
-    ArrayList<String> TickerList = new ArrayList<>();;
-    ArrayList<String> TimeList = new ArrayList<>();;
-    ArrayList<String> EPSList = new ArrayList<>();;
+    ArrayList<String> TickerList = new ArrayList<String>();;
+    ArrayList<String> TimeList = new ArrayList<String>();;
+    ArrayList<String> EPSList = new ArrayList<String>();;
 
     SQLhandler sqlHandler;
+
+    String EarningDate;
 
     // https://finance.yahoo.com/calendar/earnings?&day=2017-11-14
     // http://www.nasdaq.com/earnings/earnings-calendar.aspx?date=2017-Nov-14
@@ -48,7 +50,10 @@ public class EarningsAPI extends AppCompatActivity {
         //---   Get Card Details
         //------------------------------------------------------------------------------------------
 
-//        TickerList = getIntent().getStringArrayListExtra("TICKER_INDEX_ARRAY");
+//        TickerList = getIntent().getStringArrayListExtra("DATE");
+
+        Bundle extras = getIntent().getExtras();
+        EarningDate = extras.getString("DATE");
 
         //------------------------------------------------------------------------------------------
         //---   SQLite Setup
@@ -104,7 +109,8 @@ public class EarningsAPI extends AppCompatActivity {
 
             HTTPClient dictHTTPClient = new HTTPClient();
 
-            dictHTTPClient.setBASE_URL("https://eresearch.fidelity.com/eresearch/conferenceCalls.jhtml?tab=earnings&begindate=11/28/2017");
+            dictHTTPClient.setBASE_URL("https://eresearch.fidelity.com/eresearch/conferenceCalls.jhtml?tab=earnings&begindate=" +
+                                        EarningDate);
 
             //--------------------------------------------------------------------------------------
             //---   Retrieve JSON response from websites (full string)

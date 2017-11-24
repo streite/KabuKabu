@@ -383,18 +383,21 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 tmpList[i] = tmpStock.getTicker();
             }
 
-            loadChild(tmpList);
+//            loadChild(tmpList);
+
+            for (String model : tmpList)
+                childList.add(model);
 
             subgroupCollection.put(subCategory, childList);
         }
     }
 
-    private void loadChild(String[] laptopModels) {
-
-        childList = new ArrayList<String>();
-        for (String model : laptopModels)
-            childList.add(model);
-    }
+//    private void loadChild(String[] laptopModels) {
+//
+//        childList = new ArrayList<String>();
+//        for (String model : laptopModels)
+//            childList.add(model);
+//    }
 
     //**********************************************************************************************
     //***   Custom Expandable Adapter for PortfolioPage
@@ -403,19 +406,20 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     private class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         private Activity context;
-        private Map<String, List<String>> laptopCollections;
-        private List<String> laptops;
+        private Map<String, List<String>> SubgroupNames;
+        private List<String> GroupNames;
 
         private int lastExpandedGroupPosition = -1;
 
         //------------------------------------------------------------------------------------------
         //---   Constructor
         //------------------------------------------------------------------------------------------
-        public ExpandableListAdapter(Activity context, List<String> laptops,Map<String, List<String>> laptopCollections) {
+        public ExpandableListAdapter(Activity context, List<String> GroupNames,
+                                     Map<String, List<String>> SubgroupNames) {
 
             this.context = context;
-            this.laptopCollections = laptopCollections;
-            this.laptops = laptops;
+            this.SubgroupNames = SubgroupNames;
+            this.GroupNames = GroupNames;
         }
 
         //------------------------------------------------------------------------------------------
@@ -462,7 +466,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
         public Object getChild(int groupPosition, int childPosition) {
 
-            return laptopCollections.get(laptops.get(groupPosition)).get(childPosition);
+            return SubgroupNames.get(GroupNames.get(groupPosition)).get(childPosition);
         }
 
         public long getChildId(int groupPosition, int childPosition) {
@@ -490,7 +494,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             itemView.setText(Ticker);
 
-            String SubCategory = laptops.get(groupPosition);
+            String SubCategory = GroupNames.get(groupPosition);
 
             allSubStocks = sqlHandler.getStocksBySubcategory(Category,SubCategory);
 
@@ -656,17 +660,17 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         public int getChildrenCount(int groupPosition) {
 
-            return laptopCollections.get(laptops.get(groupPosition)).size();
+            return SubgroupNames.get(GroupNames.get(groupPosition)).size();
         }
 
         public Object getGroup(int groupPosition) {
 
-            return laptops.get(groupPosition);
+            return GroupNames.get(groupPosition);
         }
 
         public int getGroupCount() {
 
-            return laptops.size();
+            return GroupNames.size();
         }
 
         public long getGroupId(int groupPosition) {
