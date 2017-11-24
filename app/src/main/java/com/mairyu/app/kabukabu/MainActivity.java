@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnPortfolio,btnYahoo,btnWSJ,btnSetting;
+    Button btnPortfolio,btnEarnings,btnWSJ,btnSetting;
     Button btnGoogleSheetsRead,btnGoogleSheetsWrite;
 
     ExpandableListView expListView;
@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        btnYahoo = (Button) findViewById(R.id.btnYahoo);
-        btnYahoo.setOnClickListener(new View.OnClickListener() {
+        btnEarnings = (Button) findViewById(R.id.btnEarnings);
+        btnEarnings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -154,20 +154,12 @@ public class MainActivity extends AppCompatActivity {
                 switch (v.getId()) {
 
                     //--------------------------------------------------------------------------------------
-                    //---   SAVE
+                    //---   EARNINGS
                     //--------------------------------------------------------------------------------------
-                    case R.id.btnYahoo:
+                    case R.id.btnEarnings:
 
-                        Intent intentSheet = new Intent(MainActivity.this, NasdaqAPI.class);
-                        intentSheet.putExtra("SHEETS_ID", "1nISn67Vft5ncSsnNfTRmFM2okQO8ttCrBtmWhFTu4bM");
-                        intentSheet.putExtra("SHEETS_TAB", Google_Sheet);
-                        intentSheet.putExtra("SHEETS_RANGE", Google_Sheet);
-                        intentSheet.putExtra("SHEETS_MODE", "READ");
-
-                        startActivityForResult(intentSheet, REQUEST_SHEETS);
-
-//                        Intent intentGoogle = new Intent(MainActivity.this, GoogleSheets.class);
-//                        startActivity(intentGoogle);
+                        Intent intentSheet = new Intent(MainActivity.this, EarningsView.class);
+                        startActivity(intentSheet);
 
                         break;
 

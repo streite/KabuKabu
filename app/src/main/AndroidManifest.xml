@@ -43,8 +43,9 @@
         <activity android:name=".GoogleSheets" />
         //------------------------------------------------------------------------------------------
         <activity android:name=".YahooAPI" />
+        <activity android:name=".EarningsView" />
+        <activity android:name=".EarningsAPI" />
         //------------------------------------------------------------------------------------------
-        <activity android:name=".EtradeAPI" />
         <activity android:name=".NasdaqAPI" />
         //------------------------------------------------------------------------------------------
         <activity

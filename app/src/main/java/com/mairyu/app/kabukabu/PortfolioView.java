@@ -285,7 +285,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 expListView = (ExpandableListView) findViewById(R.id.StockExpandList);
 
-//                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
+                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
                 expListView.setAdapter(expListAdapter);
 
                 expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {

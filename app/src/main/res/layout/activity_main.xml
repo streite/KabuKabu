@@ -44,10 +44,10 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btnYahoo"
+            android:id="@+id/btnEarnings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Yahoo" />
+            android:text="Earnings" />
 
         <Button
             android:id="@+id/btnWSJ"
