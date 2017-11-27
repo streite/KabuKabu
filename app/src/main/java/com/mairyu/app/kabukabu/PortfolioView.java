@@ -385,6 +385,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
 //            loadChild(tmpList);
 
+            childList = new ArrayList<String>();
+
             for (String model : tmpList)
                 childList.add(model);
 

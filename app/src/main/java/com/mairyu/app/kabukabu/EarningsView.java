@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -39,9 +40,11 @@ public class EarningsView extends AppCompatActivity {
     private String[] CategoryArray;
     private String[] SubcategoryArray;
 
-    ArrayList<String> SubcategoryList = new ArrayList<>();
+    Map<String, Earning> EarningsMap = new HashMap<>();
+
+    ArrayList<String> EarningsDateList = new ArrayList<>();
     ArrayList<String> childList = new ArrayList<>();
-    Map<String, ArrayList<String>> subgroupCollection;
+    Map<String, ArrayList<String>> EarningsDateCollection;
 
     ArrayList<String> TickerList = new ArrayList<>();
     ArrayList<String> TimeList = new ArrayList<>();
@@ -49,7 +52,13 @@ public class EarningsView extends AppCompatActivity {
 
     DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 
+    Calendar calendarNext;
+
     static final int REQUEST_EARNINGS = 3000;
+    static final int REQUEST_EARNINGS2 = 3001;
+    static final int REQUEST_EARNINGS3 = 3002;
+    static final int REQUEST_EARNINGS4 = 3003;
+    static final int REQUEST_EARNINGS5 = 3004;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,26 +77,25 @@ public class EarningsView extends AppCompatActivity {
 //        categoryListView.setAdapter(adapterCategory);
 
         expListView = (ExpandableListView) findViewById(R.id.EarningsExpandList);
-        expListAdapter = new ExpandableListAdapter(EarningsView.this, SubcategoryList, subgroupCollection);
+        expListAdapter = new ExpandableListAdapter(EarningsView.this, EarningsDateList, EarningsDateCollection);
         expListView.setAdapter(expListAdapter);
 
         //------------------------------------------------------------------------------------------
-        //---
+        //---   Find first valid future Earnings Day
         //------------------------------------------------------------------------------------------
 
-        Calendar calendarNow = Calendar.getInstance();
-        calendarNow.add(Calendar.DAY_OF_YEAR, 1);
-        Date rightNow = calendarNow.getTime();
+//        Calendar calendarNow = Calendar.getInstance();
 
-        int dayOfWeek = calendarNow.get(Calendar.DAY_OF_WEEK);
-//        Date sleepDateStamp = df.parse(rightNow);
+        calendarNext = getNextEarningsDate(Calendar.getInstance());
 
-        if (dayOfWeek == Calendar.SUNDAY) {
-        }
+        int dayOfWeek = calendarNext.get(Calendar.DAY_OF_WEEK);
+        Date rightNow = calendarNext.getTime();
 
         Intent intentEarnings = new Intent(EarningsView.this, EarningsAPI.class);
         intentEarnings.putExtra("DATE", df.format(rightNow));
-        startActivityForResult(intentEarnings,REQUEST_EARNINGS);
+        intentEarnings.putExtra("WEEKDAY", dayOfWeek);
+        EarningsDateList.add(df.format(rightNow));
+        startActivityForResult(intentEarnings, REQUEST_EARNINGS);
     }
 
     //**********************************************************************************************
@@ -110,10 +118,32 @@ public class EarningsView extends AppCompatActivity {
                 TimeList = intent.getStringArrayListExtra("TIME_ARRAY");
                 EPSList = intent.getStringArrayListExtra("EPS_ARRAY");
 
-                createSubcategoryList();
+                calendarNext = getNextEarningsDate(calendarNext);
+
+                int dayOfWeek = calendarNext.get(Calendar.DAY_OF_WEEK);
+                Date rightNow = calendarNext.getTime();
+
+                Intent intentEarnings = new Intent(EarningsView.this, EarningsAPI.class);
+                intentEarnings.putExtra("DATE", df.format(rightNow));
+                intentEarnings.putExtra("WEEKDAY", dayOfWeek);
+                EarningsDateList.add(df.format(rightNow));
+
+                startActivityForResult(intentEarnings, REQUEST_EARNINGS2);
+            }
+
+            //--------------------------------------------------------------------------------------
+            //---   Return from Earnings
+            //--------------------------------------------------------------------------------------
+            if (requestCode == REQUEST_EARNINGS2) {
+
+                TickerList = intent.getStringArrayListExtra("TICKER_ARRAY");
+                TimeList = intent.getStringArrayListExtra("TIME_ARRAY");
+                EPSList = intent.getStringArrayListExtra("EPS_ARRAY");
+
+//                createSubcategoryList();
                 createSubgroupList();
 
-                expListAdapter = new ExpandableListAdapter(EarningsView.this, SubcategoryList, subgroupCollection);
+                expListAdapter = new ExpandableListAdapter(EarningsView.this, EarningsDateList, EarningsDateCollection);
                 expListView.setAdapter(expListAdapter);
                 expListAdapter.notifyDataSetChanged();
             }
@@ -168,7 +198,7 @@ public class EarningsView extends AppCompatActivity {
         //---   Constructor
         //------------------------------------------------------------------------------------------
         public ExpandableListAdapter(Activity context, ArrayList<String> GroupNames,
-                                     Map<String,ArrayList<String>> laptopCollections) {
+                                     Map<String, ArrayList<String>> laptopCollections) {
 
             this.context = context;
             this.laptopCollections = laptopCollections;
@@ -200,21 +230,21 @@ public class EarningsView extends AppCompatActivity {
         //------------------------------------------------------------------------------------------
         //---   Child View (stock Info)
         //------------------------------------------------------------------------------------------
-        public View getChildView(final int groupPosition, final int childPosition,boolean isLastChild,
+        public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild,
                                  View childView, ViewGroup parent) {
 
             LayoutInflater inflater = context.getLayoutInflater();
 
             if (childView == null) {
-                childView = inflater.inflate(R.layout.child_item, null);
+                childView = inflater.inflate(R.layout.earnings_child_item, null);
             }
 
-            RelativeLayout rlhDataBase = (RelativeLayout) childView.findViewById(R.id.child_item_view);
-            rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_light_grey_bg, null));
+            RelativeLayout earnings_child_item_view = (RelativeLayout) childView.findViewById(R.id.earnings_child_item_view);
+            earnings_child_item_view.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_light_grey_bg, null));
 
             final String Ticker = (String) getChild(groupPosition, childPosition);
 
-            TextView itemView = (TextView) childView.findViewById(R.id.portfolioListViewTicker);
+            TextView itemView = (TextView) childView.findViewById(R.id.EarningsListViewTicker);
 
             itemView.setText(Ticker);
 
@@ -250,7 +280,7 @@ public class EarningsView extends AppCompatActivity {
             if (groupView == null) {
 
                 LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                groupView = infalInflater.inflate(R.layout.group_item,null);
+                groupView = infalInflater.inflate(R.layout.group_item, null);
             }
 
             RelativeLayout rlhDataBase = (RelativeLayout) groupView.findViewById(R.id.group_item_view);
@@ -262,7 +292,7 @@ public class EarningsView extends AppCompatActivity {
             //---   Update Category Header
             //--------------------------------------------------------------------------------------
 
-            GroupName = "11/24/2017 (Monday)";
+//            GroupName = "11/24/2017 (Monday)";
 
             GroupHeader.setTypeface(null, Typeface.BOLD);
 
@@ -283,30 +313,17 @@ public class EarningsView extends AppCompatActivity {
     }
 
     //------------------------------------------------------------------------------------------
-    //---   Create list of all Subcategories in this group
-    //------------------------------------------------------------------------------------------
-    private void createSubcategoryList() {
-
-        SubcategoryList = new ArrayList<String>();
-
-        SubcategoryArray = new String[]{"11/28/2017","11/29/2017","11/30/2017"};
-
-        for (String SubCategory : SubcategoryArray) {
-
-            SubcategoryList.add(SubCategory);
-        }
-    }
-
-    //------------------------------------------------------------------------------------------
-    //---   Create collection of subgroups
+    //---   Create collection of Earning Dates
     //------------------------------------------------------------------------------------------
     private void createSubgroupList() {
 
-        subgroupCollection = new LinkedHashMap<String, ArrayList<String>>();
+        EarningsDateCollection = new LinkedHashMap<String, ArrayList<String>>();
 
-        for (String subCategory : SubcategoryList) {
+        for (String earningsDate : EarningsDateList) {
 
-            String[] tmpList = new String[3];
+            childList = new ArrayList<String>();
+
+            String[] tmpList = new String[TickerList.size()];
 
             for (int i = 0; i < 3; i++) {
 
@@ -316,7 +333,32 @@ public class EarningsView extends AppCompatActivity {
             for (String model : tmpList)
                 childList.add(model);
 
-            subgroupCollection.put(subCategory, childList);
+            EarningsDateCollection.put(earningsDate, childList);
         }
+    }
+
+    //------------------------------------------------------------------------------------------
+    //---
+    //------------------------------------------------------------------------------------------
+    private Calendar getNextEarningsDate(Calendar currentCalendar) {
+
+        int dayOfWeek = currentCalendar.get(Calendar.DAY_OF_WEEK);
+
+        switch (dayOfWeek) {
+
+            case Calendar.FRIDAY:
+                currentCalendar.add(Calendar.DAY_OF_YEAR, 3);
+                break;
+
+            case Calendar.SATURDAY:
+                currentCalendar.add(Calendar.DAY_OF_YEAR, 2);
+                break;
+
+            default:
+                currentCalendar.add(Calendar.DAY_OF_YEAR, 1);
+                break;
+        }
+
+        return (currentCalendar);
     }
 }
