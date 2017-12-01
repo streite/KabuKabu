@@ -12,7 +12,7 @@
         android:layout_alignParentLeft="true"
         android:orientation="vertical"
         android:layout_weight="40"
-        android:padding="3dp">
+        android:padding="1dp">
 
         <ImageView
             android:id="@+id/portfolioListViewLeverage"
@@ -22,6 +22,15 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:src="@mipmap/ic_3_green" />
+
+        <ImageView
+            android:id="@+id/portfolioListViewWatch"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/portfolioListViewLeverage"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:src="@mipmap/ic_snooze_blue" />
 
     </RelativeLayout>
 

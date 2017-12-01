@@ -516,6 +516,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //---   Leverage Indicator
             //------------------------------------------------------------------------------------------
             ImageView childLeverage = (ImageView) childView.findViewById(R.id.portfolioListViewLeverage);
+            ImageView childWatch = (ImageView) childView.findViewById(R.id.portfolioListViewWatch);
+            childWatch.setVisibility(View.INVISIBLE);
 
             switch (Leverage) {
 
@@ -644,7 +646,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                         if (diff < 30) {
 
-                            childLeverage.setImageResource(R.mipmap.ic_snooze_blue);
+                            childWatch.setImageResource(R.mipmap.ic_snooze_blue);
+                            childWatch.setVisibility(View.VISIBLE);
 
                             rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.colorGreyBlue, null));
                         }
