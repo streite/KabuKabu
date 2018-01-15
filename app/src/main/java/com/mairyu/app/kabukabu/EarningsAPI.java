@@ -170,6 +170,7 @@ public class EarningsAPI extends AppCompatActivity {
             intent2Earning.putStringArrayListExtra("COMPANY_ARRAY", CompanyList);
             intent2Earning.putStringArrayListExtra("TIME_ARRAY", TimeList);
             intent2Earning.putStringArrayListExtra("EPS_ARRAY", EPSList);
+            intent2Earning.putExtra("DATE", EarningDate);
 
             setResult(Activity.RESULT_OK,intent2Earning);
 

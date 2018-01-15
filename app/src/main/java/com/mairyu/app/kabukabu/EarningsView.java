@@ -67,6 +67,8 @@ public class EarningsView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earnings_view);
 
+        EarningsDateCollection = new LinkedHashMap<String, ArrayList<String>>();
+
         //------------------------------------------------------------------------------------------
         //---   ListView Setup
         //------------------------------------------------------------------------------------------
@@ -119,6 +121,9 @@ public class EarningsView extends AppCompatActivity {
                 CompanyList = intent.getStringArrayListExtra("COMPANY_ARRAY");
                 TimeList = intent.getStringArrayListExtra("TIME_ARRAY");
                 EPSList = intent.getStringArrayListExtra("EPS_ARRAY");
+                String Date = intent.getExtras().getString("DATE");
+
+                createSubgroupList(Date,TickerList);
 
                 calendarNext = getNextEarningsDate(calendarNext);
 
@@ -142,9 +147,10 @@ public class EarningsView extends AppCompatActivity {
                 CompanyList = intent.getStringArrayListExtra("COMPANY_ARRAY");
                 TimeList = intent.getStringArrayListExtra("TIME_ARRAY");
                 EPSList = intent.getStringArrayListExtra("EPS_ARRAY");
+                String Date = intent.getExtras().getString("DATE");
 
 //                createSubcategoryList();
-                createSubgroupList();
+                createSubgroupList(Date,TickerList);
 
                 expListAdapter = new ExpandableListAdapter(EarningsView.this, EarningsDateList, EarningsDateCollection);
                 expListView.setAdapter(expListAdapter);
@@ -318,26 +324,39 @@ public class EarningsView extends AppCompatActivity {
     //------------------------------------------------------------------------------------------
     //---   Create collection of Earning Dates
     //------------------------------------------------------------------------------------------
-    private void createSubgroupList() {
-
-        EarningsDateCollection = new LinkedHashMap<String, ArrayList<String>>();
-
-        for (String earningsDate : EarningsDateList) {
+    private void createSubgroupList(String earningsDate, ArrayList<String> tickerList) {
 
             childList = new ArrayList<String>();
 
-            String[] tmpList = new String[TickerList.size()];
+            String[] tmpList = new String[tickerList.size()];
 
-            for (int i = 0; i < TickerList.size(); i++) {
+            for (int i = 0; i < tickerList.size(); i++) {
 
-                tmpList[i] = TickerList.get(i);
+                tmpList[i] = tickerList.get(i);
             }
 
             for (String model : tmpList)
                 childList.add(model);
 
             EarningsDateCollection.put(earningsDate, childList);
-        }
+
+
+//        for (String earningsDate : EarningsDateList) {
+//
+//            childList = new ArrayList<String>();
+//
+//            String[] tmpList = new String[TickerList.size()];
+//
+//            for (int i = 0; i < TickerList.size(); i++) {
+//
+//                tmpList[i] = TickerList.get(i);
+//            }
+//
+//            for (String model : tmpList)
+//                childList.add(model);
+//
+//            EarningsDateCollection.put(earningsDate, childList);
+//        }
     }
 
     //------------------------------------------------------------------------------------------
