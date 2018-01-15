@@ -20,6 +20,7 @@ public class EarningsAPI extends AppCompatActivity {
     ArrayList<Earning> allEarningItems = new ArrayList<>();
 
     ArrayList<String> TickerList = new ArrayList<String>();;
+    ArrayList<String> CompanyList = new ArrayList<String>();;
     ArrayList<String> TimeList = new ArrayList<String>();;
     ArrayList<String> EPSList = new ArrayList<String>();;
 
@@ -109,8 +110,9 @@ public class EarningsAPI extends AppCompatActivity {
 
             HTTPClient dictHTTPClient = new HTTPClient();
 
-            dictHTTPClient.setBASE_URL("https://eresearch.fidelity.com/eresearch/conferenceCalls.jhtml?tab=earnings&begindate=" +
-                                        EarningDate);
+            String URL = "https://eresearch.fidelity.com/eresearch/conferenceCalls.jhtml?tab=earnings&begindate=" + EarningDate;
+
+            dictHTTPClient.setBASE_URL(URL);
 
             //--------------------------------------------------------------------------------------
             //---   Retrieve JSON response from websites (full string)
@@ -144,9 +146,13 @@ public class EarningsAPI extends AppCompatActivity {
 
             super.onPostExecute(allEarningItems);
 
+            //------------------------------------------------------------------------------------------
+            //---   Compile Array List of all Companies for this particular Date
+            //------------------------------------------------------------------------------------------
             for (Earning tmpEarning: allEarningItems) {
 
                 TickerList.add(tmpEarning.getTicker());
+                CompanyList.add(tmpEarning.getCompany());
                 TimeList.add(tmpEarning.getTime());
                 EPSList.add(tmpEarning.getEPS());
             }
@@ -161,6 +167,7 @@ public class EarningsAPI extends AppCompatActivity {
 
             Intent intent2Earning = new Intent(EarningsAPI.this, EarningsView.class);
             intent2Earning.putStringArrayListExtra("TICKER_ARRAY", TickerList);
+            intent2Earning.putStringArrayListExtra("COMPANY_ARRAY", CompanyList);
             intent2Earning.putStringArrayListExtra("TIME_ARRAY", TimeList);
             intent2Earning.putStringArrayListExtra("EPS_ARRAY", EPSList);
 

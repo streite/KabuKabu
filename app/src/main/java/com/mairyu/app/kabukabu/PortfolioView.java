@@ -518,6 +518,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             ImageView childLeverage = (ImageView) childView.findViewById(R.id.portfolioListViewLeverage);
             ImageView childWatch = (ImageView) childView.findViewById(R.id.portfolioListViewWatch);
             childWatch.setVisibility(View.INVISIBLE);
+            childLeverage.setVisibility(View.VISIBLE);
 
             switch (Leverage) {
 

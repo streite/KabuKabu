@@ -47,6 +47,7 @@ public class EarningsView extends AppCompatActivity {
     Map<String, ArrayList<String>> EarningsDateCollection;
 
     ArrayList<String> TickerList = new ArrayList<>();
+    ArrayList<String> CompanyList = new ArrayList<>();
     ArrayList<String> TimeList = new ArrayList<>();
     ArrayList<String> EPSList = new ArrayList<>();
 
@@ -115,6 +116,7 @@ public class EarningsView extends AppCompatActivity {
             if (requestCode == REQUEST_EARNINGS) {
 
                 TickerList = intent.getStringArrayListExtra("TICKER_ARRAY");
+                CompanyList = intent.getStringArrayListExtra("COMPANY_ARRAY");
                 TimeList = intent.getStringArrayListExtra("TIME_ARRAY");
                 EPSList = intent.getStringArrayListExtra("EPS_ARRAY");
 
@@ -137,6 +139,7 @@ public class EarningsView extends AppCompatActivity {
             if (requestCode == REQUEST_EARNINGS2) {
 
                 TickerList = intent.getStringArrayListExtra("TICKER_ARRAY");
+                CompanyList = intent.getStringArrayListExtra("COMPANY_ARRAY");
                 TimeList = intent.getStringArrayListExtra("TIME_ARRAY");
                 EPSList = intent.getStringArrayListExtra("EPS_ARRAY");
 
@@ -325,7 +328,7 @@ public class EarningsView extends AppCompatActivity {
 
             String[] tmpList = new String[TickerList.size()];
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < TickerList.size(); i++) {
 
                 tmpList[i] = TickerList.get(i);
             }
@@ -338,7 +341,7 @@ public class EarningsView extends AppCompatActivity {
     }
 
     //------------------------------------------------------------------------------------------
-    //---
+    //---   Skip holidays and get next working day
     //------------------------------------------------------------------------------------------
     private Calendar getNextEarningsDate(Calendar currentCalendar) {
 
