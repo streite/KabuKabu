@@ -254,8 +254,10 @@ public class EarningsView extends AppCompatActivity {
             final String Ticker = (String) getChild(groupPosition, childPosition);
 
             TextView itemView = (TextView) childView.findViewById(R.id.EarningsListViewTicker);
-
             itemView.setText(Ticker);
+
+            TextView nameView = (TextView) childView.findViewById(R.id.EarningsListViewName);
+            nameView.setText(Ticker);
 
             return childView;
         }

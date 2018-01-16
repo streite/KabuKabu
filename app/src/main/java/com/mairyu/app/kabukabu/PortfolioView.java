@@ -37,7 +37,6 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -288,28 +287,30 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
                 expListView.setAdapter(expListAdapter);
 
-                expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                registerForContextMenu(expListView);
 
-                    public boolean onChildClick(ExpandableListView parent, View v,
-                                                int groupPosition, int childPosition, long id) {
+//                expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+//
+//                    public boolean onChildClick(ExpandableListView parent, View v,
+//                                                int groupPosition, int childPosition, long id) {
+//
+//                        final String selected = (String) expListAdapter.getChild(groupPosition, childPosition);
+//
+//                        Toast.makeText(getBaseContext(), selected, Toast.LENGTH_SHORT).show();
+//
+//                        return true;
+//                    }
+//                });
 
-                        final String selected = (String) expListAdapter.getChild(groupPosition, childPosition);
-
-                        Toast.makeText(getBaseContext(), selected, Toast.LENGTH_SHORT).show();
-
-                        return true;
-                    }
-                });
-
-                expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        //Message
-                        Toast.makeText(getBaseContext(), position+"", Toast.LENGTH_SHORT).show();
-
-                        return true;
-                    }
-                });
+//                expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//                    @Override
+//                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                        //Message
+//                        Toast.makeText(getBaseContext(), position+"", Toast.LENGTH_SHORT).show();
+//
+//                        return true;
+//                    }
+//                });
 
                 //------------------------------------------------------------------------------------------
                 //---   Layout
@@ -1011,14 +1012,29 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
     {
+
         super.onCreateContextMenu(menu, v, menuInfo);
+        ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
 
-        menu.setHeaderTitle("Select The Action");
+        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
+        int groupPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+        int childPosition = ExpandableListView.getPackedPositionChild(info.packedPosition);
 
-        menu.add(0, v.getId(), 0, "Add");
-        menu.add(0, v.getId(), 0, "Edit");
-        menu.add(0, v.getId(), 0, "Delete");
-        menu.add(0, v.getId(), 0, "Clear");
+        // Show context menu for groups
+        if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+            menu.setHeaderTitle("Group");
+            menu.add(0, 0, 1, "Delete");
+
+            // Show context menu for children
+        } else if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+
+            menu.setHeaderTitle("Select The Action");
+
+            menu.add(0, v.getId(), 0, "Add");
+            menu.add(0, v.getId(), 0, "Edit");
+            menu.add(0, v.getId(), 0, "Delete");
+            menu.add(0, v.getId(), 0, "Clear");
+        }
     }
 
     //**********************************************************************************************
@@ -1027,43 +1043,57 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     @Override
     public boolean onContextItemSelected(MenuItem item){
 
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        ExpandableListView.ExpandableListContextMenuInfo info =
+                (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
+
         CharSequence Title = item.getTitle();
-        View view;
-        Stock currentStock = allStocks.get(info.position);
 
-        switch (Title.toString()) {
 
-            //--------------------------------------------------------------------------------------
-            //---   EDIT
-            //--------------------------------------------------------------------------------------
-            case "Edit":
+        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
+        int groupPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+        int childPosition = ExpandableListView.getPackedPositionChild(info.packedPosition);
 
-                Intent intent2Info = new Intent(PortfolioView.this, StockInfo.class);
+        if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+            // do something with parent
 
-                intent2Info.putExtra("SQL_STOCK_ID", currentStock.getId());
+        } else if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+            // do someting with child
 
-                //---   ==> CardView
-                startActivityForResult(intent2Info,REQUEST_INFO);
+            Stock currentStock = allStocks.get(childPosition);
 
-                break;
+            switch (Title.toString()) {
 
-            //--------------------------------------------------------------------------------------
-            //---   CLEAR (Copy Price to Base)
-            //--------------------------------------------------------------------------------------
-            case "Clear":
+                //--------------------------------------------------------------------------------------
+                //---   EDIT
+                //--------------------------------------------------------------------------------------
+                case "Edit":
 
-                currentStock.setShares(0);
-                currentStock.setCommission(0);
+                    Intent intent2Info = new Intent(PortfolioView.this, StockInfo.class);
 
-                sqlHandler.updateStock(currentStock);
+                    intent2Info.putExtra("SQL_STOCK_ID", currentStock.getId());
 
-                adapterStocks.notifyDataSetChanged();
+                    //---   ==> CardView
+                    startActivityForResult(intent2Info,REQUEST_INFO);
 
-                break;
+                    break;
+
+                //--------------------------------------------------------------------------------------
+                //---   CLEAR (Copy Price to Base)
+                //--------------------------------------------------------------------------------------
+                case "Clear":
+
+                    currentStock.setShares(0);
+                    currentStock.setCommission(0);
+
+                    sqlHandler.updateStock(currentStock);
+
+                    adapterStocks.notifyDataSetChanged();
+
+                    break;
+            }
         }
 
-        return true;
+        return super.onContextItemSelected(item);
     }
 
     //**********************************************************************************************
