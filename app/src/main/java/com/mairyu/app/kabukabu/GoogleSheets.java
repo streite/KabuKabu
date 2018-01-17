@@ -250,6 +250,7 @@ public class GoogleSheets extends AppCompatActivity {
                     //------------------------------------------------------------------------------
                     //---   READ
                     //------------------------------------------------------------------------------
+
                     if (sheetsMode.equals("READ")) {
 
                         Log.i("LOG: (GS) ASYNC-TRY", "Google API Background ... READ");
@@ -287,6 +288,7 @@ public class GoogleSheets extends AppCompatActivity {
                     //------------------------------------------------------------------------------
                     //---   WRITE
                     //------------------------------------------------------------------------------
+
                     } else if (sheetsMode.equals("WRITE")) {
 
                         allStocks = sqlHandler.getAllStocks(false);

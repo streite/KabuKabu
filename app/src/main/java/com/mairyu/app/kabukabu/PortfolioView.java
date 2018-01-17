@@ -139,6 +139,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     static final int REQUEST_YAHOO = 2000;
     static final int REQUEST_YAHOO2 = 2001;
     static final int REQUEST_YAHOO3 = 2002;
+    static final int REQUEST_YAHOO4 = 2003;
 
     //http://www.nasdaq.com/symbol/aapl/option-chain
 //    https://finance.yahoo.com/calendar/earnings?&day=2017-11-14
@@ -157,7 +158,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P,MISC");
         SubcategoryMap.put("REGION ETF","ASIA,EUROPE,LATIN AMERICA,MISC");
         SubcategoryMap.put("COMMODITY ETF","METAL,AGRICULTURE,ENERGY,MISC");
-        SubcategoryMap.put("OTHER ETF","REAL ESTATE,TECH");
+        SubcategoryMap.put("OTHER ETF","REAL ESTATE,TECH,BIOTECH");
         SubcategoryMap.put("TECH","SEMICONDUCTOR,WWW,ELECTRONICS,MISC");
         SubcategoryMap.put("FINANCE","WALL STREET,BANK,PEER,MISC");
         SubcategoryMap.put("CONSUME","COMMUNICATION,MERCHANDISE,MEDIA,ENTERTAINMENT,FOOD,MISC");
@@ -662,9 +663,22 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             }
 
+            //--------------------------------------------------------------------------------------
+            //---   Buy/Sell Tag
+            //--------------------------------------------------------------------------------------
+
+            if (currentStock.getWatch() == 2) {
+
+                childWatch.setImageResource(R.drawable.ic_thumb_up_brown);
+                childWatch.setVisibility(View.VISIBLE);
+            }
+
             return childView;
         }
 
+        //------------------------------------------------------------------------------------------
+        //---
+        //------------------------------------------------------------------------------------------
         public int getChildrenCount(int groupPosition) {
 
             return SubgroupNames.get(GroupNames.get(groupPosition)).size();
@@ -1034,6 +1048,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             menu.add(0, v.getId(), 0, "Edit");
             menu.add(0, v.getId(), 0, "Delete");
             menu.add(0, v.getId(), 0, "Clear");
+            menu.add(0, v.getId(), 0, "Tag Buy");
+            menu.add(0, v.getId(), 0, "Tag Sell");
+            menu.add(0, v.getId(), 0, "Clear Tag");
         }
     }
 
@@ -1048,10 +1065,11 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         CharSequence Title = item.getTitle();
 
-
         int type = ExpandableListView.getPackedPositionType(info.packedPosition);
         int groupPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition);
         int childPosition = ExpandableListView.getPackedPositionChild(info.packedPosition);
+
+        i("LOG: (PV) Position", "Group: " + groupPosition + " Child: " + childPosition);
 
         if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
             // do something with parent
@@ -1073,13 +1091,13 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                     intent2Info.putExtra("SQL_STOCK_ID", currentStock.getId());
 
                     //---   ==> CardView
-                    startActivityForResult(intent2Info,REQUEST_INFO);
+                    startActivityForResult(intent2Info, REQUEST_INFO);
 
                     break;
 
-                //--------------------------------------------------------------------------------------
+                //----------------------------------------------------------------------------------
                 //---   CLEAR (Copy Price to Base)
-                //--------------------------------------------------------------------------------------
+                //----------------------------------------------------------------------------------
                 case "Clear":
 
                     currentStock.setShares(0);
@@ -1090,7 +1108,47 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                     adapterStocks.notifyDataSetChanged();
 
                     break;
+
+                //----------------------------------------------------------------------------------
+                //---   Tag for Buy
+                //----------------------------------------------------------------------------------
+                case "Tag Buy":
+
+                    currentStock.setWatch(2);
+
+                    sqlHandler.updateStock(currentStock);
+
+//                    adapterStocks.notifyDataSetChanged();
+
+                    break;
+
+                //----------------------------------------------------------------------------------
+                //---   Tag for Sell
+                //----------------------------------------------------------------------------------
+                case "Tag Sell":
+
+                    currentStock.setWatch(3);
+
+                    sqlHandler.updateStock(currentStock);
+
+                    adapterStocks.notifyDataSetChanged();
+
+                    break;
+
+                //----------------------------------------------------------------------------------
+                //---   Clear Tag
+                //----------------------------------------------------------------------------------
+                case "Clear Tag":
+
+                    currentStock.setWatch(0);
+
+                    sqlHandler.updateStock(currentStock);
+
+//                    adapterStocks.notifyDataSetChanged();
+
+                    break;
             }
+
         }
 
         return super.onContextItemSelected(item);
@@ -1257,9 +1315,23 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //------------------------------------------------------------------------------------------
             if (requestCode == REQUEST_YAHOO3) {
 
-                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-                expListView.setAdapter(expListAdapter);
-                expListAdapter.notifyDataSetChanged();
+                if (TickerList.size() > 75) {
+
+                    Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
+                    ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(75, TickerList.size()));
+                    intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
+                    startActivityForResult(intentYahoo, REQUEST_YAHOO4);
+
+                } else {
+
+                    expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
+                    expListView.setAdapter(expListAdapter);
+                    expListAdapter.notifyDataSetChanged();
+                }
+
+//                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
+//                expListView.setAdapter(expListAdapter);
+//                expListAdapter.notifyDataSetChanged();
             }
         }
     }

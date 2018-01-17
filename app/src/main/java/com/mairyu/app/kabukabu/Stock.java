@@ -18,6 +18,9 @@ public class Stock  {
     private String Leverage;
     private int Watch;
 
+    // Watch: 0 Wash Sale
+    //        1 Buy
+    //        2 Sell
 
     public Stock() {
 
