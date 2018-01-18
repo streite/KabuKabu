@@ -568,6 +568,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
             }
             ChangePerc = ChangePerc.replace("%", "");
+            ChangePerc = ChangePerc.replace("--", "-"); // not sure why we sometimes get '--'
             if (ChangePerc.equals("")) {
 //                portfolioListViewChangePerc.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
             } else {
