@@ -16,6 +16,7 @@
         android:id="@+id/llhStockInfoTicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
         android:orientation="horizontal">
 
         <EditText
@@ -48,9 +49,10 @@
 
         <TextView
             android:id="@+id/txtStockInfoShares"
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="80"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
             android:text="Shares: "
             android:textColor="@color/colorBrown1"
             android:textSize="18sp" />
@@ -59,17 +61,18 @@
             android:id="@+id/edtStockInfoShares"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
             android:layout_below="@+id/edtStockInfoTicker"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
             android:background="@android:color/transparent"
-            android:inputType="number"
             android:clickable="false"
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:gravity="center_vertical|center_horizontal"
+            android:gravity="right"
+            android:inputType="number"
             android:text="SHARES"
             android:textColor="@color/colorGrey1"
             android:textSize="48sp" />
@@ -85,9 +88,10 @@
 
         <TextView
             android:id="@+id/txtStockInfoBasis"
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="80"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
             android:text="Basis: "
             android:textColor="@color/colorBrown1"
             android:textSize="18sp" />
@@ -96,8 +100,9 @@
             android:id="@+id/edtStockInfoBasis"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center_vertical"
             android:layout_marginBottom="10dp"
+            android:layout_marginRight="50dp"
             android:layout_marginTop="10dp"
             android:background="@android:color/transparent"
             android:inputType="numberDecimal"
@@ -105,8 +110,9 @@
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:gravity="center_vertical|center_horizontal"
+            android:gravity="right"
             android:text="BASIS"
+            android:hint="Basis"
             android:textColor="@color/colorGrey1"
             android:textSize="48sp" />
 
@@ -121,9 +127,10 @@
 
         <TextView
             android:id="@+id/txtStockInfoComission"
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="80"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
             android:text="Comission: "
             android:textColor="@color/colorBrown1"
             android:textSize="18sp" />
@@ -132,8 +139,9 @@
             android:id="@+id/edtStockInfoComission"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center_vertical"
             android:layout_marginBottom="10dp"
+            android:layout_marginRight="50dp"
             android:layout_marginTop="10dp"
             android:layout_below="@+id/edtStockInfoBasis"
             android:background="@android:color/transparent"
@@ -142,7 +150,7 @@
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:gravity="center_vertical|center_horizontal"
+            android:gravity="right"
             android:text="COMISSION"
             android:textColor="@color/colorGrey1"
             android:textSize="48sp" />

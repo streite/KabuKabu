@@ -26,4 +26,11 @@
         android:icon="@drawable/ic_edit"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/menu_undo"
+        android:title="Undo"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_undo_black"
+        app:showAsAction="ifRoom" />
+
 </menu>

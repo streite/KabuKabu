@@ -1260,7 +1260,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         if (resultCode == Activity.RESULT_OK) {
 
             //------------------------------------------------------------------------------------------
-            //---   Return from YAHOO
+            //---   Return from Stock Info
             //------------------------------------------------------------------------------------------
             if (requestCode == REQUEST_INFO) {
 
