@@ -155,10 +155,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.portfolio_view_pager);
 
-        SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P,MISC");
+        SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P,RUSSEL,MISC");
         SubcategoryMap.put("REGION ETF","ASIA,EUROPE,LATIN AMERICA,MISC");
         SubcategoryMap.put("COMMODITY ETF","METAL,AGRICULTURE,ENERGY,MISC");
-        SubcategoryMap.put("OTHER ETF","REAL ESTATE,TECH,BIOTECH");
+        SubcategoryMap.put("OTHER ETF","REAL ESTATE,TECH,BIOTECH,FINANCE");
         SubcategoryMap.put("TECH","SEMICONDUCTOR,WWW,ELECTRONICS,MISC");
         SubcategoryMap.put("FINANCE","WALL STREET,BANK,PEER,MISC");
         SubcategoryMap.put("CONSUME","COMMUNICATION,MERCHANDISE,MEDIA,ENTERTAINMENT,FOOD,MISC");
@@ -174,6 +174,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         Bundle extras = getIntent().getExtras();
         Category = extras.getString("PORTFOLIO_CATEGORY");
+
+        //------------------------------------------------------------------------------------------
+        //---   from 'strings.xml'
+        //------------------------------------------------------------------------------------------
 
         CategoryArray = getResources().getStringArray(R.array.categories);
 
@@ -258,9 +262,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 refreshCard();
 
-                //--------------------------------------------------------------------------------------
+                //----------------------------------------------------------------------------------
                 //---   Update Category Header
-                //--------------------------------------------------------------------------------------
+                //----------------------------------------------------------------------------------
+
                 TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
                 txtCategory.setText(Category + " (" + SQLDBSize + ")");
             }
@@ -365,12 +370,16 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    //------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------
     //---   Create collection of subgroups
-    //------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------
     private void createSubgroupList() {
 
         subgroupCollection = new LinkedHashMap<String, List<String>>();
+
+        //----------------------------------------------------------------------------------------------
+        //---   Create Child List for each Subcategory
+        //----------------------------------------------------------------------------------------------
 
         for (String subCategory : SubcategoryList) {
 
@@ -1078,7 +1087,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         } else if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
             // do someting with child
 
-            Stock currentStock = allStocks.get(childPosition);
+            String Ticker = subgroupCollection.get(SubcategoryList.get(groupPosition)).get(childPosition);
+
+//            Stock currentStock = allStocks.get(childPosition);
+            Stock currentStock = sqlHandler.getStocksByTicker(Ticker);
 
             switch (Title.toString()) {
 

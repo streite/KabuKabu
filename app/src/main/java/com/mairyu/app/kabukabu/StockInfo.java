@@ -40,6 +40,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
     EditText edtStockInfoShares;
     EditText edtStockInfoBasis;
     EditText edtStockInfoComission;
+    EditText edtStockInfoLeverage;
 
     String PortfolioCategory;
     int Category_Index;
@@ -91,6 +92,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
         edtStockInfoBasis = (EditText) findViewById(R.id.edtStockInfoBasis);
         edtStockInfoBasis.setOnClickListener(this);
         edtStockInfoComission = (EditText) findViewById(R.id.edtStockInfoComission);
+        edtStockInfoLeverage = (EditText) findViewById(R.id.edtStockInfoLeverage);
 
         //----------------------------------------------------------------------------------
         //---   Spinner
@@ -125,6 +127,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
                 edtStockInfoShares.setText(tmpStock.getShares()+"");
                 edtStockInfoBasis.setText(tmpStock.getBasis()+"");
                 edtStockInfoComission.setText(tmpStock.getCommission()+"");
+                edtStockInfoLeverage.setText(tmpStock.getLeverage()+"");
 
                 editOn();
             }
@@ -254,6 +257,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
             tmpStock.setShares(Integer.parseInt(edtStockInfoShares.getText().toString()));
             tmpStock.setBasis(Float.parseFloat(edtStockInfoBasis.getText().toString()));
             tmpStock.setCommission(Integer.parseInt(edtStockInfoComission.getText().toString()));
+            tmpStock.setLeverage(edtStockInfoLeverage.getText().toString());
             tmpStock.setCategory(PortfolioCategory);
 
             sqlHandler.updateStock(tmpStock);
@@ -291,6 +295,12 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
         edtStockInfoComission.setFocusable(true);
         edtStockInfoComission.setCursorVisible(true);
         edtStockInfoComission.setClickable(true);
+
+
+        edtStockInfoLeverage.setFocusableInTouchMode(true);
+        edtStockInfoLeverage.setFocusable(true);
+        edtStockInfoLeverage.setCursorVisible(true);
+        edtStockInfoLeverage.setClickable(true);
     }
 
     //**********************************************************************************************
