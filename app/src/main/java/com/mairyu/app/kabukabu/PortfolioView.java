@@ -1070,6 +1070,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         int groupPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition);
         int childPosition = ExpandableListView.getPackedPositionChild(info.packedPosition);
 
+//        String SubCategory = GroupNames.get(groupPosition);
+//        allSubStocks = sqlHandler.getStocksBySubcategory(Category,subCategory);
+
         i("LOG: (PV) Position", "Group: " + groupPosition + " Child: " + childPosition);
 
         if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
