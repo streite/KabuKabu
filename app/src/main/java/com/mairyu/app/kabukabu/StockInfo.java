@@ -36,6 +36,8 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
     SQLhandler sqlHandler;
     int SQL_Stock_ID;
 
+
+    EditText edtStockInfoCompany;
     EditText edtStockInfoTicker;
     EditText edtStockInfoShares;
     EditText edtStockInfoBasis;
@@ -87,6 +89,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
         //------------------------------------------------------------------------------------------
 
         edtStockInfoTicker = (EditText) findViewById(R.id.edtStockInfoTicker);
+        edtStockInfoCompany = (EditText) findViewById(R.id.edtStockInfoCompany);
         edtStockInfoShares = (EditText) findViewById(R.id.edtStockInfoShares);
         edtStockInfoShares.setOnClickListener(this);
         edtStockInfoBasis = (EditText) findViewById(R.id.edtStockInfoBasis);
@@ -124,6 +127,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
                 Stock tmpStock = sqlHandler.getStockByID(SQL_Stock_ID);
 
                 edtStockInfoTicker.setText(tmpStock.getTicker());
+                edtStockInfoCompany.setText("("+tmpStock.getCompany()+")");
                 edtStockInfoShares.setText(tmpStock.getShares()+"");
                 edtStockInfoBasis.setText(tmpStock.getBasis()+"");
                 edtStockInfoComission.setText(tmpStock.getCommission()+"");
@@ -254,6 +258,9 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
             Stock tmpStock = sqlHandler.getStockByID(SQL_Stock_ID);
 
             tmpStock.setTicker(edtStockInfoTicker.getText().toString());
+            String Company = edtStockInfoCompany.getText().toString().replace("(","");
+            Company = edtStockInfoCompany.getText().toString().replace(")","");
+            tmpStock.setCompany(Company);
             tmpStock.setShares(Integer.parseInt(edtStockInfoShares.getText().toString()));
             tmpStock.setBasis(Float.parseFloat(edtStockInfoBasis.getText().toString()));
             tmpStock.setCommission(Integer.parseInt(edtStockInfoComission.getText().toString()));
@@ -280,6 +287,11 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
         edtStockInfoTicker.setFocusable(true);
         edtStockInfoTicker.setCursorVisible(true);
         edtStockInfoTicker.setClickable(true);
+
+        edtStockInfoCompany.setFocusableInTouchMode(true);
+        edtStockInfoCompany.setFocusable(true);
+        edtStockInfoCompany.setCursorVisible(true);
+        edtStockInfoCompany.setClickable(true);
 
 //        edtStockInfoShares.setFocusableInTouchMode(true);
 //        edtStockInfoShares.setFocusable(true);
