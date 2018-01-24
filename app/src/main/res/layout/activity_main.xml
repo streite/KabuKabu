@@ -44,6 +44,12 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/btnWorldIndices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="World Indices" />
+
+        <Button
             android:id="@+id/btnEarnings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,14 +67,7 @@
             android:layout_height="wrap_content"
             android:text="Setting" />
 
-        <ExpandableListView
-            android:id="@+id/StockExpandList"
-            android:layout_below="@+id/btnSetting"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent" >
-        </ExpandableListView>
 
     </LinearLayout>
-
 
 </RelativeLayout>

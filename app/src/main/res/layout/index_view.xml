@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rlhIndexView"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.mairyu.app.kabukabu.CategoryView">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+        <GridLayout
+            android:id="@+id/glIndexView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="3"
+            android:rowCount="3">
+
+            <ImageView
+                android:id="@+id/chinaFlag"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:layout_marginBottom="30dp"
+                android:layout_gravity="top|center_horizontal"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/china" />
+
+            <TextView
+                android:id="@+id/txtIndexViewChina"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:text="China"
+                android:textColor="@color/colorGrey1"
+                android:textSize="24sp" />
+
+            <ImageView
+                android:id="@+id/japanFlag"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_row="1"
+                android:layout_gravity="top|center_horizontal"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/japan" />
+
+            <TextView
+                android:id="@+id/txtJapanIndex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_row="1"
+                android:layout_gravity="bottom|center_horizontal"
+                android:text="Japan" />
+
+            <ImageView
+                android:id="@+id/koreaFlag"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_row="1"
+                android:layout_gravity="top|center_horizontal"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/korea" />
+
+            <TextView
+                android:id="@+id/txtKoreaIndex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_row="1"
+                android:layout_gravity="bottom|center_horizontal"
+                android:text="Korea" />
+
+        </GridLayout>
+
+</RelativeLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <ListView android:id="@+id/left_drawer"
+
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:dividerHeight="0dp"
+        android:background="@drawable/gradient_grey_bg"/>
+
+</android.support.v4.widget.DrawerLayout>
