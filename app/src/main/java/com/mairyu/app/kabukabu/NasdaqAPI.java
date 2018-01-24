@@ -113,7 +113,7 @@ public class NasdaqAPI extends AppCompatActivity {
             dictHTTPClient.setBASE_URL("http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=" + TickerConcat);
 
             //--------------------------------------------------------------------------------------
-            //---   Retrieve JSON response from websites (full string)
+            //---   Retrieve HTML response from websites (full string)
             //--------------------------------------------------------------------------------------
 
             String data = (dictHTTPClient.getHTTPData());
