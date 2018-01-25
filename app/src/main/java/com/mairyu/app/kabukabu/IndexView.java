@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridLayout;
 import android.widget.ListView;
@@ -150,6 +151,13 @@ public class IndexView extends AppCompatActivity {
 
         MenuItem menu_refresh = menu.findItem(R.id.menu_refresh);
         menu_refresh.setVisible(false);
+
+        //------------------------------------------------------------------------------------------
+        //---   Suppress Category Header
+        //------------------------------------------------------------------------------------------
+
+        TextView Category = (TextView) findViewById(R.id.txtCategory);
+        Category.setVisibility(View.GONE);
 
         return true;
     }

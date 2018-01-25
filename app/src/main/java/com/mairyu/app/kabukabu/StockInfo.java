@@ -222,7 +222,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
         spinner.setSelection(Arrays.asList(CategoryArray).indexOf(tmpStock.getCategory()));
 
         //------------------------------------------------------------------------------------------
-        //---
+        //---   Suppress Category Header
         //------------------------------------------------------------------------------------------
 
         TextView Category = (TextView) findViewById(R.id.txtCategory);
