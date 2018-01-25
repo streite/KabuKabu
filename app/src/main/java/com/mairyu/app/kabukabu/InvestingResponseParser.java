@@ -1,6 +1,9 @@
 package com.mairyu.app.kabukabu;
 
-import java.util.ArrayList;
+import android.util.Log;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class InvestingResponseParser {
@@ -8,73 +11,75 @@ public class InvestingResponseParser {
     //**********************************************************************************************
     //***   Parse HTTP response string for sentence pairs
     //**********************************************************************************************
-    public static ArrayList<Stock> getTopLoser (String InvestingResponse) {
+    public static Map<String, String> getIndexHashMap (String InvestingResponse) {
 
-        ArrayList<String> ExampleSentences = new ArrayList<>();
-        ArrayList<Stock> allDictItems = new ArrayList<>();
+        Map<String, String> IndexChangeLUT = new HashMap<>();
 
-        String FullSnippet,PartSnippet,Color;
-        String Ticker,Price,Change,ChangePerc,Volume;
+        String FullSnippet,PartSnippet,tmpSnippet;
+        String Country,Index,Change;
 
         int first = InvestingResponse.indexOf("</script><table id");
         int last = InvestingResponse.lastIndexOf("plusLoader.ready");
         FullSnippet = InvestingResponse.substring(first,last);
 
         //------------------------------------------------------------------------------------------
+        //---   One Country at a time ...
+        //------------------------------------------------------------------------------------------
+        while (FullSnippet.indexOf("</script><table id")>=0) {
 
-        while (FullSnippet.indexOf("/script><table id")>=0) {
+//            Stock tmpStock = new Stock();
 
-            Stock tmpStock = new Stock();
-
-            first = FullSnippet.indexOf("symbol");
-            last = FullSnippet.indexOf("table");
+            first = FullSnippet.indexOf("<tr id=");
+            last = FullSnippet.indexOf("</td></tr>");
             PartSnippet = FullSnippet.substring(first, last);
 
-            first = PartSnippet.indexOf(">") + 1;
-            last = PartSnippet.indexOf("<") - 0;
-            Ticker = PartSnippet.substring(first,last);
-            tmpStock.setTicker(Ticker);
-            PartSnippet = PartSnippet.substring(last,PartSnippet.length());
+            tmpSnippet = skipOnce(PartSnippet);
+            first = tmpSnippet.indexOf("span title=") + 12;
+            last = tmpSnippet.indexOf(" class=\"ceFlags") - 1;
+            Country = tmpSnippet.substring(first, last);
 
-            first = PartSnippet.indexOf("color:") + 6;
-            last = PartSnippet.substring(first,PartSnippet.length()).indexOf("id=") - 2 + first;
-            Color = PartSnippet.substring(first, last);
+            Log.i("IRP: Country", Country);
 
-            first = PartSnippet.indexOf("lastsale") + 11;
-            last = PartSnippet.substring(first,PartSnippet.length()).indexOf("label") - 2 + first;
-            Price = PartSnippet.substring(first, last);
-            Price = Price.replace(",","");
-            tmpStock.setPrice(Float.parseFloat(Price));
-            PartSnippet = PartSnippet.substring(last,PartSnippet.length());
+            tmpSnippet = skipOnce(tmpSnippet);
+            first = tmpSnippet.indexOf("span data-name=") + 16;
+            last = tmpSnippet.indexOf("data-id") - 2;
+            Index = tmpSnippet.substring(first, last);
 
-            first = PartSnippet.indexOf("change") + 8;
-            last = PartSnippet.substring(first,PartSnippet.length()).indexOf("label") - 8 + first;
-            Change = PartSnippet.substring(first, last);
-            if (Change.equals("unch")) { Change = "0"; }
-            if (Color.equals("Red")) { Change = "-" + Change; }
-            else { Change = "+" + Change; }
-            tmpStock.setChange(Change);
-            PartSnippet = PartSnippet.substring(last,PartSnippet.length());
+            Log.i("IRP: Index", Index);
 
-            first = PartSnippet.indexOf("pctchange") + 11;
-            last = PartSnippet.substring(first,PartSnippet.length()).indexOf("label") - 2 + first;
-            ChangePerc = PartSnippet.substring(first, last);
-            if (ChangePerc.equals("unch")) { ChangePerc = "0"; }
-            if (Color.equals("Red")) { ChangePerc = "-" + ChangePerc; }
-            else { ChangePerc = "+" + ChangePerc; }
-            tmpStock.setPercChange(ChangePerc);
-            PartSnippet = PartSnippet.substring(last,PartSnippet.length());
+            tmpSnippet = skipOnce(tmpSnippet);
+            tmpSnippet = skipOnce(tmpSnippet);
+            tmpSnippet = skipOnce(tmpSnippet);
+            tmpSnippet = skipOnce(tmpSnippet);
+            tmpSnippet = skipOnce(tmpSnippet);
+            first = tmpSnippet.indexOf(">") + 1;
+            last = tmpSnippet.indexOf("</");
+            Change = tmpSnippet.substring(first, last);
 
-            first = PartSnippet.indexOf("volume") + 8;
-            last = PartSnippet.substring(first,PartSnippet.length()).indexOf("label") - 2 + first;
-            Volume = PartSnippet.substring(first, last);
-            tmpStock.setVolume(Volume);
+            Log.i("IRP: Change", Change);
 
-            FullSnippet = FullSnippet.substring(FullSnippet.indexOf("symbol")+1);
+            IndexChangeLUT.put(Index,Change);
 
-            allDictItems.add(tmpStock);
+            PartSnippet = PartSnippet.substring(PartSnippet.indexOf("<tr id=")+1);
+
+            FullSnippet = FullSnippet.substring(FullSnippet.indexOf("</script><table id")+1);
+
+//            Log.i("IRP: FullSnippet", FullSnippet);
         }
 
-        return allDictItems;
+        return IndexChangeLUT;
+    }
+
+    //**********************************************************************************************
+    //***   Method: Empty SQL DB (for clean slate)
+    //**********************************************************************************************
+    public static String skipOnce(String ParseLine){
+
+        int index;
+
+        index = ParseLine.indexOf("<td class")+1;
+        ParseLine = ParseLine.substring(index);
+
+        return ParseLine;
     }
 }

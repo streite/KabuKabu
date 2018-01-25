@@ -7,7 +7,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 //==================================================================================================
 //===   InvestingAPI
@@ -16,8 +17,7 @@ public class InvestingAPI extends AppCompatActivity {
 
     private PreferenceSettings _appPrefs;
 
-    ArrayList<Stock> allStockItems = new ArrayList<>();
-    ArrayList<String> TickerList = new ArrayList<>();
+    Map<String, String> IndexChangeLUT = new HashMap<>();
 
     SQLhandler sqlHandler;
 
@@ -42,7 +42,7 @@ public class InvestingAPI extends AppCompatActivity {
         //---   Get Card Details
         //------------------------------------------------------------------------------------------
 
-        TickerList = getIntent().getStringArrayListExtra("TICKER_INDEX_ARRAY");
+//        TickerList = getIntent().getStringArrayListExtra("TICKER_INDEX_ARRAY");
 
         //------------------------------------------------------------------------------------------
         //---   SQLite Setup
@@ -62,7 +62,7 @@ public class InvestingAPI extends AppCompatActivity {
     //**********************************************************************************************
     //***   Pull Data from website, call Parser etc.
     //**********************************************************************************************
-    private class InvestingAsyncTask extends AsyncTask <String, Void, ArrayList<Stock>> {
+    private class InvestingAsyncTask extends AsyncTask <String, Void, Map<String, String>> {
 
         Context context;
 
@@ -90,7 +90,7 @@ public class InvestingAPI extends AppCompatActivity {
         //---   AsyncTask: doInBackground
         //------------------------------------------------------------------------------------------
         @Override
-        protected ArrayList<Stock> doInBackground(String... params) {
+        protected Map<String, String> doInBackground(String... params) {
 
             //--------------------------------------------------------------------------------------
             //---   Setup HTTP client for websites API server
@@ -112,37 +112,25 @@ public class InvestingAPI extends AppCompatActivity {
 
             try {
 
-                allStockItems = InvestingResponseParser.getTopLoser(data);
+                IndexChangeLUT = InvestingResponseParser.getIndexHashMap(data);
 
-                return allStockItems;
+                return IndexChangeLUT;
 
             } catch (Throwable t) {
 
                 t.printStackTrace();
             }
 
-            return allStockItems;
+            return IndexChangeLUT;
         }
 
         //------------------------------------------------------------------------------------------
         //---   AsyncTask: onPostExecute - Display in ListView
         //------------------------------------------------------------------------------------------
         @Override
-        protected void onPostExecute(ArrayList<Stock> allStockItems) {
+        protected void onPostExecute(Map<String, String> IndexChangeLUT) {
 
-            super.onPostExecute(allStockItems);
-
-            for (Stock tmpStock: allStockItems) {
-
-                String Ticker = tmpStock.getTicker();
-                Stock sqlStock = sqlHandler.getStocksByTicker(Ticker);
-
-                sqlStock.setPrice(tmpStock.getPrice());
-                sqlStock.setChange(tmpStock.getChange());
-                sqlStock.setPercChange(tmpStock.getChangePerc());
-
-                sqlHandler.updateStock(sqlStock);
-            }
+            super.onPostExecute(IndexChangeLUT);
 
             //------------------------------------------------------------------------------------------
             //---   Close progress dialog
@@ -151,6 +139,8 @@ public class InvestingAPI extends AppCompatActivity {
 
                 progressDialog.dismiss();
             }
+
+//            intent.putExtra("h", hashMap);
 
             setResult(Activity.RESULT_OK);
 
