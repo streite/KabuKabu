@@ -28,8 +28,11 @@ public class IndexView extends AppCompatActivity {
     private String[] navigation;
 
     private TextView txtIndexViewChina;
+    private TextView txtIndexViewHongKong;
+    private TextView txtIndexViewTaiwan;
     private TextView txtIndexViewJapan;
     private TextView txtIndexViewKorea;
+    private TextView txtIndexViewIndia;
 
     GridLayout glIndexView;
 
@@ -56,8 +59,11 @@ public class IndexView extends AppCompatActivity {
         //----------------------------------------------------------------------------------
 
         txtIndexViewChina = (TextView) findViewById(R.id.txtIndexViewChina);
+        txtIndexViewHongKong = (TextView) findViewById(R.id.txtIndexViewHongKong);
+        txtIndexViewTaiwan = (TextView) findViewById(R.id.txtIndexViewTaiwan);
         txtIndexViewJapan = (TextView) findViewById(R.id.txtIndexViewJapan);
         txtIndexViewKorea = (TextView) findViewById(R.id.txtIndexViewKorea);
+        txtIndexViewIndia = (TextView) findViewById(R.id.txtIndexViewIndia);
 
         //----------------------------------------------------------------------------------
         //---   Navigation Drawer
@@ -120,6 +126,10 @@ public class IndexView extends AppCompatActivity {
                     txtIndexViewChina.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorGreenStrong));
                 }
 
+                displayIndexChange(txtIndexViewHongKong,hashMap,"Hang Seng");
+
+                displayIndexChange(txtIndexViewTaiwan,hashMap,"Taiwan Weighted");
+
                 txtIndexViewJapan.setText(hashMap.get("Nikkei 225")+"%");
                 if (Float.parseFloat(hashMap.get("Nikkei 225"))<0) {
                     txtIndexViewJapan.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorRedStrong));
@@ -127,7 +137,14 @@ public class IndexView extends AppCompatActivity {
                     txtIndexViewJapan.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorGreenStrong));
                 }
 
-                txtIndexViewKorea.setText("HELLO0000");
+                txtIndexViewKorea.setText(hashMap.get("KOSPI")+"%");
+                if (Float.parseFloat(hashMap.get("KOSPI"))<0) {
+                    txtIndexViewKorea.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorRedStrong));
+                } else {
+                    txtIndexViewKorea.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorGreenStrong));
+                }
+
+                displayIndexChange(txtIndexViewIndia,hashMap,"BSE Sensex");
             }
         }
     }
@@ -171,5 +188,18 @@ public class IndexView extends AppCompatActivity {
         int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //**********************************************************************************************
+    //***   Method: Display Index Change
+    //**********************************************************************************************
+    public void displayIndexChange(TextView txtView, HashMap<String, String> hashMap, String Index){
+
+        txtView.setText(hashMap.get(Index)+"%");
+        if (Float.parseFloat(hashMap.get(Index))<0) {
+            txtView.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorRedStrong));
+        } else {
+            txtView.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorGreenStrong));
+        }
     }
 }
