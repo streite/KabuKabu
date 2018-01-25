@@ -31,7 +31,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:columnCount="4"
-            android:rowCount="3">
+            android:rowCount="4">
+
+            <ImageView
+                android:id="@+id/usaFlag"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="3"
+                android:layout_marginBottom="30dp"
+                android:layout_gravity="top|center_horizontal"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/usa" />
+
+            <TextView
+                android:id="@+id/txtIndexViewUSA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="3"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:text="USA"
+                android:textColor="@color/colorGrey1"
+                android:textSize="20sp" />
 
             <ImageView
                 android:id="@+id/chinaFlag"

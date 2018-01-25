@@ -259,7 +259,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
 
             tmpStock.setTicker(edtStockInfoTicker.getText().toString());
             String Company = edtStockInfoCompany.getText().toString().replace("(","");
-            Company = edtStockInfoCompany.getText().toString().replace(")","");
+            Company = Company.replace(")","");
             tmpStock.setCompany(Company);
             tmpStock.setShares(Integer.parseInt(edtStockInfoShares.getText().toString()));
             tmpStock.setBasis(Float.parseFloat(edtStockInfoBasis.getText().toString()));

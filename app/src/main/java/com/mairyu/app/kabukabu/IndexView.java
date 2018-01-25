@@ -2,6 +2,9 @@ package com.mairyu.app.kabukabu;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -12,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,6 +31,9 @@ public class IndexView extends AppCompatActivity {
     private ListView mDrawerList;
     private String[] navigation;
 
+    private ImageView usaFlag;
+
+    private TextView txtIndexViewUSA;
     private TextView txtIndexViewChina;
     private TextView txtIndexViewHongKong;
     private TextView txtIndexViewTaiwan;
@@ -58,6 +65,9 @@ public class IndexView extends AppCompatActivity {
         //---   Layout
         //----------------------------------------------------------------------------------
 
+        usaFlag = (ImageView) findViewById(R.id.usaFlag);
+
+        txtIndexViewUSA = (TextView) findViewById(R.id.txtIndexViewUSA);
         txtIndexViewChina = (TextView) findViewById(R.id.txtIndexViewChina);
         txtIndexViewHongKong = (TextView) findViewById(R.id.txtIndexViewHongKong);
         txtIndexViewTaiwan = (TextView) findViewById(R.id.txtIndexViewTaiwan);
@@ -119,32 +129,26 @@ public class IndexView extends AppCompatActivity {
 
                 HashMap<String, String> hashMap = (HashMap<String, String>) data.getSerializableExtra("HASH_MAP");
 
-                txtIndexViewChina.setText(hashMap.get("Shanghai")+"%");
-                if (Float.parseFloat(hashMap.get("Shanghai"))<0) {
-                    txtIndexViewChina.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorRedStrong));
-                } else {
-                    txtIndexViewChina.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorGreenStrong));
-                }
+                displayIndexChange(txtIndexViewUSA,hashMap,"Dow 30");
+
+                displayIndexChange(txtIndexViewChina,hashMap,"Shanghai");
 
                 displayIndexChange(txtIndexViewHongKong,hashMap,"Hang Seng");
 
                 displayIndexChange(txtIndexViewTaiwan,hashMap,"Taiwan Weighted");
 
-                txtIndexViewJapan.setText(hashMap.get("Nikkei 225")+"%");
-                if (Float.parseFloat(hashMap.get("Nikkei 225"))<0) {
-                    txtIndexViewJapan.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorRedStrong));
-                } else {
-                    txtIndexViewJapan.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorGreenStrong));
-                }
+                displayIndexChange(txtIndexViewJapan,hashMap,"Nikkei 225");
 
-                txtIndexViewKorea.setText(hashMap.get("KOSPI")+"%");
-                if (Float.parseFloat(hashMap.get("KOSPI"))<0) {
-                    txtIndexViewKorea.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorRedStrong));
-                } else {
-                    txtIndexViewKorea.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorGreenStrong));
-                }
+                displayIndexChange(txtIndexViewKorea,hashMap,"KOSPI");
 
                 displayIndexChange(txtIndexViewIndia,hashMap,"BSE Sensex");
+
+                Resources r = getResources();
+                Drawable[] layers = new Drawable[2];
+                layers[0] = r.getDrawable(R.drawable.usa);
+                layers[1] = r.getDrawable(R.drawable.ic_edit);
+                LayerDrawable layerDrawable = new LayerDrawable(layers);
+                usaFlag.setImageDrawable(layerDrawable);
             }
         }
     }
