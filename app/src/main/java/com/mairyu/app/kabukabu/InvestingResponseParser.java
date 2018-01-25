@@ -3,7 +3,6 @@ package com.mairyu.app.kabukabu;
 import android.util.Log;
 
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class InvestingResponseParser {
@@ -11,9 +10,9 @@ public class InvestingResponseParser {
     //**********************************************************************************************
     //***   Parse HTTP response string for sentence pairs
     //**********************************************************************************************
-    public static Map<String, String> getIndexHashMap (String InvestingResponse) {
+    public static HashMap<String, String> getIndexHashMap (String InvestingResponse) {
 
-        Map<String, String> IndexChangeLUT = new HashMap<>();
+        HashMap<String, String> IndexChangeLUT = new HashMap<>();
 
         String FullSnippet,PartSnippet,tmpSnippet;
         String Country,Index,Change;
@@ -41,8 +40,10 @@ public class InvestingResponseParser {
             Log.i("IRP: Country", Country);
 
             tmpSnippet = skipOnce(tmpSnippet);
-            first = tmpSnippet.indexOf("span data-name=") + 16;
-            last = tmpSnippet.indexOf("data-id") - 2;
+            first = tmpSnippet.indexOf("title=") + 6;
+            tmpSnippet = tmpSnippet.substring(first);
+            first = tmpSnippet.indexOf(">") + 1;
+            last = tmpSnippet.indexOf("<") - 0;
             Index = tmpSnippet.substring(first, last);
 
             Log.i("IRP: Index", Index);
@@ -55,6 +56,7 @@ public class InvestingResponseParser {
             first = tmpSnippet.indexOf(">") + 1;
             last = tmpSnippet.indexOf("</");
             Change = tmpSnippet.substring(first, last);
+            Change = Change.replace("%","");
 
             Log.i("IRP: Change", Change);
 

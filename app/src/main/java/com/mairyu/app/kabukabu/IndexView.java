@@ -1,5 +1,6 @@
 package com.mairyu.app.kabukabu;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -14,6 +15,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 //==================================================================================================
 //===   IndexView
 //==================================================================================================
@@ -24,6 +27,8 @@ public class IndexView extends AppCompatActivity {
     private String[] navigation;
 
     private TextView txtIndexViewChina;
+    private TextView txtIndexViewJapan;
+    private TextView txtIndexViewKorea;
 
     GridLayout glIndexView;
 
@@ -50,6 +55,8 @@ public class IndexView extends AppCompatActivity {
         //----------------------------------------------------------------------------------
 
         txtIndexViewChina = (TextView) findViewById(R.id.txtIndexViewChina);
+        txtIndexViewJapan = (TextView) findViewById(R.id.txtIndexViewJapan);
+        txtIndexViewKorea = (TextView) findViewById(R.id.txtIndexViewKorea);
 
         //----------------------------------------------------------------------------------
         //---   Navigation Drawer
@@ -77,14 +84,51 @@ public class IndexView extends AppCompatActivity {
 
             public void run() {
 
-                txtIndexViewChina.setText("HELLO");
-                txtIndexViewChina.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorRedStrong));
+//                txtIndexViewChina.setText("HELLO");
+//                txtIndexViewChina.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorRedStrong));
 
             }
         });
 
         Intent intentInvesting = new Intent(IndexView.this, InvestingAPI.class);
         startActivityForResult(intentInvesting, REQUEST_INVESTING);
+    }
+
+    //**********************************************************************************************
+    //***   onActivityResult (returning from InvestingAPI)
+    //**********************************************************************************************
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        //------------------------------------------------------------------------------------------
+        //---   Return from CardView
+        //------------------------------------------------------------------------------------------
+        if ((requestCode == REQUEST_INVESTING)) {
+
+            //--------------------------------------------------------------------------------------
+            //---   Return via finish()
+            //--------------------------------------------------------------------------------------
+            if (resultCode == Activity.RESULT_OK) {
+
+                HashMap<String, String> hashMap = (HashMap<String, String>) data.getSerializableExtra("HASH_MAP");
+
+                txtIndexViewChina.setText(hashMap.get("Shanghai")+"%");
+                if (Float.parseFloat(hashMap.get("Shanghai"))<0) {
+                    txtIndexViewChina.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorRedStrong));
+                } else {
+                    txtIndexViewChina.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorGreenStrong));
+                }
+
+                txtIndexViewJapan.setText(hashMap.get("Nikkei 225")+"%");
+                if (Float.parseFloat(hashMap.get("Nikkei 225"))<0) {
+                    txtIndexViewJapan.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorRedStrong));
+                } else {
+                    txtIndexViewJapan.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorGreenStrong));
+                }
+
+                txtIndexViewKorea.setText("HELLO0000");
+            }
+        }
     }
 
     //**********************************************************************************************

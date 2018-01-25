@@ -21,9 +21,9 @@
         android:layout_height="match_parent"
         tools:context="com.mairyu.app.kabukabu.CategoryView">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
 
         <GridLayout
             android:id="@+id/glIndexView"
@@ -54,7 +54,7 @@
                 android:layout_gravity="bottom|center_horizontal"
                 android:text="China"
                 android:textColor="@color/colorGrey1"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
 
             <ImageView
                 android:id="@+id/japanFlag"
@@ -68,13 +68,15 @@
                 android:src="@drawable/japan" />
 
             <TextView
-                android:id="@+id/txtJapanIndex"
+                android:id="@+id/txtIndexViewJapan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_row="1"
                 android:layout_gravity="bottom|center_horizontal"
-                android:text="Japan" />
+                android:text="Japan"
+                android:textColor="@color/colorGrey1"
+                android:textSize="20sp" />
 
             <ImageView
                 android:id="@+id/koreaFlag"
@@ -88,17 +90,19 @@
                 android:src="@drawable/korea" />
 
             <TextView
-                android:id="@+id/txtKoreaIndex"
+                android:id="@+id/txtIndexViewKorea"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:layout_row="1"
                 android:layout_gravity="bottom|center_horizontal"
-                android:text="Korea" />
+                android:text="Korea"
+                android:textColor="@color/colorGrey1"
+                android:textSize="20sp" />
 
         </GridLayout>
 
-</RelativeLayout>
+    </RelativeLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 

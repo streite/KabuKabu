@@ -3,12 +3,12 @@ package com.mairyu.app.kabukabu;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import java.util.HashMap;
-import java.util.Map;
 
 //==================================================================================================
 //===   InvestingAPI
@@ -17,7 +17,7 @@ public class InvestingAPI extends AppCompatActivity {
 
     private PreferenceSettings _appPrefs;
 
-    Map<String, String> IndexChangeLUT = new HashMap<>();
+    HashMap<String, String> IndexChangeLUT = new HashMap<>();
 
     SQLhandler sqlHandler;
 
@@ -62,7 +62,7 @@ public class InvestingAPI extends AppCompatActivity {
     //**********************************************************************************************
     //***   Pull Data from website, call Parser etc.
     //**********************************************************************************************
-    private class InvestingAsyncTask extends AsyncTask <String, Void, Map<String, String>> {
+    private class InvestingAsyncTask extends AsyncTask <String, Void, HashMap<String, String>> {
 
         Context context;
 
@@ -90,7 +90,7 @@ public class InvestingAPI extends AppCompatActivity {
         //---   AsyncTask: doInBackground
         //------------------------------------------------------------------------------------------
         @Override
-        protected Map<String, String> doInBackground(String... params) {
+        protected HashMap<String, String> doInBackground(String... params) {
 
             //--------------------------------------------------------------------------------------
             //---   Setup HTTP client for websites API server
@@ -128,7 +128,7 @@ public class InvestingAPI extends AppCompatActivity {
         //---   AsyncTask: onPostExecute - Display in ListView
         //------------------------------------------------------------------------------------------
         @Override
-        protected void onPostExecute(Map<String, String> IndexChangeLUT) {
+        protected void onPostExecute(HashMap<String, String> IndexChangeLUT) {
 
             super.onPostExecute(IndexChangeLUT);
 
@@ -142,7 +142,11 @@ public class InvestingAPI extends AppCompatActivity {
 
 //            intent.putExtra("h", hashMap);
 
-            setResult(Activity.RESULT_OK);
+            Intent intentIndex = new Intent(getApplicationContext(), IndexView.class);
+
+            intentIndex.putExtra("HASH_MAP", IndexChangeLUT);
+
+            setResult(Activity.RESULT_OK,intentIndex);
 
             finish();
         }
