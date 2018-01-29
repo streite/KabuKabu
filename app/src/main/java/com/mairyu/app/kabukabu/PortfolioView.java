@@ -37,6 +37,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -105,6 +106,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     String PortfolioSubCategory;
 
     ArrayList<String> TickerList;
+
+    private boolean ViewExpand = false;
+    private int ViewExpandPosition;
 
     float Price;
     int Shares;
@@ -296,18 +300,54 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 registerForContextMenu(expListView);
 
-//                expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-//
-//                    public boolean onChildClick(ExpandableListView parent, View v,
-//                                                int groupPosition, int childPosition, long id) {
-//
-//                        final String selected = (String) expListAdapter.getChild(groupPosition, childPosition);
-//
-//                        Toast.makeText(getBaseContext(), selected, Toast.LENGTH_SHORT).show();
-//
-//                        return true;
-//                    }
-//                });
+                expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                    public boolean onChildClick(ExpandableListView parent, View v,
+                                                int groupPosition, int childPosition, long id) {
+
+                        final String selected = (String) expListAdapter.getChild(groupPosition, childPosition);
+
+                        Toast.makeText(getBaseContext(), selected, Toast.LENGTH_SHORT).show();
+
+                        Log.i("PV: Full", selected+"");
+
+                        //------------------------------------------------------------------------------------------
+                        //---   Toggle to/from expanded listview in case of short click
+                        //------------------------------------------------------------------------------------------
+
+                        if (ViewExpand) {
+
+                            if (ViewExpandPosition == childPosition) {
+
+                                ViewExpand = false;
+
+                                refreshCard();
+
+                                expListView.expandGroup(groupPosition);
+
+                            } else {
+
+                                ViewExpand = true;
+
+                                refreshCard();
+
+                                expListView.expandGroup(groupPosition);
+                            }
+
+                        } else {
+
+                            ViewExpand = true;
+
+                            refreshCard();
+
+                            expListView.expandGroup(groupPosition);
+                        }
+
+                        ViewExpandPosition = childPosition;
+
+                        return true;
+                    }
+                });
 
 //                expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 //                    @Override
@@ -496,7 +536,17 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             LayoutInflater inflater = context.getLayoutInflater();
 
             if (childView == null) {
-                childView = inflater.inflate(R.layout.child_item, null);
+
+//                childView = inflater.inflate(R.layout.child_item, null);
+
+                if (ViewExpand && (ViewExpandPosition == childPosition)) {
+
+                    childView = inflater.inflate(R.layout.child_expand_item, null);
+
+                } else {
+
+                    childView = inflater.inflate(R.layout.child_item, null);
+                }
             }
 
             RelativeLayout rlhDataBase = (RelativeLayout) childView.findViewById(R.id.child_item_view);
@@ -682,6 +732,24 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 childWatch.setImageResource(R.drawable.ic_thumb_up_brown);
                 childWatch.setVisibility(View.VISIBLE);
+            }
+
+            //--------------------------------------------------------------------------------------
+            //---   Extended View
+            //--------------------------------------------------------------------------------------
+
+            if (ViewExpand && (ViewExpandPosition == childPosition)) {
+
+                //----------------------------------------------------------------------------------
+                //---   Company Name
+                //----------------------------------------------------------------------------------
+                TextView portfolioListViewVolume = (TextView) childView.findViewById(R.id.portfolioListViewVolume);
+                portfolioListViewVolume.setText(currentStock.getVolume());
+
+                portfolioListViewVolume.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
+                portfolioListViewVolume.setTypeface(null, Typeface.NORMAL);
+
+
             }
 
             return childView;

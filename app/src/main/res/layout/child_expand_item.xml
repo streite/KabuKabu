@@ -23,6 +23,15 @@
             android:adjustViewBounds="true"
             android:src="@mipmap/ic_3_green" />
 
+        <ImageView
+            android:id="@+id/portfolioListViewWatch"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/portfolioListViewLeverage"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:src="@mipmap/ic_snooze_blue" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -35,19 +44,6 @@
         android:padding="3dp">
 
         <TextView
-            android:id="@+id/portfolioListViewTicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:paddingBottom="1dp"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:text="TICKER"
-            android:textColor="@color/colorGrey1"
-            android:textSize="18sp"
-            android:textStyle="italic" />
-
-        <TextView
             android:id="@+id/portfolioListViewName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,7 +53,7 @@
             android:paddingLeft="5dp"
             android:text="NAME"
             android:textColor="@color/colorGrey1"
-            android:textSize="10sp"
+            android:textSize="40sp"
             android:textStyle="italic" />
 
     </RelativeLayout>
@@ -79,7 +75,7 @@
             android:paddingRight="15dp"
             android:text="G/L"
             android:textColor="@color/colorGrey1"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="italic" />
 
         <TextView
@@ -91,7 +87,7 @@
             android:paddingRight="15dp"
             android:text="G/L %%%"
             android:textColor="@color/colorGrey1"
-            android:textSize="14sp"
+            android:textSize="24sp"
             android:textStyle="italic" />
 
     </RelativeLayout>
@@ -113,7 +109,7 @@
             android:paddingRight="15dp"
             android:text="PRICE"
             android:textColor="@color/colorGrey1"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="italic" />
 
         <TextView
@@ -125,7 +121,7 @@
             android:paddingRight="15dp"
             android:text="PERC"
             android:textColor="@color/colorGrey1"
-            android:textSize="14sp"
+            android:textSize="24sp"
             android:textStyle="italic" />
 
         <TextView
@@ -137,7 +133,22 @@
             android:paddingRight="15dp"
             android:text="VOLUME"
             android:textColor="@color/colorGrey1"
-            android:textSize="14sp"
+            android:textSize="24sp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/portfolioListViewTicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="192dp"
+            android:paddingBottom="1dp"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:text="TICKER"
+            android:textColor="@color/colorGrey1"
+            android:textSize="18sp"
             android:textStyle="italic" />
 
     </RelativeLayout>

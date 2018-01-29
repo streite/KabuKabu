@@ -152,6 +152,7 @@ public class NasdaqAPI extends AppCompatActivity {
                 sqlStock.setPrice(tmpStock.getPrice());
                 sqlStock.setChange(tmpStock.getChange());
                 sqlStock.setPercChange(tmpStock.getChangePerc());
+                sqlStock.setVolume(tmpStock.getVolume());
 
                 sqlHandler.updateStock(sqlStock);
             }
