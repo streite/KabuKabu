@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
+import static com.mairyu.app.kabukabu.R.id.menu_refresh;
+
 //==================================================================================================
 //===   IndexView
 //==================================================================================================
@@ -32,6 +34,12 @@ public class IndexView extends AppCompatActivity {
     private String[] navigation;
 
     private ImageView usaFlag;
+    private ImageView chinaFlag;
+    private ImageView hongkongFlag;
+    private ImageView taiwanFlag;
+    private ImageView japanFlag;
+    private ImageView koreaFlag;
+    private ImageView indiaFlag;
 
     private TextView txtIndexViewUSA;
     private TextView txtIndexViewChina;
@@ -66,6 +74,12 @@ public class IndexView extends AppCompatActivity {
         //----------------------------------------------------------------------------------
 
         usaFlag = (ImageView) findViewById(R.id.usaFlag);
+        chinaFlag = (ImageView) findViewById(R.id.chinaFlag);
+        hongkongFlag = (ImageView) findViewById(R.id.hongkongFlag);
+        taiwanFlag = (ImageView) findViewById(R.id.taiwanFlag);
+        japanFlag = (ImageView) findViewById(R.id.japanFlag);
+        koreaFlag = (ImageView) findViewById(R.id.koreaFlag);
+        indiaFlag = (ImageView) findViewById(R.id.indiaFlag);
 
         txtIndexViewUSA = (TextView) findViewById(R.id.txtIndexViewUSA);
         txtIndexViewChina = (TextView) findViewById(R.id.txtIndexViewChina);
@@ -127,28 +141,23 @@ public class IndexView extends AppCompatActivity {
             //--------------------------------------------------------------------------------------
             if (resultCode == Activity.RESULT_OK) {
 
+                Resources res = getResources();
+
                 HashMap<String, String> hashMap = (HashMap<String, String>) data.getSerializableExtra("HASH_MAP");
 
-                displayIndexChange(txtIndexViewUSA,hashMap,"Dow 30");
+                displayIndexChange(res,usaFlag,txtIndexViewUSA,res.getDrawable(R.drawable.usa),hashMap,"Dow 30");
 
-                displayIndexChange(txtIndexViewChina,hashMap,"Shanghai");
+                displayIndexChange(res,chinaFlag,txtIndexViewChina,res.getDrawable(R.drawable.china),hashMap,"Shanghai");
 
-                displayIndexChange(txtIndexViewHongKong,hashMap,"Hang Seng");
+                displayIndexChange(res,hongkongFlag,txtIndexViewHongKong,res.getDrawable(R.drawable.hongkong),hashMap,"Hang Seng");
 
-                displayIndexChange(txtIndexViewTaiwan,hashMap,"Taiwan Weighted");
+                displayIndexChange(res,taiwanFlag,txtIndexViewTaiwan,res.getDrawable(R.drawable.taiwan),hashMap,"Taiwan Weighted");
 
-                displayIndexChange(txtIndexViewJapan,hashMap,"Nikkei 225");
+                displayIndexChange(res,japanFlag,txtIndexViewJapan,res.getDrawable(R.drawable.japan),hashMap,"Nikkei 225");
 
-                displayIndexChange(txtIndexViewKorea,hashMap,"KOSPI");
+                displayIndexChange(res,koreaFlag,txtIndexViewKorea,res.getDrawable(R.drawable.korea),hashMap,"KOSPI");
 
-                displayIndexChange(txtIndexViewIndia,hashMap,"BSE Sensex");
-
-                Resources r = getResources();
-                Drawable[] layers = new Drawable[2];
-                layers[0] = r.getDrawable(R.drawable.usa);
-                layers[1] = r.getDrawable(R.drawable.ic_edit);
-                LayerDrawable layerDrawable = new LayerDrawable(layers);
-                usaFlag.setImageDrawable(layerDrawable);
+                displayIndexChange(res,indiaFlag,txtIndexViewIndia,res.getDrawable(R.drawable.india),hashMap,"BSE Sensex");
             }
         }
     }
@@ -171,7 +180,10 @@ public class IndexView extends AppCompatActivity {
         menu_edit.setVisible(false);
 
         MenuItem menu_refresh = menu.findItem(R.id.menu_refresh);
-        menu_refresh.setVisible(false);
+        menu_refresh.setVisible(true);
+
+        MenuItem menu_undo = menu.findItem(R.id.menu_undo);
+        menu_undo.setVisible(false);
 
         //------------------------------------------------------------------------------------------
         //---   Suppress Category Header
@@ -191,15 +203,43 @@ public class IndexView extends AppCompatActivity {
 
         int id = item.getItemId();
 
+        //------------------------------------------------------------------------------------------
+        //---   Refresh Quotes -> Call API
+        //------------------------------------------------------------------------------------------
+        if (id == menu_refresh) {
+
+            Intent intentInvesting = new Intent(IndexView.this, InvestingAPI.class);
+            startActivityForResult(intentInvesting, REQUEST_INVESTING);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     //**********************************************************************************************
     //***   Method: Display Index Change
     //**********************************************************************************************
-    public void displayIndexChange(TextView txtView, HashMap<String, String> hashMap, String Index){
+    public void displayIndexChange(Resources r, ImageView imgView, TextView txtView, Drawable flag, HashMap<String, String> hashMap, String Index){
 
-        txtView.setText(hashMap.get(Index)+"%");
+        String Change = hashMap.get(Index);
+        String OldChange = txtView.getText().toString().replace("%","");
+
+        Drawable[] layers = new Drawable[2];
+        layers[0] = flag;
+        if (Float.parseFloat(Change) < Float.parseFloat(OldChange)) {
+            layers[1] = r.getDrawable(R.drawable.ic_down_red);
+            layers[1].setAlpha(250);
+        } else if (Float.parseFloat(Change) > Float.parseFloat(OldChange)) {
+            layers[1] = r.getDrawable(R.drawable.ic_up_green);
+            layers[1].setAlpha(200);
+        } else {
+            layers[1] = r.getDrawable(R.drawable.ic_up_green);
+            layers[1].setAlpha(0);
+        }
+
+        LayerDrawable layerDrawable = new LayerDrawable(layers);
+        imgView.setImageDrawable(layerDrawable);
+
+        txtView.setText(Change +"%");
         if (Float.parseFloat(hashMap.get(Index))<0) {
             txtView.setTextColor(ContextCompat.getColor(IndexView.this, R.color.colorRedStrong));
         } else {

@@ -56,20 +56,31 @@ public class HTTPClient {
             httpURLConnection.setRequestProperty("X-Mashape-Key", "fugcGQqIXomshpbhJb4TGsPzuxJap15oYzLjsnWIGOKEmvIkOm");
             httpURLConnection.setRequestProperty("Content-Type", "application/json");
             httpURLConnection.connect();
+            int fileLength = httpURLConnection.getContentLength();
 
             StringBuffer stringBuffer = new StringBuffer();
             inputStream = httpURLConnection.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String line = null;
 
+            Log.i("LOG: (HTTP)", "Progress Start" + fileLength);
+
             while ((line = bufferedReader.readLine()) != null) {
 
                 stringBuffer.append(line + "\n");
+
+//                Log.i("LOG: (HTTP)", "Progress " + stringBuffer.length());
             }
+
+            Log.i("LOG: (HTTP)", "Progress Done" + stringBuffer.length());
 
             inputStream.close();
 
+            Log.i("LOG: (HTTP)", "InputStream Closed");
+
             httpURLConnection.disconnect();
+
+            Log.i("LOG: (HTTP)", "Connection Disconnected");
 
             return stringBuffer.toString();
 

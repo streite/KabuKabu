@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import java.util.HashMap;
 
@@ -106,6 +107,8 @@ public class InvestingAPI extends AppCompatActivity {
 
             String data = (dictHTTPClient.getHTTPData());
 
+            Log.i("LOG: (IA)", "Data Received");
+
             //--------------------------------------------------------------------------------------
             //---   Extract Stock Info via HTML Parser
             //--------------------------------------------------------------------------------------
@@ -113,6 +116,8 @@ public class InvestingAPI extends AppCompatActivity {
             try {
 
                 IndexChangeLUT = InvestingResponseParser.getIndexHashMap(data);
+
+                Log.i("LOG: (IA)", "Parse Done");
 
                 return IndexChangeLUT;
 

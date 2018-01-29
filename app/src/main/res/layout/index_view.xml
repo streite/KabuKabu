@@ -19,7 +19,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/gradient_light_blue_bg"
+        android:background="@drawable/gradient_light_yellow_bg"
         tools:context="com.mairyu.app.kabukabu.CategoryView">
 
         <include
@@ -36,7 +36,7 @@
             <ImageView
                 android:id="@+id/usaFlag"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_column="0"
                 android:layout_row="3"
                 android:layout_marginBottom="30dp"
@@ -53,14 +53,14 @@
                 android:layout_row="3"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="bottom|center_horizontal"
-                android:text="USA"
+                android:text="0"
                 android:textColor="@color/colorGrey1"
                 android:textSize="20sp" />
 
             <ImageView
                 android:id="@+id/chinaFlag"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_column="0"
                 android:layout_row="0"
                 android:layout_marginBottom="30dp"
@@ -77,14 +77,14 @@
                 android:layout_row="0"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="bottom|center_horizontal"
-                android:text="China"
+                android:text="0"
                 android:textColor="@color/colorGrey1"
                 android:textSize="20sp" />
 
             <ImageView
                 android:id="@+id/hongkongFlag"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_column="1"
                 android:layout_row="0"
                 android:layout_marginBottom="30dp"
@@ -101,14 +101,14 @@
                 android:layout_row="0"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="bottom|center_horizontal"
-                android:text="HongKong"
+                android:text="0"
                 android:textColor="@color/colorGrey1"
                 android:textSize="20sp" />
 
             <ImageView
                 android:id="@+id/taiwanFlag"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_column="2"
                 android:layout_row="0"
                 android:layout_marginBottom="30dp"
@@ -125,14 +125,14 @@
                 android:layout_row="0"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="bottom|center_horizontal"
-                android:text="Taiwan"
+                android:text="0"
                 android:textColor="@color/colorGrey1"
                 android:textSize="20sp" />
 
             <ImageView
                 android:id="@+id/japanFlag"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_column="0"
                 android:layout_row="1"
                 android:layout_marginBottom="30dp"
@@ -149,14 +149,14 @@
                 android:layout_row="1"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="bottom|center_horizontal"
-                android:text="Japan"
+                android:text="0"
                 android:textColor="@color/colorGrey1"
                 android:textSize="20sp" />
 
             <ImageView
                 android:id="@+id/koreaFlag"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_column="1"
                 android:layout_row="1"
                 android:layout_marginBottom="30dp"
@@ -173,14 +173,14 @@
                 android:layout_row="1"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="bottom|center_horizontal"
-                android:text="Korea"
+                android:text="0"
                 android:textColor="@color/colorGrey1"
                 android:textSize="20sp" />
 
             <ImageView
                 android:id="@+id/indiaFlag"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:layout_column="0"
                 android:layout_row="2"
                 android:layout_marginBottom="30dp"
@@ -197,7 +197,7 @@
                 android:layout_row="2"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="bottom|center_horizontal"
-                android:text="India"
+                android:text="0"
                 android:textColor="@color/colorGrey1"
                 android:textSize="20sp" />
 
