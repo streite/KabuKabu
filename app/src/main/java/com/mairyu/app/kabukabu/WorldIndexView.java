@@ -1,6 +1,7 @@
 package com.mairyu.app.kabukabu;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -13,11 +14,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.mairyu.app.kabukabu.R.id.menu_refresh;
@@ -47,7 +50,14 @@ public class WorldIndexView extends AppCompatActivity {
     private TextView txtIndexViewKorea;
     private TextView txtIndexViewIndia;
 
+    private ArrayList<Index> allFlashcards = new ArrayList<>();
+    private ArrayList<Index> activeIndices = new ArrayList<>();
+    private ArrayAdapter<Index> adapterAllIndices;
+
     ListView lvWorldIndex;
+
+    private boolean ViewExpand = false;
+    private int ViewExpandPosition;
 
     static final int REQUEST_INFO = 1000;
     static final int REQUEST_YAHOO = 2000;
@@ -65,7 +75,7 @@ public class WorldIndexView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.index_view);
+        setContentView(R.layout.world_index_view);
 
         //----------------------------------------------------------------------------------
         //---   Layout
@@ -111,12 +121,8 @@ public class WorldIndexView extends AppCompatActivity {
 
             public void run() {
 
-//                allFlashcards = sqlHandler.getAllFlashcards(false);
-//
-//                adapterAllCards = new CustomAllCardsAdapter(DatabasePage.this, R.layout.database_page_list_view_item,allFlashcards);
-//                listViewAllCards.setAdapter(adapterAllCards);
-//
-//                SQLDBSize = sqlHandler.getFlashcardsCount();
+                adapterAllIndices = new CustomAllCardsAdapter(WorldIndexView.this, R.layout.world_index_list_view_item,activeIndices);
+                lvWorldIndex.setAdapter(adapterAllIndices);
             }
         });
 
@@ -124,62 +130,64 @@ public class WorldIndexView extends AppCompatActivity {
         startActivityForResult(intentInvesting, REQUEST_INVESTING);
     }
 
-//    //**********************************************************************************************
-//    //***   Custom Array Adapter for List of active Flashcards
-//    //**********************************************************************************************
-//    private class CustomAllCardsAdapter extends ArrayAdapter<Index> {
+    //**********************************************************************************************
+    //***   Custom Array Adapter for List of active Flashcards
+    //**********************************************************************************************
+    private class CustomAllCardsAdapter extends ArrayAdapter<Index> {
+
+//        public CustomAllCardsAdapter() {
 //
-////        public CustomAllCardsAdapter() {
-////
-////            super(DatabasePage.this, R.layout.database_page_list_view_item,allFlashcards);
-////        }
-//
-//        private final Context context;
-//        private ArrayList<Index> events;
-//
-//        //------------------------------------------------------------------------------------------
-//        //---   Constructor
-//        //------------------------------------------------------------------------------------------
-//        public CustomAllCardsAdapter(Context context, int layoutResourceId, ArrayList<Index> events) {
-//
-//            super(context, layoutResourceId, allFlashcards);
-//
-//            this.context = context;
-//            this.events = events;
+//            super(WorldIndexView.this, R.layout.world_index_list_view_item,activeIndices);
 //        }
-//
-//        //------------------------------------------------------------------------------------------
-//        //---   'getView' actually fill the listview
-//        //------------------------------------------------------------------------------------------
-//        @Override
-//        public View getView(int position, View convertView, ViewGroup parent) {
-//
-//            Index currentIndex = allFlashcards.get(position);
-//
-//            if (convertView == null) {
-//
-//                //----------------------------------------------------------------------------------
-//                //---   Select corresponding listview
-//                //----------------------------------------------------------------------------------
-//                if (SheetName.contains("SENTS")) {
-//
-//                    convertView = getLayoutInflater().inflate(R.layout.database_page_sentence_list_view_item, parent, false);
-//
-//                } else {
-//
-//                    if (ViewExpand && (ViewExpandPosition == position)) {
-//
-//                        convertView = getLayoutInflater().inflate(R.layout.database_page_list_view_item_expanded, parent, false);
-//                    } else {
-//
-//                        convertView = getLayoutInflater().inflate(R.layout.database_page_list_view_item, parent, false);
-//                    }
-//                }
-//            }
-//
-//            return convertView;
-//        }
-//    }
+
+        private final Context context;
+        private ArrayList<Index> events;
+
+        //------------------------------------------------------------------------------------------
+        //---   Constructor
+        //------------------------------------------------------------------------------------------
+        public CustomAllCardsAdapter(Context context, int layoutResourceId, ArrayList<Index> events) {
+
+            super(context, layoutResourceId, activeIndices);
+
+            this.context = context;
+            this.events = events;
+        }
+
+        //------------------------------------------------------------------------------------------
+        //---   'getView' actually fill the listview
+        //------------------------------------------------------------------------------------------
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            Index currentIndex = activeIndices.get(position);
+
+            if (convertView == null) {
+
+                //----------------------------------------------------------------------------------
+                //---   Select corresponding listview
+                //----------------------------------------------------------------------------------
+
+                if (ViewExpand && (ViewExpandPosition == position)) {
+
+                    convertView = getLayoutInflater().inflate(R.layout.world_index_list_view_item, parent, false);
+                } else {
+
+                    convertView = getLayoutInflater().inflate(R.layout.world_index_list_view_item, parent, false);
+                }
+            }
+
+            ImageView indexFlag = (ImageView) convertView.findViewById(R.id.imvWorldIndexFlag);
+            indexFlag.setImageResource(R.drawable.usa);
+            indexFlag.setVisibility(View.VISIBLE);
+
+            TextView indexName = (TextView) convertView.findViewById(R.id.txtWorldIndexName);
+            indexName.setText(currentIndex.getName()+"");
+            indexName.setVisibility(View.VISIBLE);
+
+            return convertView;
+        }
+    }
 
     //**********************************************************************************************
     //***   onActivityResult (returning from InvestingAPI)
@@ -197,23 +205,15 @@ public class WorldIndexView extends AppCompatActivity {
             //--------------------------------------------------------------------------------------
             if (resultCode == Activity.RESULT_OK) {
 
-                Resources res = getResources();
+                allFlashcards = data.getParcelableArrayListExtra("INDEX_CHANGE_ARRAY");
 
-                HashMap<String, String> hashMap = (HashMap<String, String>) data.getSerializableExtra("HASH_MAP");
+                activeIndices = allFlashcards;
 
-                displayIndexChange(res,usaFlag,txtIndexViewUSA,res.getDrawable(R.drawable.usa),hashMap,"Dow 30");
+//                adapterAllIndices.notifyDataSetChanged();
 
-                displayIndexChange(res,chinaFlag,txtIndexViewChina,res.getDrawable(R.drawable.china),hashMap,"Shanghai");
-
-                displayIndexChange(res,hongkongFlag,txtIndexViewHongKong,res.getDrawable(R.drawable.hongkong),hashMap,"Hang Seng");
-
-                displayIndexChange(res,taiwanFlag,txtIndexViewTaiwan,res.getDrawable(R.drawable.taiwan),hashMap,"Taiwan Weighted");
-
-                displayIndexChange(res,japanFlag,txtIndexViewJapan,res.getDrawable(R.drawable.japan),hashMap,"Nikkei 225");
-
-                displayIndexChange(res,koreaFlag,txtIndexViewKorea,res.getDrawable(R.drawable.korea),hashMap,"KOSPI");
-
-                displayIndexChange(res,indiaFlag,txtIndexViewIndia,res.getDrawable(R.drawable.india),hashMap,"BSE Sensex");
+//                Resources res = getResources();
+//
+//                displayIndexChange(res,indiaFlag,txtIndexViewIndia,res.getDrawable(R.drawable.india),hashMap,"BSE Sensex");
             }
         }
     }

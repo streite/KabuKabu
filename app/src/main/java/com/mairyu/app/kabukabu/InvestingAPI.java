@@ -153,7 +153,7 @@ public class InvestingAPI extends AppCompatActivity {
             Intent intentIndex = new Intent(getApplicationContext(), IndexView.class);
 
 //            intentIndex.putExtra("HASH_MAP", IndexChangeLUT);
-            intentIndex.putExtra("CARD_INDEX_ARRAY", IndexChangeArray);
+            intentIndex.putParcelableArrayListExtra("INDEX_CHANGE_ARRAY", IndexChangeArray);
 
             setResult(Activity.RESULT_OK,intentIndex);
 

@@ -81,13 +81,13 @@ public class IndexView extends AppCompatActivity {
         koreaFlag = (ImageView) findViewById(R.id.koreaFlag);
         indiaFlag = (ImageView) findViewById(R.id.indiaFlag);
 
-        txtIndexViewUSA = (TextView) findViewById(R.id.txtIndexViewUSA);
-        txtIndexViewChina = (TextView) findViewById(R.id.txtIndexViewChina);
-        txtIndexViewHongKong = (TextView) findViewById(R.id.txtIndexViewHongKong);
-        txtIndexViewTaiwan = (TextView) findViewById(R.id.txtIndexViewTaiwan);
-        txtIndexViewJapan = (TextView) findViewById(R.id.txtIndexViewJapan);
-        txtIndexViewKorea = (TextView) findViewById(R.id.txtIndexViewKorea);
-        txtIndexViewIndia = (TextView) findViewById(R.id.txtIndexViewIndia);
+//        txtIndexViewUSA = (TextView) findViewById(R.id.txtIndexViewUSA);
+//        txtIndexViewChina = (TextView) findViewById(R.id.txtIndexViewChina);
+//        txtIndexViewHongKong = (TextView) findViewById(R.id.txtIndexViewHongKong);
+//        txtIndexViewTaiwan = (TextView) findViewById(R.id.txtIndexViewTaiwan);
+//        txtIndexViewJapan = (TextView) findViewById(R.id.txtIndexViewJapan);
+//        txtIndexViewKorea = (TextView) findViewById(R.id.txtIndexViewKorea);
+//        txtIndexViewIndia = (TextView) findViewById(R.id.txtIndexViewIndia);
 
         //----------------------------------------------------------------------------------
         //---   Navigation Drawer

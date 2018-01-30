@@ -30,6 +30,12 @@
         <item>Setting</item>
     </string-array>
 
+    <string-array name="world_indices">
+        <item>Dow 30</item>
+        <item>Nasdaq</item>
+        <item>Nikkei 225</item>
+    </string-array>
+
     <!--
     <string-array name="google_sheets">
         <item>TECH</item>

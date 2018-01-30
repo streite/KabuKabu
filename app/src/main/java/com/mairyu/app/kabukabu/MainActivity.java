@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                     //------------------------------------------------------------------------------
                     case R.id.btnWorldIndices:
 
-                        Intent intentSheet = new Intent(MainActivity.this, IndexView.class);
+                        Intent intentSheet = new Intent(MainActivity.this, WorldIndexView.class);
                         startActivity(intentSheet);
 
                         break;
