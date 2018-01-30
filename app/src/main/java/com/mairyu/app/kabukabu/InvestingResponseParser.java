@@ -2,7 +2,7 @@ package com.mairyu.app.kabukabu;
 
 import android.util.Log;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 
 public class InvestingResponseParser {
@@ -10,9 +10,11 @@ public class InvestingResponseParser {
     //**********************************************************************************************
     //***   Parse HTTP response string for sentence pairs
     //**********************************************************************************************
-    public static HashMap<String, String> getIndexHashMap (String InvestingResponse) {
+    public static ArrayList<Index> getWorldIndexArray (String InvestingResponse) {
 
-        HashMap<String, String> IndexChangeLUT = new HashMap<>();
+//        HashMap<String, String> IndexChangeLUT = new HashMap<>();
+
+        ArrayList<Index> allIndexItems = new ArrayList<>();
 
         String FullSnippet,PartSnippet,tmpSnippet;
         String Country,Index,Change;
@@ -39,10 +41,13 @@ public class InvestingResponseParser {
 
 //                Log.i("IRP: Part", PartSnippet.substring(0,50));
 
+                Index tmpIndex = new Index();
+
                 PartSnippet = skipOnce(PartSnippet);
                 first = PartSnippet.indexOf("span title=") + 12;
                 last = PartSnippet.indexOf(" class=\"ceFlags") - 1;
                 Country = PartSnippet.substring(first, last);
+                tmpIndex.setCountry(Country);
 
 //                Log.i("IRP: Country", Country);
 
@@ -52,6 +57,7 @@ public class InvestingResponseParser {
                 first = PartSnippet.indexOf(">") + 1;
                 last = PartSnippet.indexOf("<") - 0;
                 Index = PartSnippet.substring(first, last);
+                tmpIndex.setName(Index);
 
                 Log.i("IRP: Index", Index);
 
@@ -64,10 +70,13 @@ public class InvestingResponseParser {
                 last = PartSnippet.indexOf("</");
                 Change = PartSnippet.substring(first, last);
                 Change = Change.replace("%", "");
+                tmpIndex.setChange(Float.parseFloat(Change));
+
+                allIndexItems.add(tmpIndex);
 
 //                Log.i("IRP: Change", Change);
 
-                IndexChangeLUT.put(Index, Change);
+//                IndexChangeLUT.put(Index, Change);
 
                 PartSnippet = PartSnippet.substring(PartSnippet.indexOf("<tr id=") + 1);
             }
@@ -78,7 +87,7 @@ public class InvestingResponseParser {
 //            Log.i("IRP: FullSnippet", FullSnippet);
 //        }
 
-        return IndexChangeLUT;
+        return allIndexItems;
     }
 
     //**********************************************************************************************

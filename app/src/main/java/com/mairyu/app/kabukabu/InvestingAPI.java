@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 //==================================================================================================
@@ -17,6 +18,8 @@ import java.util.HashMap;
 public class InvestingAPI extends AppCompatActivity {
 
     private PreferenceSettings _appPrefs;
+
+    ArrayList<Index> allIndexItems = new ArrayList<>();
 
     HashMap<String, String> IndexChangeLUT = new HashMap<>();
 
@@ -63,7 +66,7 @@ public class InvestingAPI extends AppCompatActivity {
     //**********************************************************************************************
     //***   Pull Data from website, call Parser etc.
     //**********************************************************************************************
-    private class InvestingAsyncTask extends AsyncTask <String, Void, HashMap<String, String>> {
+    private class InvestingAsyncTask extends AsyncTask <String, Void, ArrayList<Index>> {
 
         Context context;
 
@@ -91,7 +94,7 @@ public class InvestingAPI extends AppCompatActivity {
         //---   AsyncTask: doInBackground
         //------------------------------------------------------------------------------------------
         @Override
-        protected HashMap<String, String> doInBackground(String... params) {
+        protected ArrayList<Index> doInBackground(String... params) {
 
             //--------------------------------------------------------------------------------------
             //---   Setup HTTP client for websites API server
@@ -115,27 +118,27 @@ public class InvestingAPI extends AppCompatActivity {
 
             try {
 
-                IndexChangeLUT = InvestingResponseParser.getIndexHashMap(data);
+                allIndexItems = InvestingResponseParser.getWorldIndexArray(data);
 
                 Log.i("LOG: (IA)", "Parse Done");
 
-                return IndexChangeLUT;
+                return allIndexItems;
 
             } catch (Throwable t) {
 
                 t.printStackTrace();
             }
 
-            return IndexChangeLUT;
+            return allIndexItems;
         }
 
         //------------------------------------------------------------------------------------------
         //---   AsyncTask: onPostExecute - Display in ListView
         //------------------------------------------------------------------------------------------
         @Override
-        protected void onPostExecute(HashMap<String, String> IndexChangeLUT) {
+        protected void onPostExecute(ArrayList<Index> IndexChangeArray) {
 
-            super.onPostExecute(IndexChangeLUT);
+            super.onPostExecute(IndexChangeArray);
 
             //------------------------------------------------------------------------------------------
             //---   Close progress dialog
@@ -149,7 +152,8 @@ public class InvestingAPI extends AppCompatActivity {
 
             Intent intentIndex = new Intent(getApplicationContext(), IndexView.class);
 
-            intentIndex.putExtra("HASH_MAP", IndexChangeLUT);
+//            intentIndex.putExtra("HASH_MAP", IndexChangeLUT);
+            intentIndex.putExtra("CARD_INDEX_ARRAY", IndexChangeArray);
 
             setResult(Activity.RESULT_OK,intentIndex);
 
