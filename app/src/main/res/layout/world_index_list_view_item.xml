@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlvWorldIndex"
     android:orientation="vertical"
-    android:id="@+id/child_item_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
      
     <RelativeLayout
-        android:id="@+id/rlvPortfolioViewLeftIcon"
-        android:layout_width="wrap_content"
+        android:id="@+id/rlhWorldIndex"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:orientation="vertical"
-        android:layout_weight="40"
-        android:padding="1dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imvWorldIndexFlag"
@@ -21,75 +18,61 @@
             android:layout_alignParentLeft="true"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
-            android:src="@mipmap/ic_3_green" />
+            android:src="@drawable/brazil" />
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rlvPortfolioViewTickerInfo"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/rlvPortfolioViewLeftIcon"
-        android:orientation="vertical"
-        android:layout_weight="20"
-        android:padding="3dp">
-
-        <TextView
-            android:id="@+id/txtWorldIndexName"
+        <RelativeLayout
+            android:id="@+id/rlhWorldIndexInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:paddingBottom="1dp"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:text="TICKER"
-            android:textColor="@color/colorGrey1"
-            android:textSize="18sp"
-            android:textStyle="italic" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rlvPortfolioViewGainLoss"
-        android:layout_width="50pt"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/rlvPortfolioViewTickerInfo"
-        android:paddingRight="5dp"
-        android:layout_weight="20"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/portfolioListViewGainLoss"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/imvWorldIndexFlag"
             android:layout_alignParentRight="true"
-            android:paddingRight="15dp"
-            android:text="G/L"
-            android:textColor="@color/colorGrey1"
-            android:textSize="18sp"
-            android:textStyle="italic" />
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:layout_weight="20"
+            android:padding="3dp">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/txtWorldIndexName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:paddingBottom="1dp"
+                android:paddingLeft="5dp"
+                android:paddingTop="1dp"
+                android:text="TICKER"
+                android:textColor="@color/colorGrey1"
+                android:textSize="18sp"
+                android:textStyle="italic|bold" />
 
-    <RelativeLayout
-        android:id="@+id/rlvPortfolioViewPrice"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/rlvPortfolioViewGainLoss"
-        android:layout_alignParentRight="true"
-        android:layout_weight="20"
-        android:orientation="vertical">
+            <TextView
+                android:id="@+id/txtWorldIndexPercChange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/txtWorldIndexName"
+                android:layout_gravity="center_vertical|right"
+                android:paddingBottom="1dp"
+                android:paddingLeft="15dp"
+                android:paddingTop="1dp"
+                android:text="G/L"
+                android:textColor="@color/colorGrey1"
+                android:textSize="18sp"
+                android:textStyle="" />
 
-        <TextView
-            android:id="@+id/portfolioListViewPrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:paddingRight="15dp"
-            android:text="PRICE"
-            android:textColor="@color/colorGrey1"
-            android:textSize="18sp"
-            android:textStyle="italic" />
+            <ImageView
+
+                android:id="@+id/imvWorldIndexTrend"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/txtWorldIndexPercChange"
+                android:layout_gravity="center_vertical|right"
+                android:layout_centerVertical="true"
+                android:paddingBottom="1dp"
+                android:paddingLeft="15dp"
+                android:paddingTop="1dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_uptick_green" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

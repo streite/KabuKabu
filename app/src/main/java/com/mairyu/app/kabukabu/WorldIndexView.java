@@ -185,6 +185,10 @@ public class WorldIndexView extends AppCompatActivity {
             indexName.setText(currentIndex.getName()+"");
             indexName.setVisibility(View.VISIBLE);
 
+            TextView indexPercChange = (TextView) convertView.findViewById(R.id.txtWorldIndexPercChange);
+            indexPercChange.setText(currentIndex.getPercChange()+"");
+            indexPercChange.setVisibility(View.VISIBLE);
+
             return convertView;
         }
     }
@@ -245,8 +249,8 @@ public class WorldIndexView extends AppCompatActivity {
         //---   Suppress Category Header
         //------------------------------------------------------------------------------------------
 
-        TextView Category = (TextView) findViewById(R.id.txtCategory);
-        Category.setVisibility(View.GONE);
+//        TextView Category = (TextView) findViewById(R.id.txtCategory);
+//        Category.setVisibility(View.GONE);
 
         return true;
     }

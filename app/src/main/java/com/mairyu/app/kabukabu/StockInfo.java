@@ -20,7 +20,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 import static android.widget.AdapterView.OnItemSelectedListener;
 
@@ -36,6 +40,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
     SQLhandler sqlHandler;
     int SQL_Stock_ID;
 
+    DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
 
     EditText edtStockInfoCompany;
     EditText edtStockInfoTicker;
@@ -46,6 +51,8 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
 
     String PortfolioCategory;
     int Category_Index;
+
+    float OldBasis;
 
     private Spinner Portfolio_Spinner;
 
@@ -132,6 +139,8 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
                 edtStockInfoBasis.setText(tmpStock.getBasis()+"");
                 edtStockInfoComission.setText(tmpStock.getCommission()+"");
                 edtStockInfoLeverage.setText(tmpStock.getLeverage()+"");
+
+                OldBasis = tmpStock.getBasis();
 
                 editOn();
             }
@@ -267,10 +276,31 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
             tmpStock.setLeverage(edtStockInfoLeverage.getText().toString());
             tmpStock.setCategory(PortfolioCategory);
 
+            Calendar calendarNow = Calendar.getInstance();
+            Date rightNow = calendarNow.getTime();
+            tmpStock.setDate(df.format(rightNow));
+
+            if (edtStockInfoShares.getText().toString()!="0") {
+
+                tmpStock.setWatch(1);
+
+            } else {
+
+                if (OldBasis < tmpStock.getBasis()) {
+
+                    tmpStock.setWatch(0);
+
+                } else {
+
+                    tmpStock.setWatch(2);
+                }
+            }
+
             sqlHandler.updateStock(tmpStock);
 
-            setResult(Activity.RESULT_OK);
+            hideKeyboard(this);
 
+            setResult(Activity.RESULT_OK);
             finish();
         }
 
@@ -395,5 +425,23 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
 
             return row;
         }
+    }
+
+    //**********************************************************************************************
+    //***   Method: Hide Keyboard
+    //**********************************************************************************************
+    public static void hideKeyboard(Activity activity) {
+
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

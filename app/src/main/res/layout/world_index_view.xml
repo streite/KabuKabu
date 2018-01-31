@@ -22,13 +22,8 @@
         android:background="@drawable/gradient_light_yellow_bg"
         tools:context="com.mairyu.app.kabukabu.CategoryView">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
-
         <ListView
             android:id="@+id/lvWorldIndex"
-            android:layout_below="@+id/toolbar"
             android:background="@drawable/gradient_yellow_bg"
             android:fastScrollEnabled="true"
             android:layout_width="match_parent"

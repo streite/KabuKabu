@@ -604,12 +604,16 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             //--------------------------------------------------------------------------------------
             //---   Company Name
-            //------------------------------------------------------------------------------------------
-            TextView portfolioListViewName = (TextView) childView.findViewById(R.id.portfolioListViewName);
-            portfolioListViewName.setText(currentStock.getCompany());
+            //--------------------------------------------------------------------------------------
 
-            portfolioListViewName.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
-            portfolioListViewName.setTypeface(null, Typeface.NORMAL);
+            if (!(ViewExpand && (ViewExpandPosition == childPosition))) {
+
+                TextView portfolioListViewName = (TextView) childView.findViewById(R.id.portfolioListViewName);
+                portfolioListViewName.setText(currentStock.getCompany());
+
+                portfolioListViewName.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
+                portfolioListViewName.setTypeface(null, Typeface.NORMAL);
+            }
 
             //--------------------------------------------------------------------------------------
             //---   Price
@@ -689,8 +693,13 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                     portfolioListViewTicker.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
                     portfolioListViewTicker.setTypeface(null, Typeface.BOLD);
 
-                    portfolioListViewName.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
-                    portfolioListViewName.setTypeface(null, Typeface.BOLD);
+                    if (!(ViewExpand && (ViewExpandPosition == childPosition))) {
+
+                        TextView portfolioListViewName = (TextView) childView.findViewById(R.id.portfolioListViewName);
+
+                        portfolioListViewName.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
+                        portfolioListViewName.setTypeface(null, Typeface.BOLD);
+                    }
                 }
 
                 //--------------------------------------------------------------------------------------
@@ -749,7 +758,23 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 portfolioListViewVolume.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
                 portfolioListViewVolume.setTypeface(null, Typeface.NORMAL);
 
+                //----------------------------------------------------------------------------------
+                //---   Date Stamp
+                //----------------------------------------------------------------------------------
+                TextView portfolioListViewDate = (TextView) childView.findViewById(R.id.portfolioListViewDate);
+                portfolioListViewDate.setText(currentStock.getDate());
 
+                portfolioListViewDate.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
+                portfolioListViewDate.setTypeface(null, Typeface.NORMAL);
+
+                //----------------------------------------------------------------------------------
+                //---   Last Sell Price
+                //----------------------------------------------------------------------------------
+                TextView portfolioListViewLastSell = (TextView) childView.findViewById(R.id.portfolioListViewLastSell);
+                portfolioListViewLastSell.setText(currentStock.getBasis()+"");
+
+                portfolioListViewLastSell.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
+                portfolioListViewLastSell.setTypeface(null, Typeface.NORMAL);
             }
 
             return childView;
