@@ -34,12 +34,28 @@
         <item>Dow 30</item>
         <item>Nasdaq</item>
         <item>Nikkei 225</item>
+        <item>KOSPI</item>
+        <item>Shanghai</item>
+        <item>Hang Seng</item>
+        <item>BSE Sensex</item>
     </string-array>
 
-    <!--
-    <string-array name="google_sheets">
-        <item>TECH</item>
+    <string-array name="country_names">
+        <item>United States</item>
+        <item>China</item>
+        <item>Hong Kong</item>
+        <item>South Korea</item>
+        <item>Japan</item>
+        <item>India</item>
     </string-array>
--->
+
+    <string-array name="img_names">
+        <item>usa</item>
+        <item>china</item>
+        <item>hongkong</item>
+        <item>korea</item>
+        <item>japan</item>
+        <item>india</item>
+    </string-array>
 
 </resources>

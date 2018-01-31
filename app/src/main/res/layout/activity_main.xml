@@ -19,7 +19,7 @@
         <Button
             android:id="@+id/btnPortfolio"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:text="Portfolio" />
 
         <LinearLayout
@@ -30,14 +30,14 @@
             <Button
                 android:id="@+id/btnGoogleSheetsRead"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="70dp"
                 android:layout_weight="50"
                 android:text="Google Sheets (R)" />
 
             <Button
                 android:id="@+id/btnGoogleSheetsWrite"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="70dp"
                 android:layout_weight="50"
                 android:text="Google Sheets (W)" />
 
@@ -46,7 +46,7 @@
         <Button
             android:id="@+id/btnWorldIndices"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:text="World Indices" />
 
         <Button

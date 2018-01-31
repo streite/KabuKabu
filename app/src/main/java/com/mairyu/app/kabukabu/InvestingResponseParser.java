@@ -1,5 +1,7 @@
 package com.mairyu.app.kabukabu;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 
@@ -57,7 +59,7 @@ public class InvestingResponseParser {
                 Index = PartSnippet.substring(first, last);
                 tmpIndex.setName(Index);
 
-//                Log.i("IRP: Index", Index);
+                Log.i("IRP: Index", Index);
 
                 PartSnippet = skipOnce(PartSnippet);
                 PartSnippet = skipOnce(PartSnippet);
@@ -68,6 +70,7 @@ public class InvestingResponseParser {
                 last = PartSnippet.indexOf("</");
                 Change = PartSnippet.substring(first, last);
                 Change = Change.replace("%", "");
+                Change = Change.replace("+-", "");
                 tmpIndex.setPercChange(Float.parseFloat(Change));
 
                 allIndexItems.add(tmpIndex);

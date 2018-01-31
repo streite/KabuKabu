@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static com.mairyu.app.kabukabu.R.id.menu_refresh;
@@ -54,7 +55,12 @@ public class WorldIndexView extends AppCompatActivity {
     private ArrayList<Index> activeIndices = new ArrayList<>();
     private ArrayAdapter<Index> adapterAllIndices;
 
+    private String[] IndexArray;
+    private ArrayList<String> IndexArrayList;
+
     ListView lvWorldIndex;
+
+    HashMap<String, String> mapCountry2Flag = new HashMap<String, String>();
 
     private boolean ViewExpand = false;
     private int ViewExpandPosition;
@@ -76,6 +82,20 @@ public class WorldIndexView extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.world_index_view);
+
+        //----------------------------------------------------------------------------------
+        //---   Look-up Table
+        //----------------------------------------------------------------------------------
+
+        String[] countriesNames = getResources().getStringArray(R.array.country_names);
+        String[] imageNames = getResources().getStringArray(R.array.img_names);
+
+        mapCountry2Flag = new HashMap<String, String>();
+
+        for (int i = 0; i < countriesNames.length; i++) {
+
+            mapCountry2Flag.put(countriesNames[i], imageNames[i]);
+        }
 
         //----------------------------------------------------------------------------------
         //---   Layout
@@ -114,6 +134,13 @@ public class WorldIndexView extends AppCompatActivity {
         lvWorldIndex = (ListView) findViewById(R.id.lvWorldIndex);
 
         //------------------------------------------------------------------------------------------
+        //---   from 'strings.xml'
+        //------------------------------------------------------------------------------------------
+
+        IndexArray = getResources().getStringArray(R.array.world_indices);
+        IndexArrayList = new ArrayList<String>(Arrays.asList(IndexArray));
+
+        //------------------------------------------------------------------------------------------
         //---   If cards are already loaded, show right away (wait until activity is stable)
         //------------------------------------------------------------------------------------------
 
@@ -121,7 +148,7 @@ public class WorldIndexView extends AppCompatActivity {
 
             public void run() {
 
-                adapterAllIndices = new CustomAllCardsAdapter(WorldIndexView.this, R.layout.world_index_list_view_item,activeIndices);
+                adapterAllIndices = new CustomAllCardsAdapter(WorldIndexView.this, R.layout.world_index_list_view_item, activeIndices);
                 lvWorldIndex.setAdapter(adapterAllIndices);
             }
         });
@@ -134,11 +161,6 @@ public class WorldIndexView extends AppCompatActivity {
     //***   Custom Array Adapter for List of active Flashcards
     //**********************************************************************************************
     private class CustomAllCardsAdapter extends ArrayAdapter<Index> {
-
-//        public CustomAllCardsAdapter() {
-//
-//            super(WorldIndexView.this, R.layout.world_index_list_view_item,activeIndices);
-//        }
 
         private final Context context;
         private ArrayList<Index> events;
@@ -160,6 +182,8 @@ public class WorldIndexView extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
+//            String IndexName = IndexArrayList.get(position);
+
             Index currentIndex = activeIndices.get(position);
 
             if (convertView == null) {
@@ -177,17 +201,46 @@ public class WorldIndexView extends AppCompatActivity {
                 }
             }
 
+            //--------------------------------------------------------------------------------------
+            //---   Flag
+            //--------------------------------------------------------------------------------------
+
+            int drawableId = getResources().getIdentifier(mapCountry2Flag.get(currentIndex.getCountry()), "drawable", getPackageName());
+
             ImageView indexFlag = (ImageView) convertView.findViewById(R.id.imvWorldIndexFlag);
-            indexFlag.setImageResource(R.drawable.usa);
+//            indexFlag.setImageResource(R.drawable.usa);
+            indexFlag.setImageResource(drawableId);
             indexFlag.setVisibility(View.VISIBLE);
+
+            //--------------------------------------------------------------------------------------
+            //---   Index Name
+            //--------------------------------------------------------------------------------------
 
             TextView indexName = (TextView) convertView.findViewById(R.id.txtWorldIndexName);
             indexName.setText(currentIndex.getName()+"");
             indexName.setVisibility(View.VISIBLE);
 
+            //--------------------------------------------------------------------------------------
+            //---   Gain/Loss (%)
+            //--------------------------------------------------------------------------------------
+
+            Float PercChange = currentIndex.getPercChange();
             TextView indexPercChange = (TextView) convertView.findViewById(R.id.txtWorldIndexPercChange);
-            indexPercChange.setText(currentIndex.getPercChange()+"");
+            indexPercChange.setText(PercChange + "%");
+
+            if (PercChange < 0) {
+                indexPercChange.setTextColor(ContextCompat.getColor(WorldIndexView.this, R.color.colorRedStrong));
+            } else if (PercChange > 0) {
+                indexPercChange.setTextColor(ContextCompat.getColor(WorldIndexView.this, R.color.colorGreenStrong));
+            } else {
+                indexPercChange.setTextColor(ContextCompat.getColor(WorldIndexView.this, R.color.colorGrey1));
+            }
             indexPercChange.setVisibility(View.VISIBLE);
+
+            //--------------------------------------------------------------------------------------
+            //---   Trend
+            //--------------------------------------------------------------------------------------
+
 
             return convertView;
         }
@@ -211,9 +264,20 @@ public class WorldIndexView extends AppCompatActivity {
 
                 allFlashcards = data.getParcelableArrayListExtra("INDEX_CHANGE_ARRAY");
 
-                activeIndices = allFlashcards;
+                activeIndices.clear();
 
-//                adapterAllIndices.notifyDataSetChanged();
+                HashMap<String, Index> indexMap = new HashMap<String, Index>();
+                for (Index index : allFlashcards) {
+                    indexMap.put(index.getName(), index);
+                }
+
+                for (String indexName : IndexArray) {
+                    activeIndices.add(indexMap.get(indexName));
+                }
+
+                adapterAllIndices = new CustomAllCardsAdapter(WorldIndexView.this, R.layout.world_index_list_view_item, activeIndices);
+                lvWorldIndex.setAdapter(adapterAllIndices);
+                adapterAllIndices.notifyDataSetChanged();
 
 //                Resources res = getResources();
 //
