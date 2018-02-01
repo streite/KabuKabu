@@ -22,6 +22,7 @@ public class SQLhandler extends SQLiteOpenHelper {
     private static final String COLUMN_SUBCATEGORY = "subcategory";
     private static final String COLUMN_SHARES = "shares";
     private static final String COLUMN_BASIS = "basis";
+    private static final String COLUMN_VOLUME = "volume";
     private static final String COLUMN_DATE = "date";
     private static final String COLUMN_COMMISSION = "commission";
     private static final String COLUMN_LEVERAGE = "leverage";
@@ -47,6 +48,7 @@ public class SQLhandler extends SQLiteOpenHelper {
                 + COLUMN_SHARES + " INTEGER, "
                 + COLUMN_BASIS + " REAL, "
                 + COLUMN_DATE + " TEXT, "
+                + COLUMN_VOLUME + " TEXT, "
                 + COLUMN_COMMISSION + " INTEGER, "
                 + COLUMN_LEVERAGE + " TEXT, "
                 + COLUMN_WATCH + " INTEGER " +
@@ -98,6 +100,7 @@ public class SQLhandler extends SQLiteOpenHelper {
         values.put(COLUMN_SHARES, stock.getShares());
         values.put(COLUMN_BASIS, stock.getBasis());
         values.put(COLUMN_DATE, stock.getDate());
+        values.put(COLUMN_VOLUME, stock.getVolume());
         values.put(COLUMN_COMMISSION, stock.getCommission());
         values.put(COLUMN_LEVERAGE, stock.getLeverage());
         values.put(COLUMN_WATCH, stock.getWatch());
@@ -122,7 +125,7 @@ public class SQLhandler extends SQLiteOpenHelper {
         Cursor cursor = database.query(TABLE_NAME, new String[]
                 {COLUMN_ID, COLUMN_COMPANY,COLUMN_TICKER,COLUMN_PRICE,COLUMN_CHANGE,COLUMN_PERC_CHANGE,
                         COLUMN_CATEGORY,COLUMN_SUBCATEGORY,
-                        COLUMN_SHARES,COLUMN_BASIS,COLUMN_DATE,
+                        COLUMN_SHARES,COLUMN_BASIS,COLUMN_DATE,COLUMN_VOLUME,
                         COLUMN_COMMISSION,COLUMN_LEVERAGE,COLUMN_WATCH},COLUMN_ID + "=?",
                 new String [] {String.valueOf(id)},null,null,null);
 
@@ -147,9 +150,10 @@ public class SQLhandler extends SQLiteOpenHelper {
         stock.setShares(Integer.parseInt(cursor.getString(8)));
         stock.setBasis(Float.parseFloat(cursor.getString(9)));
         stock.setDate(cursor.getString(10));
-        stock.setCommission(Integer.parseInt(cursor.getString(11)));
-        stock.setLeverage(cursor.getString(12));
-        stock.setWatch(Integer.parseInt(cursor.getString(13)));
+        stock.setVolume(cursor.getString(11));
+        stock.setCommission(Integer.parseInt(cursor.getString(12)));
+        stock.setLeverage(cursor.getString(13));
+        stock.setWatch(Integer.parseInt(cursor.getString(14)));
 
         return stock;
     }
@@ -189,9 +193,10 @@ public class SQLhandler extends SQLiteOpenHelper {
                 stock.setShares(Integer.parseInt(cursor.getString(8)));
                 stock.setBasis(Float.parseFloat(cursor.getString(9)));
                 stock.setDate(cursor.getString(10));
-                stock.setCommission(Integer.parseInt(cursor.getString(11)));
-                stock.setLeverage(cursor.getString(12));
-                stock.setWatch(Integer.parseInt(cursor.getString(13)));
+                stock.setVolume(cursor.getString(11));
+                stock.setCommission(Integer.parseInt(cursor.getString(12)));
+                stock.setLeverage(cursor.getString(13));
+                stock.setWatch(Integer.parseInt(cursor.getString(14)));
 
                 stockArrayList.add(stock);
 
@@ -236,9 +241,10 @@ public class SQLhandler extends SQLiteOpenHelper {
                 stock.setShares(Integer.parseInt(cursor.getString(8)));
                 stock.setBasis(Float.parseFloat(cursor.getString(9)));
                 stock.setDate(cursor.getString(10));
-                stock.setCommission(Integer.parseInt(cursor.getString(11)));
-                stock.setLeverage(cursor.getString(12));
-                stock.setWatch(Integer.parseInt(cursor.getString(13)));
+                stock.setVolume(cursor.getString(11));
+                stock.setCommission(Integer.parseInt(cursor.getString(12)));
+                stock.setLeverage(cursor.getString(13));
+                stock.setWatch(Integer.parseInt(cursor.getString(14)));
 
                 stockArrayList.add(stock);
 
@@ -284,9 +290,10 @@ public class SQLhandler extends SQLiteOpenHelper {
                 stock.setShares(Integer.parseInt(cursor.getString(8)));
                 stock.setBasis(Float.parseFloat(cursor.getString(9)));
                 stock.setDate(cursor.getString(10));
-                stock.setCommission(Integer.parseInt(cursor.getString(11)));
-                stock.setLeverage(cursor.getString(12));
-                stock.setWatch(Integer.parseInt(cursor.getString(13)));
+                stock.setVolume(cursor.getString(11));
+                stock.setCommission(Integer.parseInt(cursor.getString(12)));
+                stock.setLeverage(cursor.getString(13));
+                stock.setWatch(Integer.parseInt(cursor.getString(14)));
 
                 stockArrayList.add(stock);
 
@@ -335,9 +342,10 @@ public class SQLhandler extends SQLiteOpenHelper {
                 stock.setShares(Integer.parseInt(cursor.getString(8)));
                 stock.setBasis(Float.parseFloat(cursor.getString(9)));
                 stock.setDate(cursor.getString(10));
-                stock.setCommission(Integer.parseInt(cursor.getString(11)));
-                stock.setLeverage(cursor.getString(12));
-                stock.setWatch(Integer.parseInt(cursor.getString(13)));
+                stock.setVolume(cursor.getString(11));
+                stock.setCommission(Integer.parseInt(cursor.getString(12)));
+                stock.setLeverage(cursor.getString(13));
+                stock.setWatch(Integer.parseInt(cursor.getString(14)));
 
                 stockArrayList.add(stock);
 
@@ -365,6 +373,7 @@ public class SQLhandler extends SQLiteOpenHelper {
         values.put(COLUMN_SHARES, stock.getShares());
         values.put(COLUMN_BASIS, stock.getBasis());
         values.put(COLUMN_DATE, stock.getDate());
+        values.put(COLUMN_VOLUME, stock.getVolume());
         values.put(COLUMN_COMMISSION, stock.getCommission());
         values.put(COLUMN_LEVERAGE, stock.getLeverage());
         values.put(COLUMN_WATCH, stock.getWatch());

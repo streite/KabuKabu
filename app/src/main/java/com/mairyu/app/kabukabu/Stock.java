@@ -20,7 +20,8 @@ public class Stock  {
 
     // Watch: 0 Wash Sale
     //        1 Buy
-    //        2 Sell
+    //        2 Sell (Gain)
+    //        3 Sell (Loss)
 
     public Stock() {
 

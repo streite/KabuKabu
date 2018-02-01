@@ -246,7 +246,7 @@
             android:gravity="right"
             android:text="DATE"
             android:textColor="@color/colorGrey1"
-            android:textSize="48sp" />
+            android:textSize="32sp" />
 
     </LinearLayout>
 

@@ -27,13 +27,6 @@ public class Navigator implements ListView.OnItemClickListener {
 
         switch(position) {
 
-            case 1:
-
-                Intent intentMain = new Intent(mActivity, MainActivity.class);
-                mActivity.startActivity(intentMain);
-
-                break;
-
             case 0:
 
                 Intent intentFront = new Intent(mActivity, GoogleSheets.class);
@@ -48,12 +41,28 @@ public class Navigator implements ListView.OnItemClickListener {
 
                 break;
 
-            case 3:
+            case 1:
 
                 Intent intentDatabase = new Intent(mActivity, SettingsPage.class);
                 mActivity.startActivity(intentDatabase);
 
                 break;
+
+            case 3:
+
+                Intent intentMain = new Intent(mActivity, MainActivity.class);
+                mActivity.startActivity(intentMain);
+
+                break;
+
+            case 4:
+
+                Intent intentIndex = new Intent(mActivity, WorldIndexView.class);
+                mActivity.startActivity(intentIndex);
+
+                break;
+
+
         }
     }
 }

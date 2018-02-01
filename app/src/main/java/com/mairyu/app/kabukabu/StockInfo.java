@@ -48,6 +48,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
     EditText edtStockInfoBasis;
     EditText edtStockInfoComission;
     EditText edtStockInfoLeverage;
+    EditText edtStockInfoDate;
 
     String PortfolioCategory;
     int Category_Index;
@@ -103,6 +104,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
         edtStockInfoBasis.setOnClickListener(this);
         edtStockInfoComission = (EditText) findViewById(R.id.edtStockInfoComission);
         edtStockInfoLeverage = (EditText) findViewById(R.id.edtStockInfoLeverage);
+        edtStockInfoDate = (EditText) findViewById(R.id.edtStockInfoDate);
 
         //----------------------------------------------------------------------------------
         //---   Spinner
@@ -139,6 +141,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
                 edtStockInfoBasis.setText(tmpStock.getBasis()+"");
                 edtStockInfoComission.setText(tmpStock.getCommission()+"");
                 edtStockInfoLeverage.setText(tmpStock.getLeverage()+"");
+                edtStockInfoDate.setText(tmpStock.getDate()+"");
 
                 OldBasis = tmpStock.getBasis();
 
@@ -280,16 +283,28 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
             Date rightNow = calendarNow.getTime();
             tmpStock.setDate(df.format(rightNow));
 
+            //--------------------------------------------------------------------------------------
+            //---   Buy
+            //--------------------------------------------------------------------------------------
             if (edtStockInfoShares.getText().toString()!="0") {
 
                 tmpStock.setWatch(1);
 
+            //--------------------------------------------------------------------------------------
+            //---   Sale ...
+            //--------------------------------------------------------------------------------------
             } else {
 
-                if (OldBasis < tmpStock.getBasis()) {
+                //----------------------------------------------------------------------------------
+                //---   ... w/ Loss
+                //----------------------------------------------------------------------------------
+                if (OldBasis > tmpStock.getBasis()) {
 
-                    tmpStock.setWatch(0);
+                    tmpStock.setWatch(3);
 
+                //----------------------------------------------------------------------------------
+                //---   ... w/ Gain
+                //----------------------------------------------------------------------------------
                 } else {
 
                     tmpStock.setWatch(2);

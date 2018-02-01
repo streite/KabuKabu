@@ -710,7 +710,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 try {
 
-                    if (currentStock.getWatch() == 1) {
+                    if (currentStock.getWatch() == 3) {
 
                         String sleepDateString = currentStock.getDate();
                         Date sleepDateStamp = df.parse(sleepDateString);
