@@ -286,7 +286,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
             //--------------------------------------------------------------------------------------
             //---   Buy
             //--------------------------------------------------------------------------------------
-            if (edtStockInfoShares.getText().toString()!="0") {
+            if (!edtStockInfoShares.getText().toString().equals("0")) {
 
                 tmpStock.setWatch(1);
 
