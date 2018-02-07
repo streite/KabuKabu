@@ -37,24 +37,33 @@
         <item>KOSPI</item>
         <item>Shanghai</item>
         <item>Hang Seng</item>
+        <item>Taiwan Weighted</item>
+        <item>STI Index</item>
+        <item>IDX Composite</item>
         <item>BSE Sensex</item>
     </string-array>
 
     <string-array name="country_names">
         <item>United States</item>
-        <item>China</item>
-        <item>Hong Kong</item>
-        <item>South Korea</item>
         <item>Japan</item>
+        <item>South Korea</item>
+        <item>China</item>
+        <item>Taiwan</item>
+        <item>Hong Kong</item>
+        <item>Singapore</item>
+        <item>Indonesia</item>
         <item>India</item>
     </string-array>
 
     <string-array name="img_names">
         <item>usa</item>
-        <item>china</item>
-        <item>hongkong</item>
-        <item>korea</item>
         <item>japan</item>
+        <item>korea</item>
+        <item>china</item>
+        <item>taiwan</item>
+        <item>hongkong</item>
+        <item>singapore</item>
+        <item>indonesia</item>
         <item>india</item>
     </string-array>
 
