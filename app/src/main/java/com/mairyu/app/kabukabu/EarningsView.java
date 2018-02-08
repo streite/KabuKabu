@@ -61,6 +61,9 @@ public class EarningsView extends AppCompatActivity {
     static final int REQUEST_EARNINGS4 = 3003;
     static final int REQUEST_EARNINGS5 = 3004;
 
+    //**********************************************************************************************
+    //***   onCreate
+    //**********************************************************************************************
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -89,7 +92,8 @@ public class EarningsView extends AppCompatActivity {
 
 //        Calendar calendarNow = Calendar.getInstance();
 
-        calendarNext = getNextEarningsDate(Calendar.getInstance());
+//        calendarNext = getNextEarningsDate(Calendar.getInstance());
+        calendarNext = Calendar.getInstance();
 
         int dayOfWeek = calendarNext.get(Calendar.DAY_OF_WEEK);
         Date rightNow = calendarNext.getTime();

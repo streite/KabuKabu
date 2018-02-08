@@ -1,5 +1,7 @@
 package com.mairyu.app.kabukabu;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 //==================================================================================================
@@ -41,6 +43,8 @@ public class EarningsResponseParser {
             Ticker = PartSnippet.substring(first,last);
             tmpEarning.setTicker(Ticker);
 //            PartSnippet = PartSnippet.substring(PartSnippet.indexOf("</td>")+2,PartSnippet.length());
+
+            Log.i("LOG: (ERP)", "Ticker: " + Ticker);
 
             //------------------------------------------------------------------------------------------
 
