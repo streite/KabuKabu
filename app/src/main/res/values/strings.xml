@@ -40,6 +40,7 @@
         <item>Taiwan Weighted</item>
         <item>STI Index</item>
         <item>IDX Composite</item>
+        <item>HNX 30</item>
         <item>BSE Sensex</item>
     </string-array>
 
@@ -52,6 +53,7 @@
         <item>Hong Kong</item>
         <item>Singapore</item>
         <item>Indonesia</item>
+        <item>Vietnam</item>
         <item>India</item>
     </string-array>
 
@@ -64,6 +66,7 @@
         <item>hongkong</item>
         <item>singapore</item>
         <item>indonesia</item>
+        <item>vietnam</item>
         <item>india</item>
     </string-array>
 
