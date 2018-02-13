@@ -34,6 +34,9 @@
         <item>Dow 30</item>
         <item>Nasdaq</item>
         <item>S_P 500</item>
+        <item>S_P/TSX</item>
+        <item>S_P/BMV IPC</item>
+        <item>Bovespa</item>
         <item>Nikkei 225</item>
         <item>KOSPI</item>
         <item>Shanghai</item>
@@ -41,6 +44,7 @@
         <item>Taiwan Weighted</item>
         <item>STI Index</item>
         <item>IDX Composite</item>
+        <item>SET</item>
         <item>S_P/ASX 200</item>
         <item>DJ New Zealand</item>
         <!--<item>HNX 30</item>-->
@@ -49,6 +53,9 @@
 
     <string-array name="country_names">
         <item>United States</item>
+        <item>Canada</item>
+        <item>Mexico</item>
+        <item>Brazil</item>
         <item>Japan</item>
         <item>South Korea</item>
         <item>China</item>
@@ -56,14 +63,20 @@
         <item>Hong Kong</item>
         <item>Singapore</item>
         <item>Indonesia</item>
+        <!--<item>Malaysia</item>-->
+        <item>Thailand</item>
         <item>Vietnam</item>
         <item>Australia</item>
         <item>New Zealand</item>
         <item>India</item>
+        <item>Pakistan</item>
     </string-array>
 
     <string-array name="img_names">
         <item>usa</item>
+        <item>canada</item>
+        <item>mexico</item>
+        <item>brazil</item>
         <item>japan</item>
         <item>korea</item>
         <item>china</item>
@@ -71,10 +84,13 @@
         <item>hongkong</item>
         <item>singapore</item>
         <item>indonesia</item>
+        <!--<item>malaysia</item>-->
+        <item>thailand</item>
         <item>vietnam</item>
         <item>australia</item>
         <item>newzealand</item>
         <item>india</item>
+        <item>pakistan</item>
     </string-array>
 
 </resources>
