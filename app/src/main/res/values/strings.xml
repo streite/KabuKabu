@@ -33,6 +33,7 @@
     <string-array name="world_indices">
         <item>Dow 30</item>
         <item>Nasdaq</item>
+        <item>S_P 500</item>
         <item>Nikkei 225</item>
         <item>KOSPI</item>
         <item>Shanghai</item>
@@ -40,7 +41,9 @@
         <item>Taiwan Weighted</item>
         <item>STI Index</item>
         <item>IDX Composite</item>
-        <item>HNX 30</item>
+        <item>S_P/ASX 200</item>
+        <item>DJ New Zealand</item>
+        <!--<item>HNX 30</item>-->
         <item>BSE Sensex</item>
     </string-array>
 
@@ -54,6 +57,8 @@
         <item>Singapore</item>
         <item>Indonesia</item>
         <item>Vietnam</item>
+        <item>Australia</item>
+        <item>New Zealand</item>
         <item>India</item>
     </string-array>
 
@@ -67,6 +72,8 @@
         <item>singapore</item>
         <item>indonesia</item>
         <item>vietnam</item>
+        <item>australia</item>
+        <item>newzealand</item>
         <item>india</item>
     </string-array>
 

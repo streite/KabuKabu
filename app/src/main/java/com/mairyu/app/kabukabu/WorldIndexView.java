@@ -18,11 +18,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import static com.mairyu.app.kabukabu.R.id.menu_refresh;
 
@@ -62,6 +67,9 @@ public class WorldIndexView extends AppCompatActivity {
 
     HashMap<String, String> mapCountry2Flag = new HashMap<String, String>();
 
+    Calendar calendarNow;
+    Date rightNow;
+
     private boolean ViewExpand = false;
     private int ViewExpandPosition;
 
@@ -96,6 +104,8 @@ public class WorldIndexView extends AppCompatActivity {
 
             mapCountry2Flag.put(countriesNames[i], imageNames[i]);
         }
+
+        calendarNow = Calendar.getInstance();
 
         //----------------------------------------------------------------------------------
         //---   Layout
@@ -186,6 +196,10 @@ public class WorldIndexView extends AppCompatActivity {
 
             Index currentIndex = activeIndices.get(position);
 
+            //--------------------------------------------------------------------------------------
+            //---   Recycle View
+            //--------------------------------------------------------------------------------------
+
             if (convertView == null) {
 
                 //----------------------------------------------------------------------------------
@@ -195,10 +209,25 @@ public class WorldIndexView extends AppCompatActivity {
                 if (ViewExpand && (ViewExpandPosition == position)) {
 
                     convertView = getLayoutInflater().inflate(R.layout.world_index_list_view_item, parent, false);
+
                 } else {
 
                     convertView = getLayoutInflater().inflate(R.layout.world_index_list_view_item, parent, false);
                 }
+            }
+
+            //--------------------------------------------------------------------------------------
+            //---   Market Open/Closed
+            //--------------------------------------------------------------------------------------
+
+//            checkMarketOpen("japan");
+
+            RelativeLayout rlhWorldIndex = (RelativeLayout) convertView.findViewById(R.id.rlhWorldIndex);
+
+            if (currentIndex.getMarketOpen() == 1) {
+                rlhWorldIndex.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_light_yellow_bg, null));
+            } else {
+                rlhWorldIndex.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_dark_yellow_bg, null));
             }
 
             //--------------------------------------------------------------------------------------
@@ -241,7 +270,6 @@ public class WorldIndexView extends AppCompatActivity {
             //---   Trend
             //--------------------------------------------------------------------------------------
 
-
             return convertView;
         }
     }
@@ -272,6 +300,7 @@ public class WorldIndexView extends AppCompatActivity {
                 }
 
                 for (String indexName : IndexArray) {
+                    indexName = indexName.replace("S_P", "S&P");
                     activeIndices.add(indexMap.get(indexName));
                 }
 
@@ -369,5 +398,50 @@ public class WorldIndexView extends AppCompatActivity {
         } else {
             txtView.setTextColor(ContextCompat.getColor(WorldIndexView.this, R.color.colorGreenStrong));
         }
+    }
+
+    //**********************************************************************************************
+    //***   Method: Check whether market is open
+    //**********************************************************************************************
+    public boolean checkMarketOpen(String Market){
+
+        switch (Market) {
+
+            case "japan": {
+
+                if ( checkTimeRange ("4:00","22:00")) { return (true); }
+
+                break;
+            }
+        }
+
+        return (false);
+    }
+
+    //**********************************************************************************************
+    //***   Method: Check whether market is open
+    //**********************************************************************************************
+    public boolean checkTimeRange(String Open, String Close){
+
+        int hour = calendarNow.get(Calendar.HOUR);
+        int minute = calendarNow.get(Calendar.MINUTE);
+
+        SimpleDateFormat inputParser = new SimpleDateFormat("HH:mm", Locale.US);
+
+        Date MarketClose;
+        Date MarketOpen;
+
+        try {
+
+            Date rightNow = inputParser.parse(hour + ":" + minute);
+            MarketOpen = inputParser.parse(Open);
+            MarketClose = inputParser.parse(Close);
+
+            if (MarketOpen.before(rightNow) && MarketClose.after(rightNow)) { return (true); }
+
+        } catch (java.text.ParseException e) {
+        }
+
+        return (false);
     }
 }

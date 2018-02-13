@@ -118,7 +118,7 @@ public class InvestingAPI extends AppCompatActivity {
 
             try {
 
-                allIndexItems = InvestingResponseParser.getWorldIndexArray(data);
+                allIndexItems = WorldIndexResponseParser.getWorldIndexArray(data);
 
                 Log.i("LOG: (IA)", "Parse Done");
 

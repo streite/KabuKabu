@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 
-public class InvestingResponseParser {
+public class WorldIndexResponseParser {
 
     //**********************************************************************************************
     //***   Parse HTTP response string for sentence pairs
@@ -17,7 +17,7 @@ public class InvestingResponseParser {
         ArrayList<Index> allIndexItems = new ArrayList<>();
 
         String FullSnippet,PartSnippet,tmpSnippet;
-        String Country,Index,Change;
+        String Country,Index,Change,OpenClose;
 
         int first = InvestingResponse.indexOf("</script><table id");
         int last = InvestingResponse.lastIndexOf("plusLoader.ready");
@@ -49,7 +49,7 @@ public class InvestingResponseParser {
                 Country = PartSnippet.substring(first, last);
                 tmpIndex.setCountry(Country);
 
-//                Log.i("IRP: Country", Country);
+                Log.i("IRP: Country", Country);
 
                 PartSnippet = skipOnce(PartSnippet);
                 first = PartSnippet.indexOf("title=") + 6;
@@ -73,20 +73,21 @@ public class InvestingResponseParser {
                 Change = Change.replace("+-", "");
                 tmpIndex.setPercChange(Float.parseFloat(Change));
 
+                PartSnippet = skipOnce(PartSnippet);
+                PartSnippet = skipOnce(PartSnippet);
+                first = PartSnippet.indexOf("<span class=") + 13;
+                last = PartSnippet.indexOf(" isOpenExch");
+                OpenClose = PartSnippet.substring(first, last);
+                if (OpenClose.equals("redClockIcon")) {
+                    tmpIndex.setMarketOpen(0);
+                } else {
+                    tmpIndex.setMarketOpen(1);
+                }
+
                 allIndexItems.add(tmpIndex);
-
-//                Log.i("IRP: Change", Change);
-
-//                IndexChangeLUT.put(Index, Change);
 
                 PartSnippet = PartSnippet.substring(PartSnippet.indexOf("<tr id=") + 1);
             }
-
-//            FullSnippet = FullSnippet.substring(FullSnippet.indexOf("</script><table id")+1);
-//            FullSnippet = FullSnippet.substring(FullSnippet.indexOf("</script><table id")+0);
-
-//            Log.i("IRP: FullSnippet", FullSnippet);
-//        }
 
         return allIndexItems;
     }

@@ -15,6 +15,7 @@ public class Index implements Parcelable {
     private float Change;
     private float PercChange;
     private String Trend;
+    private int MarketOpen;
 
     public Index() {
 
@@ -25,6 +26,7 @@ public class Index implements Parcelable {
         Change = 0;
         PercChange = 0;
         Trend = "none";
+        MarketOpen = 0;
     }
 
     public Index(Parcel source) {
@@ -36,6 +38,7 @@ public class Index implements Parcelable {
         Change = source.readFloat();
         PercChange = source.readFloat();
         Trend = source.readString();
+        MarketOpen = source.readInt();
     }
 
     public int getId() {
@@ -94,6 +97,14 @@ public class Index implements Parcelable {
         Trend = trend;
     }
 
+    public int getMarketOpen() {
+        return MarketOpen;
+    }
+
+    public void setMarketOpen(int marketOpen) {
+        MarketOpen = marketOpen;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -108,6 +119,7 @@ public class Index implements Parcelable {
         dest.writeFloat(Change);
         dest.writeFloat(PercChange);
         dest.writeString(Trend);
+        dest.writeInt(MarketOpen);
     }
 
     public static final Creator<Index> CREATOR = new Creator<Index>() {
