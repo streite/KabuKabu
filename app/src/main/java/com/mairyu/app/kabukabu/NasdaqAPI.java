@@ -110,7 +110,8 @@ public class NasdaqAPI extends AppCompatActivity {
 
             TickerConcat = TickerConcat.replaceAll(",$","");
 
-            dictHTTPClient.setBASE_URL("http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=" + TickerConcat);
+//            dictHTTPClient.setBASE_URL("http://www.nasdaq.com/aspx/flashquotes.aspx?symbol=" + TickerConcat);
+            dictHTTPClient.setBASE_URL("https://www.nasdaq.com/aspx/flashquotes.aspx?symbol=" + TickerConcat);
 
             //--------------------------------------------------------------------------------------
             //---   Retrieve HTML response from websites (full string)
