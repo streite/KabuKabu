@@ -160,6 +160,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.portfolio_view_pager);
 
+        //------------------------------------------------------------------------------------------
+        //---   Define Subcategories
+        //------------------------------------------------------------------------------------------
+
         SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P,RUSSEL,MISC");
         SubcategoryMap.put("REGION ETF","ASIA,EUROPE,LATIN AMERICA,MISC");
         SubcategoryMap.put("COMMODITY ETF","METAL,AGRICULTURE,ENERGY,MISC");
@@ -245,18 +249,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             @Override
             public void onPageSelected(int position) {
 
-//                if (!ButtonPush) {
-//                    if (lastPage > position) {
-//                        index--;
-//                    } else {
-//                        index++;
-//                    }
-//                }
-//                lastPage = position;
-//                ButtonPush = false;
-//
-//                Log.i("LOG: (CV) PAGEVIEWER", "onPageSelected - new page: " + position);
-//
                 Fragment fragment = ((CardViewPagerAdapter) mPager.getAdapter()).getFragment(position);
 
                 View Fragmentview = fragment.getView();
@@ -349,16 +341,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                     }
                 });
 
-//                expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//                    @Override
-//                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                        //Message
-//                        Toast.makeText(getBaseContext(), position+"", Toast.LENGTH_SHORT).show();
-//
-//                        return true;
-//                    }
-//                });
-
                 //------------------------------------------------------------------------------------------
                 //---   Layout
                 //------------------------------------------------------------------------------------------
@@ -396,16 +378,20 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    //------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------
     //---   Create list of all Subcategories in this group
-    //------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------
     private void createSubcategoryList() {
 
         SubcategoryList = new ArrayList<String>();
 
+        Log.i("LOG: (PV): ", "createSubcategoryList: ==========================================================");
+
         SubcategoryArray = SubcategoryMap.get(Category).split(",");
 
         for (String SubCategory : SubcategoryArray) {
+
+            Log.i("LOG: (PV): ", "createSubcategoryList: SubCategory - " + SubCategory);
 
             SubcategoryList.add(SubCategory);
         }
@@ -418,11 +404,15 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         subgroupCollection = new LinkedHashMap<String, List<String>>();
 
-        //----------------------------------------------------------------------------------------------
+        Log.i("LOG: (PV): ", "createSubgroupList: ==========================================================");
+
+        //------------------------------------------------------------------------------------------
         //---   Create Child List for each Subcategory
-        //----------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
 
         for (String subCategory : SubcategoryList) {
+
+            Log.i("LOG: (PV): ", "createSubgroupList: subCategory - " + subCategory);
 
             allSubStocks = sqlHandler.getStocksBySubcategory(Category,subCategory);
 
@@ -445,13 +435,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             subgroupCollection.put(subCategory, childList);
         }
     }
-
-//    private void loadChild(String[] laptopModels) {
-//
-//        childList = new ArrayList<String>();
-//        for (String model : laptopModels)
-//            childList.add(model);
-//    }
 
     //**********************************************************************************************
     //***   Custom Expandable Adapter for PortfolioPage
