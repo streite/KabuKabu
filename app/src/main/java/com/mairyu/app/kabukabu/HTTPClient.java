@@ -20,20 +20,6 @@ import java.util.List;
 //==================================================================================================
 public class HTTPClient {
 
-//    private static String BASE_URL = "https://itunes.apple.com/search?term="+"Def+Leppard";
-//    private String BASE_URL = "http://jisho.org/api/v1/search/words?keyword="+"father";
-//    http://api.pearson.com/v2/dictionaries/ldec/entries?headword=car&limit=4
-//    http://docs.microsofttranslator.com/oauth-token.html#!/Authentication_token_service/getToken
-//    http://docs.microsofttranslator.com/text-translate.html#/
-//    ID1: 2d8bcc8111b24b8e846b22eae45d3fa3 ID2: 1e99ef6c39ed48288b04c457f5fefdad
-
-//    http://www.setgetgo.com/randomword/get.php (random Word)
-//    https://en.wikipedia.org/w/api.php?format=json&action=query&generator=random&grnnamespace=0&prop=revisions|images&rvprop=content&grnlimit=10
-//    http://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&minCorpusCount=0&minLength=5&maxLength=15&limit=1&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5
-
-    // Test Mashape API Key: TqnH5LIxoRmshG1hV4ELviXxsSXap14lqt7jsnPtGbEQBgxcKt
-    // Production Mashape API Key: fugcGQqIXomshpbhJb4TGsPzuxJap15oYzLjsnWIGOKEmvIkOm
-
     private String BASE_URL;
 
     //**********************************************************************************************

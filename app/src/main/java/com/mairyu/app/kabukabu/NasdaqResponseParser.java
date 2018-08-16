@@ -8,7 +8,7 @@ public class NasdaqResponseParser {
     //**********************************************************************************************
     //***   Parse HTTP response string for sentence pairs
     //**********************************************************************************************
-    public static ArrayList<Stock> getTopLoser (String TatoebaResponse) {
+    public static ArrayList<Stock> getTopLoser (String NasdaqResponse) {
 
         ArrayList<String> ExampleSentences = new ArrayList<>();
         ArrayList<Stock> allDictItems = new ArrayList<>();
@@ -16,9 +16,9 @@ public class NasdaqResponseParser {
         String FullSnippet,PartSnippet,Color;
         String Ticker,Price,Change,ChangePerc,Volume;
 
-        int first = TatoebaResponse.indexOf("quotes_content_left_flashdata");
-        int last = TatoebaResponse.lastIndexOf("Updates every 7 Seconds");
-        FullSnippet = TatoebaResponse.substring(first,last);
+        int first = NasdaqResponse.indexOf("quotes_content_left_flashdata");
+        int last = NasdaqResponse.lastIndexOf("Updates every 7 Seconds");
+        FullSnippet = NasdaqResponse.substring(first,last);
         first = FullSnippet.indexOf("flashevengr");
         last = FullSnippet.lastIndexOf("table") + 8;
         FullSnippet = FullSnippet.substring(first,last);
