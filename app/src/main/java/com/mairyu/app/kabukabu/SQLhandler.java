@@ -83,7 +83,7 @@ public class SQLhandler extends SQLiteOpenHelper {
     }
 
     //*********************************************************************************************
-    //**   METHOD: Add (new) flashcard to SQL
+    //**   METHOD: Add (new) Stock to SQL
     //**********************************************************************************************
     public long addStock(Stock stock) {
 
@@ -159,7 +159,7 @@ public class SQLhandler extends SQLiteOpenHelper {
     }
 
     //**********************************************************************************************
-    //***   METHOD: Retrieve single flashcard from SQL
+    //***   METHOD: Retrieve single Stock via from SQL
     //**********************************************************************************************
     public Stock getStocksByTicker(String ticker) {
 
@@ -203,11 +203,15 @@ public class SQLhandler extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
-        return stockArrayList.get(0);
+        if (stockArrayList.size() > 0) {
+            return stockArrayList.get(0);
+        } else {
+            return (new Stock());
+        }
     }
 
     //**********************************************************************************************
-    //***   METHOD: Retrieve single flashcard from SQL
+    //***   METHOD: Retrieve Stocks via Category from SQL
     //**********************************************************************************************
     public ArrayList<Stock> getStocksByCategory(String ticker) {
 

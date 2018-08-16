@@ -164,6 +164,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   Define Subcategories
         //------------------------------------------------------------------------------------------
 
+        SubcategoryMap.put("IPO","MISC");
         SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P,RUSSEL,MISC");
         SubcategoryMap.put("REGION ETF","ASIA,EUROPE,LATIN AMERICA,MISC");
         SubcategoryMap.put("COMMODITY ETF","METAL,AGRICULTURE,ENERGY,MISC");

@@ -5,6 +5,7 @@
     <string name="action_search">Search</string>
 
     <string-array name="categories">
+        <item>IPO</item>
         <item>INDEX ETF</item>
         <item>OTHER ETF</item>
         <item>REGION ETF</item>
@@ -30,27 +31,6 @@
         <item>Setting</item>
     </string-array>
 
-    <string-array name="world_indices">
-        <item>Dow 30</item>
-        <item>Nasdaq</item>
-        <item>S_P 500</item>
-        <item>S_P/TSX</item>
-        <item>S_P/BMV IPC</item>
-        <item>Bovespa</item>
-        <item>Nikkei 225</item>
-        <item>KOSPI</item>
-        <item>Shanghai</item>
-        <item>Hang Seng</item>
-        <item>Taiwan Weighted</item>
-        <item>STI Index</item>
-        <item>IDX Composite</item>
-        <item>SET</item>
-        <item>S_P/ASX 200</item>
-        <item>DJ New Zealand</item>
-        <!--<item>HNX 30</item>-->
-        <item>BSE Sensex</item>
-    </string-array>
-
     <string-array name="country_names">
         <item>United States</item>
         <item>Canada</item>
@@ -62,6 +42,7 @@
         <item>Taiwan</item>
         <item>Hong Kong</item>
         <item>Singapore</item>
+        <item>Philippines</item>
         <item>Indonesia</item>
         <!--<item>Malaysia</item>-->
         <item>Thailand</item>
@@ -83,6 +64,7 @@
         <item>taiwan</item>
         <item>hongkong</item>
         <item>singapore</item>
+        <item>philippines</item>
         <item>indonesia</item>
         <!--<item>malaysia</item>-->
         <item>thailand</item>
@@ -91,6 +73,28 @@
         <item>newzealand</item>
         <item>india</item>
         <item>pakistan</item>
+    </string-array>
+
+    <string-array name="world_indices">
+        <item>Dow 30</item>
+        <item>Nasdaq</item>
+        <item>S_P 500</item>
+        <item>S_P/TSX</item>
+        <item>S_P/BMV IPC</item>
+        <item>Bovespa</item>
+        <item>Nikkei 225</item>
+        <item>KOSPI</item>
+        <item>Shanghai</item>
+        <item>Hang Seng</item>
+        <item>Taiwan Weighted</item>
+        <item>STI Index</item>
+        <item>FTSE Philippines</item>
+        <item>IDX Composite</item>
+        <item>SET</item>
+        <item>S_P/ASX 200</item>
+        <item>DJ New Zealand</item>
+        <!--<item>HNX 30</item>-->
+        <item>BSE Sensex</item>
     </string-array>
 
 </resources>

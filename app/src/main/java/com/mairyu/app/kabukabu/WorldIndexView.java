@@ -111,13 +111,13 @@ public class WorldIndexView extends AppCompatActivity {
         //---   Layout
         //----------------------------------------------------------------------------------
 
-        usaFlag = (ImageView) findViewById(R.id.usaFlag);
-        chinaFlag = (ImageView) findViewById(R.id.chinaFlag);
-        hongkongFlag = (ImageView) findViewById(R.id.hongkongFlag);
-        taiwanFlag = (ImageView) findViewById(R.id.taiwanFlag);
-        japanFlag = (ImageView) findViewById(R.id.japanFlag);
-        koreaFlag = (ImageView) findViewById(R.id.koreaFlag);
-        indiaFlag = (ImageView) findViewById(R.id.indiaFlag);
+//        usaFlag = (ImageView) findViewById(R.id.usaFlag);
+//        chinaFlag = (ImageView) findViewById(R.id.chinaFlag);
+//        hongkongFlag = (ImageView) findViewById(R.id.hongkongFlag);
+//        taiwanFlag = (ImageView) findViewById(R.id.taiwanFlag);
+//        japanFlag = (ImageView) findViewById(R.id.japanFlag);
+//        koreaFlag = (ImageView) findViewById(R.id.koreaFlag);
+//        indiaFlag = (ImageView) findViewById(R.id.indiaFlag);
 
 //        txtIndexViewUSA = (TextView) findViewById(R.id.txtIndexViewUSA);
 //        txtIndexViewChina = (TextView) findViewById(R.id.txtIndexViewChina);
