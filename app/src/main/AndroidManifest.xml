@@ -2,10 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mairyu.app.kabukabu">
 
-    <uses-sdk
-        android:minSdkVersion="23"
-        android:targetSdkVersion="24" />
-
     <meta-data
         android:name="com.google.android.gms.version"
         android:value="@integer/google_play_services_version" />
@@ -30,36 +26,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        //------------------------------------------------------------------------------------------
         <activity android:name=".WSJ" />
-        //------------------------------------------------------------------------------------------
         <activity
             android:name=".SettingsPage"
             android:label=""
             android:theme="@style/MyMaterialTheme" />
-        //------------------------------------------------------------------------------------------
         <activity android:name=".CategoryView" />
-        //------------------------------------------------------------------------------------------
         <activity android:name=".GoogleSheets" />
-        //------------------------------------------------------------------------------------------
         <activity android:name=".YahooAPI" />
-        //------------------------------------------------------------------------------------------
         <activity android:name=".EarningsView" />
-        //------------------------------------------------------------------------------------------
         <activity android:name=".IndexView" />
         <activity android:name=".WorldIndexView" />
-        //------------------------------------------------------------------------------------------
         <activity android:name=".EarningsAPI" />
-        //------------------------------------------------------------------------------------------
         <activity android:name=".InvestingAPI" />
-        //------------------------------------------------------------------------------------------
         <activity android:name=".NasdaqAPI" />
-        //------------------------------------------------------------------------------------------
         <activity
             android:name=".PortfolioView"
             android:label=""
             android:theme="@style/MyMaterialTheme" />
-        //------------------------------------------------------------------------------------------
         <activity
             android:name=".StockInfo"
             android:label=""
