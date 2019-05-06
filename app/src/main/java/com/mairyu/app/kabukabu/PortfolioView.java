@@ -64,7 +64,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     private ArrayList<Stock> allStocks = new ArrayList<>();
     private ArrayList<Stock> allSubStocks = new ArrayList<>();
-    private ArrayList<String> allSubcategories = new ArrayList<>();
 
     private ArrayAdapter<Stock> adapterStocks;
     private ExpandableListAdapter expListAdapter;
@@ -77,7 +76,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     private Button btnPortfolioAdd;
     private Button btnDatabaseSave;
-    private Button btnDatabaseShow;
     private Button btnPortfolioFilterShares;
     private Button btnPortfolioFilterPerc;
 
@@ -99,7 +97,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     HashMap<Integer,String> mFragmentTags = new HashMap<Integer,String>();
 
     SQLhandler sqlHandler;
-    String SQL_Filename;
     int SQLDBSize;
     String Category;
     String PortfolioCategory;
@@ -201,7 +198,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   Toolbar
         //------------------------------------------------------------------------------------------
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -210,7 +207,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   ViewPager
         //------------------------------------------------------------------------------------------
 
-        mPager = (ViewPager) findViewById(pager);
+        mPager = findViewById(pager);
         mPagerAdapter = new CardViewPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPagerAdapter.notifyDataSetChanged();
@@ -227,8 +224,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //----------------------------------------------------------------------------------
 
         navigation = getResources().getStringArray(R.array.navigation);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerList = findViewById(R.id.left_drawer);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,navigation));
         mDrawerList.setOnItemClickListener(new Navigator(this));
 
@@ -358,12 +355,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 btnPortfolioFilterPerc = (Button) findViewById(R.id.btnPortfolioFilterPerc);
                 btnPortfolioFilterPerc.setOnClickListener(PortfolioView.this);
 
-//                refreshCard(currentIndex);
-
                 allStocks = sqlHandler.getStocksByCategory(Category);
-
-//                adapterStocks = new CustomDatabaseAdapter();
-//                listViewAllStocks.setAdapter(adapterStocks);
 
                 SQLDBSize = allStocks.size();
 
