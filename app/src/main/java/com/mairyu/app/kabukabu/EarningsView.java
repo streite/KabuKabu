@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +15,9 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -114,6 +115,7 @@ public class EarningsView extends AppCompatActivity {
         //--------------------------------------------------------------------------------------
         //---   Return via finish()
         //--------------------------------------------------------------------------------------
+        super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode == Activity.RESULT_OK) {
 
             //--------------------------------------------------------------------------------------
@@ -127,7 +129,7 @@ public class EarningsView extends AppCompatActivity {
                 EPSList = intent.getStringArrayListExtra("EPS_ARRAY");
                 String Date = intent.getExtras().getString("DATE");
 
-                createSubgroupList(Date,TickerList);
+                createSubgroupList(Date, TickerList);
 
                 calendarNext = getNextEarningsDate(calendarNext);
 
@@ -154,7 +156,7 @@ public class EarningsView extends AppCompatActivity {
                 String Date = intent.getExtras().getString("DATE");
 
 //                createSubcategoryList();
-                createSubgroupList(Date,TickerList);
+                createSubgroupList(Date, TickerList);
 
                 expListAdapter = new ExpandableListAdapter(EarningsView.this, EarningsDateList, EarningsDateCollection);
                 expListView.setAdapter(expListAdapter);

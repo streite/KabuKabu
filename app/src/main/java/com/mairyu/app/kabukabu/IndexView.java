@@ -6,10 +6,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +15,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import java.util.HashMap;
 
@@ -134,6 +135,7 @@ public class IndexView extends AppCompatActivity {
         //------------------------------------------------------------------------------------------
         //---   Return from CardView
         //------------------------------------------------------------------------------------------
+        super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == REQUEST_INVESTING)) {
 
             //--------------------------------------------------------------------------------------
@@ -145,19 +147,19 @@ public class IndexView extends AppCompatActivity {
 
                 HashMap<String, String> hashMap = (HashMap<String, String>) data.getSerializableExtra("HASH_MAP");
 
-                displayIndexChange(res,usaFlag,txtIndexViewUSA,res.getDrawable(R.drawable.usa),hashMap,"Dow 30");
+                displayIndexChange(res, usaFlag, txtIndexViewUSA, res.getDrawable(R.drawable.usa), hashMap, "Dow 30");
 
-                displayIndexChange(res,chinaFlag,txtIndexViewChina,res.getDrawable(R.drawable.china),hashMap,"Shanghai");
+                displayIndexChange(res, chinaFlag, txtIndexViewChina, res.getDrawable(R.drawable.china), hashMap, "Shanghai");
 
-                displayIndexChange(res,hongkongFlag,txtIndexViewHongKong,res.getDrawable(R.drawable.hongkong),hashMap,"Hang Seng");
+                displayIndexChange(res, hongkongFlag, txtIndexViewHongKong, res.getDrawable(R.drawable.hongkong), hashMap, "Hang Seng");
 
-                displayIndexChange(res,taiwanFlag,txtIndexViewTaiwan,res.getDrawable(R.drawable.taiwan),hashMap,"Taiwan Weighted");
+                displayIndexChange(res, taiwanFlag, txtIndexViewTaiwan, res.getDrawable(R.drawable.taiwan), hashMap, "Taiwan Weighted");
 
-                displayIndexChange(res,japanFlag,txtIndexViewJapan,res.getDrawable(R.drawable.japan),hashMap,"Nikkei 225");
+                displayIndexChange(res, japanFlag, txtIndexViewJapan, res.getDrawable(R.drawable.japan), hashMap, "Nikkei 225");
 
-                displayIndexChange(res,koreaFlag,txtIndexViewKorea,res.getDrawable(R.drawable.korea),hashMap,"KOSPI");
+                displayIndexChange(res, koreaFlag, txtIndexViewKorea, res.getDrawable(R.drawable.korea), hashMap, "KOSPI");
 
-                displayIndexChange(res,indiaFlag,txtIndexViewIndia,res.getDrawable(R.drawable.india),hashMap,"BSE Sensex");
+                displayIndexChange(res, indiaFlag, txtIndexViewIndia, res.getDrawable(R.drawable.india), hashMap, "BSE Sensex");
             }
         }
     }

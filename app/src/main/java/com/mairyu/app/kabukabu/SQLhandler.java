@@ -213,7 +213,7 @@ public class SQLhandler extends SQLiteOpenHelper {
     //**********************************************************************************************
     //***   METHOD: Retrieve Stocks via Category from SQL
     //**********************************************************************************************
-    public ArrayList<Stock> getStocksByCategory(String ticker) {
+    public ArrayList<Stock> getStocksByCategory(String Main, String Sub) {
 
         String selectAllQuery;
 
@@ -221,7 +221,7 @@ public class SQLhandler extends SQLiteOpenHelper {
 
         ArrayList<Stock> stockArrayList = new ArrayList<>();
 
-        selectAllQuery = "Select * FROM " + TABLE_NAME + " WHERE " + COLUMN_CATEGORY + " =  \"" + ticker + "\"";
+        selectAllQuery = "Select * FROM " + TABLE_NAME + " WHERE " + COLUMN_CATEGORY + " =  \"" + Main + "\" AND " + COLUMN_SUBCATEGORY + " =  \"" + Sub + "\"";
 
         Cursor cursor = database.rawQuery(selectAllQuery, null);
 
@@ -310,7 +310,7 @@ public class SQLhandler extends SQLiteOpenHelper {
     //**********************************************************************************************
     //***   METHOD: Retrieve all flashcards from SQL
     //**********************************************************************************************
-    public ArrayList<Stock> getAllStocks(boolean random){
+    public ArrayList<Stock> getAllStocks(){
 
         String selectAllQuery;
 
@@ -318,11 +318,7 @@ public class SQLhandler extends SQLiteOpenHelper {
 
         SQLiteDatabase database = this.getReadableDatabase();
 
-        if (random) {
-            selectAllQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY RANDOM()";
-        } else {
-            selectAllQuery = "SELECT * FROM " + TABLE_NAME;
-        }
+        selectAllQuery = "SELECT * FROM " + TABLE_NAME;
 
         Cursor cursor = database.rawQuery(selectAllQuery, null);
 

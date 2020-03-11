@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gradient_dark_green_bg"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+    <RelativeLayout
+        android:id="@+id/rlhvJournalEnglish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_dark_green_bg"
+        android:focusable="false"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtMainCategoryRecycleViewName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:paddingStart="40dp"
+            android:text="English"
+            android:textColor="@color/colorGreen4"
+            android:textSize="12sp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:focusable="false"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

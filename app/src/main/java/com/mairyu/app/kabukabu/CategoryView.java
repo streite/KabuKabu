@@ -2,9 +2,6 @@ package com.mairyu.app.kabukabu;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +10,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class CategoryView extends AppCompatActivity {
 
     private ListView categoryListView;
 
-    private String[] CategoryArray;
+    private String[] MainCategoryArray;
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -54,7 +55,7 @@ public class CategoryView extends AppCompatActivity {
         //---   ListView Setup
         //------------------------------------------------------------------------------------------
 
-        CategoryArray = getResources().getStringArray(R.array.categories);
+        MainCategoryArray = getResources().getStringArray(R.array.main_categories);
 //        List<String> Lines = Arrays.asList(getResources().getStringArray(R.array.Lines));
 
 //        adapterCategory = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,CategoryArray);
@@ -74,7 +75,7 @@ public class CategoryView extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
 
                 Intent intentTraining = new Intent(CategoryView.this, PortfolioView.class);
-                intentTraining.putExtra("PORTFOLIO_CATEGORY", CategoryArray[position]);
+                intentTraining.putExtra("PORTFOLIO_CATEGORY", MainCategoryArray[position]);
                 startActivity(intentTraining);
 
                 switch (position) {
@@ -97,7 +98,7 @@ public class CategoryView extends AppCompatActivity {
 
         public CustomDatabaseAdapter() {
 
-            super(CategoryView.this, R.layout.category_list_view_item,CategoryArray);
+            super(CategoryView.this, R.layout.category_list_view_item, MainCategoryArray);
         }
 
         @Override
@@ -111,7 +112,7 @@ public class CategoryView extends AppCompatActivity {
             }
 
             // Find the current card to work with
-            String currentString = CategoryArray[position];
+            String currentString = MainCategoryArray[position];
 
             TextView menuOption = (TextView) itemView.findViewById(R.id.txtStockGroup);
             menuOption.setText(currentString);

@@ -3,7 +3,7 @@ package com.mairyu.app.kabukabu;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PreferenceSettings extends AppCompatActivity {
 

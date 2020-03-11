@@ -3,10 +3,6 @@ package com.mairyu.app.kabukabu;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +15,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.MenuItemCompat;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -110,7 +111,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
         //---   Spinner
         //----------------------------------------------------------------------------------
 
-        CategoryArray = getResources().getStringArray(R.array.categories);
+        CategoryArray = getResources().getStringArray(R.array.main_categories);
 
 //        Portfolio_Spinner = (Spinner) findViewById(R.id.spnStockInfoCategory);
 //        Portfolio_Spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
@@ -219,14 +220,14 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
         MenuItem item = menu.findItem(R.id.menu_spinner);
         Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
 
-        String[] CategoryArray = getResources().getStringArray(R.array.categories);
+        String[] CategoryArray = getResources().getStringArray(R.array.main_categories);
 //        String SheetTag = _appPrefs.getSQLFlashcardDBName().substring(11);
 //        SheetTag = SheetTag.substring(0,SheetTag.length()-3);
 
         Stock tmpStock = sqlHandler.getStockByID(SQL_Stock_ID);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.categories, android.R.layout.simple_spinner_item);
+                R.array.main_categories, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        adapter.setDropDownViewResource(android.R.layout.spinner_drop_down);
         spinner.setAdapter(adapter);

@@ -1,20 +1,9 @@
 package com.mairyu.app.kabukabu;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -27,34 +16,34 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import static android.util.Log.i;
 import static com.mairyu.app.kabukabu.R.id.menu_refresh;
-import static com.mairyu.app.kabukabu.R.id.pager;
 import static java.lang.StrictMath.abs;
 
 //==================================================================================================
@@ -63,10 +52,12 @@ import static java.lang.StrictMath.abs;
 public class PortfolioView extends AppCompatActivity implements View.OnClickListener {
 
     private ArrayList<Stock> allStocks = new ArrayList<>();
+    private ArrayList<Stock> RecyclerViewStocks = new ArrayList<>();
+
     private ArrayList<Stock> allSubStocks = new ArrayList<>();
 
-    private ArrayAdapter<Stock> adapterStocks;
-    private ExpandableListAdapter expListAdapter;
+    private CustomRecyclerViewAdapter adapterStocks;
+    private RecyclerView rcvPortfolioViewMainCategory;
     private ArrayAdapter<String> Portfolio_SubCategory_Adapter;
 
     EditText edtPortfolioTicker;
@@ -86,8 +77,12 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     private Spinner Portfolio_Spinner;
     private Spinner Portfolio_SubCategory_Spinner;
 
-    private String[] CategoryArray;
+    private String[] MainCategoryArray;
+    private ArrayList<String> MainCategoryArrayList;
+    private ArrayList<ArrayList<String>> SubCategoryArrayList;
+
     private String[] SubcategoryArray;
+//    private ArrayList<String> SubCategoryArrayList;
 
     private PreferenceSettings _appPrefs;
 
@@ -96,7 +91,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     HashMap<Integer,String> mFragmentTags = new HashMap<Integer,String>();
 
-    SQLhandler sqlHandler;
+    private ArrayList<Integer> RowXMLType = new ArrayList<>();
+
+    SQLhandler sqlStockHandler;
     int SQLDBSize;
     String Category;
     String PortfolioCategory;
@@ -116,16 +113,23 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     int Comission;
     String Leverage;
 
-    List<String> SubcategoryList;
-    List<String> childList;
-    Map<String, List<String>> subgroupCollection;
-    ExpandableListView expListView;
+    boolean[] MainCategoryExpand = new boolean[50];
+    boolean[] SubCategoryExpand = new boolean[50];
 
     Map<String, String> SubcategoryMap = new HashMap<>();
+
+    private final static String TAG = MainActivity.class.getSimpleName();
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private String[] navigation;
+
+    private static int MAIN_CATEGORY = 1;
+    private static int SUB_CATEGORY = 2;
+    private static int STOCK_CATEGORY = 3;
+
+    private static boolean COLLAPSED = false;
+    private static boolean EXPANDED = true;
 
     static final int SQL_POPUP_WIDTH = 1000;
     static final int SQL_POPUP_HEIGHT = 1500;
@@ -155,7 +159,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.portfolio_view_pager);
+        setContentView(R.layout.portfolio_view);
 
         //------------------------------------------------------------------------------------------
         //---   Define Subcategories
@@ -180,13 +184,37 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
 
         Bundle extras = getIntent().getExtras();
-        Category = extras.getString("PORTFOLIO_CATEGORY");
+
+        Category = "IPO";
 
         //------------------------------------------------------------------------------------------
         //---   from 'strings.xml'
         //------------------------------------------------------------------------------------------
 
-        CategoryArray = getResources().getStringArray(R.array.categories);
+        MainCategoryArray = getResources().getStringArray(R.array.main_categories);
+        MainCategoryArrayList = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.main_categories)));
+
+        ArrayList<String> mainCategoryArray;
+        SubCategoryArrayList  = new ArrayList<>();
+
+        for(String MainCategory : MainCategoryArrayList){
+
+            try {
+                SubCategoryArrayList.add(new ArrayList<>(Arrays.asList(getResources().getStringArray(getResources().getIdentifier(MainCategory.toLowerCase().replace(" ","_"), "array", getPackageName())))));
+            } catch (Resources.NotFoundException e){
+                Log.e(TAG, e.toString());
+            }
+        }
+
+        for (int MainIndex = 0; MainIndex < MainCategoryArrayList.size(); MainIndex = MainIndex + 1) {
+
+            MainCategoryExpand[MainIndex] = false;
+
+            for (int SubIndex = 0; SubIndex < SubCategoryArrayList.size(); SubIndex = SubIndex + 1) {
+
+                SubCategoryExpand[SubIndex] = false;
+            }
+        }
 
         //------------------------------------------------------------------------------------------
         //---   Preference/Settings
@@ -204,19 +232,10 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         //------------------------------------------------------------------------------------------
-        //---   ViewPager
-        //------------------------------------------------------------------------------------------
-
-        mPager = findViewById(pager);
-        mPagerAdapter = new CardViewPagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
-        mPagerAdapter.notifyDataSetChanged();
-
-        //------------------------------------------------------------------------------------------
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(PortfolioView.this,_appPrefs.getSQLStockDBName(),
+        sqlStockHandler = new SQLhandler(PortfolioView.this,_appPrefs.getSQLStockDBName(),
                 Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
 
         //----------------------------------------------------------------------------------
@@ -230,657 +249,282 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         mDrawerList.setOnItemClickListener(new Navigator(this));
 
         //------------------------------------------------------------------------------------------
-        //---   ViewPager Listener
-        //------------------------------------------------------------------------------------------
-
-        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            // triggered many many times when touching and trying to scroll it, once released it finishes with new position
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            //--------------------------------------------------------------------------------------
-            //---   Page Slide
-            //--------------------------------------------------------------------------------------
-            @Override
-            public void onPageSelected(int position) {
-
-                Fragment fragment = ((CardViewPagerAdapter) mPager.getAdapter()).getFragment(position);
-
-                View Fragmentview = fragment.getView();
-
-                refreshView(Fragmentview);
-
-                Category = CategoryArray[position];
-
-                refreshCard();
-
-                //----------------------------------------------------------------------------------
-                //---   Update Category Header
-                //----------------------------------------------------------------------------------
-
-                TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
-                txtCategory.setText(Category + " (" + SQLDBSize + ")");
-            }
-
-            //SCROLL_STATE_IDLE=0, SCROLL_STATE_DRAGGING=1, SCROLL_STATE_SETTLING=2
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        //------------------------------------------------------------------------------------------
         //---   Show initial card
         //------------------------------------------------------------------------------------------
 
-        mPager.post(new Runnable() {
+        categorizeRecipes();
+
+        rcvPortfolioViewMainCategory = findViewById(R.id.rcvPortfolioViewMainCategory);
+        rcvPortfolioViewMainCategory.setLayoutManager(new LinearLayoutManager(PortfolioView.this));
+
+        findViewById(R.id.clPortfolioView).post(new Runnable() {
 
             public void run() {
 
-                createSubcategoryList();
-                createSubgroupList();
-
-                expListView = (ExpandableListView) findViewById(R.id.StockExpandList);
-
-                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-                expListView.setAdapter(expListAdapter);
-
-                registerForContextMenu(expListView);
-
-                expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
-                    public boolean onChildClick(ExpandableListView parent, View v,
-                                                int groupPosition, int childPosition, long id) {
-
-                        final String selected = (String) expListAdapter.getChild(groupPosition, childPosition);
-
-                        Toast.makeText(getBaseContext(), selected, Toast.LENGTH_SHORT).show();
-
-                        Log.i("PV: Full", selected+"");
-
-                        //------------------------------------------------------------------------------------------
-                        //---   Toggle to/from expanded listview in case of short click
-                        //------------------------------------------------------------------------------------------
-
-                        if (ViewExpand) {
-
-                            if (ViewExpandPosition == childPosition) {
-
-                                ViewExpand = false;
-
-                                refreshCard();
-
-                                expListView.expandGroup(groupPosition);
-
-                            } else {
-
-                                ViewExpand = true;
-
-                                refreshCard();
-
-                                expListView.expandGroup(groupPosition);
-                            }
-
-                        } else {
-
-                            ViewExpand = true;
-
-                            refreshCard();
-
-                            expListView.expandGroup(groupPosition);
-                        }
-
-                        ViewExpandPosition = childPosition;
-
-                        return true;
-                    }
-                });
-
-                //------------------------------------------------------------------------------------------
-                //---   Layout
-                //------------------------------------------------------------------------------------------
-
-                btnPortfolioAdd = (Button) findViewById(R.id.btnPortfolioAdd);
-                btnPortfolioAdd.setOnClickListener(PortfolioView.this);
-
-                btnDatabaseSave = (Button) findViewById(R.id.btnDatabaseSave);
-                btnDatabaseSave.setOnClickListener(PortfolioView.this);
-
-                btnPortfolioFilterShares = (Button) findViewById(R.id.btnPortfolioFilterShares);
-                btnPortfolioFilterShares.setOnClickListener(PortfolioView.this);
-
-                btnPortfolioFilterPerc = (Button) findViewById(R.id.btnPortfolioFilterPerc);
-                btnPortfolioFilterPerc.setOnClickListener(PortfolioView.this);
-
-                allStocks = sqlHandler.getStocksByCategory(Category);
-
-                SQLDBSize = allStocks.size();
-
-                TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
-                txtCategory.setText(Category+" ("+SQLDBSize+")");
-
-                Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
-                TickerList = grabTickers();
-                ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(0, TickerList.size()));
-                intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
-                startActivityForResult(intentYahoo,REQUEST_YAHOO);
+                adapterStocks = new CustomRecyclerViewAdapter(PortfolioView.this, RecyclerViewStocks);
+                rcvPortfolioViewMainCategory.setAdapter(adapterStocks);
             }
         });
     }
 
-    //----------------------------------------------------------------------------------------------
-    //---   Create list of all Subcategories in this group
-    //----------------------------------------------------------------------------------------------
-    private void createSubcategoryList() {
-
-        SubcategoryList = new ArrayList<String>();
-
-        Log.i("LOG: (PV): ", "createSubcategoryList: ==========================================================");
-
-        SubcategoryArray = SubcategoryMap.get(Category).split(",");
-
-        for (String SubCategory : SubcategoryArray) {
-
-            Log.i("LOG: (PV): ", "createSubcategoryList: SubCategory - " + SubCategory);
-
-            SubcategoryList.add(SubCategory);
-        }
-    }
-
-    //----------------------------------------------------------------------------------------------
-    //---   Create collection of subgroups
-    //----------------------------------------------------------------------------------------------
-    private void createSubgroupList() {
-
-        subgroupCollection = new LinkedHashMap<String, List<String>>();
-
-        Log.i("LOG: (PV): ", "createSubgroupList: ==========================================================");
-
-        //------------------------------------------------------------------------------------------
-        //---   Create Child List for each Subcategory
-        //------------------------------------------------------------------------------------------
-
-        for (String subCategory : SubcategoryList) {
-
-            Log.i("LOG: (PV): ", "createSubgroupList: subCategory - " + subCategory);
-
-            allSubStocks = sqlHandler.getStocksBySubcategory(Category,subCategory);
-
-            String[] tmpList = new String[allSubStocks.size()];
-
-            for (int i = 0; i < allSubStocks.size(); i++) {
-
-                Stock tmpStock = allSubStocks.get(i);
-
-                tmpList[i] = tmpStock.getTicker();
-            }
-
-//            loadChild(tmpList);
-
-            childList = new ArrayList<String>();
-
-            for (String model : tmpList)
-                childList.add(model);
-
-            subgroupCollection.put(subCategory, childList);
-        }
-    }
-
     //**********************************************************************************************
-    //***   Custom Expandable Adapter for PortfolioPage
+    //***   Custom Recycler View Adapter
     //**********************************************************************************************
+    private class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.ViewHolder> {
 
-    private class ExpandableListAdapter extends BaseExpandableListAdapter {
-
-        private Activity context;
-        private Map<String, List<String>> SubgroupNames;
-        private List<String> GroupNames;
-
-        private int lastExpandedGroupPosition = -1;
+        private LayoutInflater mInflater;
+        private ArrayList<Stock> mData;
 
         //------------------------------------------------------------------------------------------
         //---   Constructor
         //------------------------------------------------------------------------------------------
-        public ExpandableListAdapter(Activity context, List<String> GroupNames,
-                                     Map<String, List<String>> SubgroupNames) {
+        CustomRecyclerViewAdapter(Context context, ArrayList<Stock> data) {
 
-            this.context = context;
-            this.SubgroupNames = SubgroupNames;
-            this.GroupNames = GroupNames;
+            this.mInflater = LayoutInflater.from(context);
+            this.mData = data;
         }
 
-        //------------------------------------------------------------------------------------------
-        //---   Collapse last group, when new group is expanded
-        //------------------------------------------------------------------------------------------
-//        @Override
-//        public void onGroupExpanded(int groupPosition){
-//            //collapse the old expanded group, if not the same
-//            //as new group to expand
-//            if(groupPosition != lastExpandedGroupPosition){
-//                expListView.collapseGroup(lastExpandedGroupPosition);
-//            }
-//
-//            super.onGroupExpanded(groupPosition);
-//            lastExpandedGroupPosition = groupPosition;
-//        }
-
-        //------------------------------------------------------------------------------------------
-        //---   Group is expanded
-        //------------------------------------------------------------------------------------------
+        // inflates the row layout from xml when needed
         @Override
-        public void onGroupExpanded(int groupPosition){
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-//            Intent intentYahoo = new Intent(PortfolioView.this, EtradeAPI.class);
-//            ArrayList<String> TickerList = grabTickers();
-//            intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerList);
-//            startActivityForResult(intentYahoo,REQUEST_YAHOO);
+            View RowView;
 
-            super.onGroupExpanded(groupPosition);
-            lastExpandedGroupPosition = groupPosition;
+            if (viewType == MAIN_CATEGORY) {
+
+                RowView = mInflater.inflate(R.layout.main_category_recycle_view_item, parent, false);
+
+            } else if (viewType == SUB_CATEGORY) {
+
+                RowView = mInflater.inflate(R.layout.sub_category_recycle_view_item, parent, false);
+
+            } else {
+
+                RowView = mInflater.inflate(R.layout.stock_category_recycle_view_item, parent, false);
+            }
+
+            return new ViewHolder(RowView);
         }
 
-        //------------------------------------------------------------------------------------------
-        //---   Group is collapsed
-        //------------------------------------------------------------------------------------------
-//        @Override
-//        public void onGroupCollapse(int groupPosition){
-//
-//            super.onGroupCollapsed(groupPosition);
-//        }
+        // binds the data to the TextView in each row
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
 
-        //------------------------------------------------------------------------------------------
-        //---
-        //------------------------------------------------------------------------------------------
-        public Object getChild(int groupPosition, int childPosition) {
+            Stock animal = mData.get(position);
 
-            return SubgroupNames.get(GroupNames.get(groupPosition)).get(childPosition);
+            holder.myTextView.setText(animal.getCompany());
         }
 
-        public long getChildId(int groupPosition, int childPosition) {
-            return childPosition;
+        // Allow for conditional XMLs for the row views
+        @Override
+        public int getItemViewType(int position) {
+
+            return RowXMLType.get(position);
         }
 
-        //------------------------------------------------------------------------------------------
-        //---   Child View (stock Info)
-        //------------------------------------------------------------------------------------------
-        public View getChildView(final int groupPosition, final int childPosition,boolean isLastChild,
-                                 View childView, ViewGroup parent) {
+        // total number of rows
+        @Override
+        public int getItemCount() {
 
-            LayoutInflater inflater = context.getLayoutInflater();
+            return mData.size();
+        }
 
-            if (childView == null) {
+        public void updateData(ArrayList<Stock> viewModels) {
 
-//                childView = inflater.inflate(R.layout.child_item, null);
+            mData.clear();
+            mData.addAll(viewModels);
+            notifyDataSetChanged();
+        }
 
-                if (ViewExpand && (ViewExpandPosition == childPosition)) {
+        //******************************************************************************************
+        //***   [INNER CLASS]
+        //******************************************************************************************
+        // stores and recycles views as they are scrolled off screen
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener  {
 
-                    childView = inflater.inflate(R.layout.child_expand_item, null);
-
-                } else {
-
-                    childView = inflater.inflate(R.layout.child_item, null);
-                }
-            }
-
-            RelativeLayout rlhDataBase = (RelativeLayout) childView.findViewById(R.id.child_item_view);
-            rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_light_grey_bg, null));
-
-            final String Ticker = (String) getChild(groupPosition, childPosition);
-
-            TextView itemView = (TextView) childView.findViewById(R.id.portfolioListViewTicker);
-
-            itemView.setText(Ticker);
-
-            String SubCategory = GroupNames.get(groupPosition);
-
-            allSubStocks = sqlHandler.getStocksBySubcategory(Category,SubCategory);
-
-            Stock currentStock = allSubStocks.get(childPosition);
-
-            DecimalFormat df1 = new DecimalFormat("#.#");
-            DecimalFormat df2 = new DecimalFormat("#.##");
-
-            Price = currentStock.getPrice();
-            Shares = currentStock.getShares();
-            ChangePerc = currentStock.getChangePerc();
-            Basis = currentStock.getBasis();
-            Comission = currentStock.getCommission();
-            Leverage = currentStock.getLeverage();
+            TextView myTextView;
 
             //--------------------------------------------------------------------------------------
-            //---   Leverage Indicator
-            //------------------------------------------------------------------------------------------
-            ImageView childLeverage = (ImageView) childView.findViewById(R.id.portfolioListViewLeverage);
-            ImageView childWatch = (ImageView) childView.findViewById(R.id.portfolioListViewWatch);
-            childWatch.setVisibility(View.INVISIBLE);
-            childLeverage.setVisibility(View.VISIBLE);
+            //---   Constructor
+            //--------------------------------------------------------------------------------------
+            ViewHolder(View itemView) {
 
-            switch (Leverage) {
+                super(itemView);
 
-                case "3": childLeverage.setImageResource(R.mipmap.ic_3_green); break;
-                case "2": childLeverage.setImageResource(R.mipmap.ic_2_green); break;
-                case "1": childLeverage.setImageResource(R.mipmap.ic_1_green); break;
-                case "0": childLeverage.setVisibility(View.INVISIBLE); break;
-                case "-1": childLeverage.setImageResource(R.mipmap.ic_1_red); break;
-                case "-2": childLeverage.setImageResource(R.mipmap.ic_2_red); break;
-                case "-3": childLeverage.setImageResource(R.mipmap.ic_3_red); break;
+                myTextView = itemView.findViewById(R.id.txtMainCategoryRecycleViewName);
+
+//                itemView.setOnCreateContextMenuListener(MainActivity.this);
+
+                itemView.setOnClickListener(this);
+                itemView.setOnLongClickListener(this);
             }
 
             //--------------------------------------------------------------------------------------
-            //---   Ticker
-            //------------------------------------------------------------------------------------------
-            TextView portfolioListViewTicker = (TextView) childView.findViewById(R.id.portfolioListViewTicker);
-            portfolioListViewTicker.setText(currentStock.getTicker());
-
-            portfolioListViewTicker.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
-            portfolioListViewTicker.setTypeface(null, Typeface.NORMAL);
-
+            //---   Short Click  ...
             //--------------------------------------------------------------------------------------
-            //---   Company Name
-            //--------------------------------------------------------------------------------------
+            @Override
+            public void onClick(View view) {
 
-            if (!(ViewExpand && (ViewExpandPosition == childPosition))) {
+                ImageView imgMainCategoryRecycleViewState = view.findViewById(R.id.imgMainCategoryRecycleViewState);
 
-                TextView portfolioListViewName = (TextView) childView.findViewById(R.id.portfolioListViewName);
-                portfolioListViewName.setText(currentStock.getCompany());
+                Stock ClickStock = RecyclerViewStocks.get(getAdapterPosition());
 
-                portfolioListViewName.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
-                portfolioListViewName.setTypeface(null, Typeface.NORMAL);
-            }
+                //----------------------------------------------------------------------------------
+                //---   Expand / Collapse
+                //----------------------------------------------------------------------------------
+                if (ClickStock.getCategory().equals("MAIN")) {
 
-            //--------------------------------------------------------------------------------------
-            //---   Price
-            //------------------------------------------------------------------------------------------
-            TextView portfolioListViewPrice = (TextView) childView.findViewById(R.id.portfolioListViewPrice);
-            String PriceFormat = String.format("%.02f", currentStock.getPrice());
-            portfolioListViewPrice.setText(PriceFormat);
+                    String tmpCategory = RecyclerViewStocks.get(getAdapterPosition()).getCompany();
 
-            //--------------------------------------------------------------------------------------
-            //---   Change (Percentage)
-            //------------------------------------------------------------------------------------------
-            portfolioListViewChangePerc = (TextView) childView.findViewById(R.id.portfolioListViewChangePerc);
-            if (currentStock.getChangePerc().contains("+")) {
-                portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
-            } else {
-                portfolioListViewChangePerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
-            }
-            ChangePerc = ChangePerc.replace("%", "");
-            ChangePerc = ChangePerc.replace("--", "-"); // not sure why we sometimes get '--'
-            if (ChangePerc.equals("")) {
-//                portfolioListViewChangePerc.setText(df1.format(Float.parseFloat(ChangePerc)) + "%");
-            } else {
-                String ChangePercFormat = String.format("%.02f", Float.parseFloat(ChangePerc));
-                portfolioListViewChangePerc.setText(ChangePercFormat + "%");
+                    int MainIndex = MainCategoryArrayList.indexOf(ClickStock.getCompany());
 
-                ChangePerc = ChangePerc.replace("+", "");
+                    if (MainCategoryExpand[MainIndex]) {
 
-                if (Float.parseFloat(ChangePerc) > 1) {
-                    rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.colorGreyGreen, null));
-                }
-                if (Float.parseFloat(ChangePerc) < -1) {
-                    rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.colorGreyRed, null));
-                }
-            }
+                        MainCategoryExpand[MainIndex] = false;
 
-            //--------------------------------------------------------------------------------------
-            //---   Gain/Loss ($)
-            //--------------------------------------------------------------------------------------
-            TextView menuOption = (TextView) childView.findViewById(R.id.portfolioListViewGainLoss);
-            GainLoss = ((Price - Basis) * Shares) - Comission;
-            if (GainLoss >= 0) {
-                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
-            } else {
-                menuOption.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
-            }
-            String GainLossFormat = String.format("%.02f", GainLoss);
-            if (Shares < 1) {
-                menuOption.setText("----");
-            } else {
-                menuOption.setText(GainLossFormat);
-            }
-            //--------------------------------------------------------------------------------------
-            //---   Gain/Loss (%)
-            //--------------------------------------------------------------------------------------
-            TextView portfolioListViewGainLossPerc = (TextView) childView.findViewById(R.id.portfolioListViewGainLossPerc);
+                        imgMainCategoryRecycleViewState.setImageResource(R.drawable.ic_arrow_drop_up_white);
 
-            if (Basis == 0) {
+                    } else {
 
-                portfolioListViewGainLossPerc.setText("---");
+                        MainCategoryExpand[MainIndex] = true;
 
-            } else {
-
-                if (Shares < 1) {
-                    GainLossPerc = ((Price - Basis) * 100) / Basis;
-                } else {
-                    GainLossPerc = (GainLoss * 100) / (Basis * Shares);
-                }
-                if (GainLossPerc >= 0) {
-                    portfolioListViewGainLossPerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGreenStrong));
-                } else {
-                    portfolioListViewGainLossPerc.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
-                }
-                String GainLossPercFormat = String.format("%.02f", GainLossPerc);
-                portfolioListViewGainLossPerc.setText(GainLossPercFormat + "%");
-
-                if ((GainLossPerc < 0) && (Shares < 1) && (Basis != 0)) {
-                    portfolioListViewTicker.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
-                    portfolioListViewTicker.setTypeface(null, Typeface.BOLD);
-
-                    if (!(ViewExpand && (ViewExpandPosition == childPosition))) {
-
-                        TextView portfolioListViewName = (TextView) childView.findViewById(R.id.portfolioListViewName);
-
-                        portfolioListViewName.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorRedStrong));
-                        portfolioListViewName.setTypeface(null, Typeface.BOLD);
-                    }
-                }
-
-                //--------------------------------------------------------------------------------------
-                //---   Wash Sale
-                //--------------------------------------------------------------------------------------
-                Calendar calendarNow = Calendar.getInstance();
-                Date rightNow = calendarNow.getTime();
-
-                try {
-
-                    if (currentStock.getWatch() == 3) {
-
-                        String sleepDateString = currentStock.getDate();
-                        Date sleepDateStamp = df.parse(sleepDateString);
-
-                        long diff = Math.round((rightNow.getTime() - sleepDateStamp.getTime()) / (double) 86400000);
-
-                        if (diff < 30) {
-
-                            childWatch.setImageResource(R.mipmap.ic_snooze_blue);
-                            childWatch.setVisibility(View.VISIBLE);
-
-                            rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.colorGreyBlue, null));
-                        }
+                        imgMainCategoryRecycleViewState.setImageResource(R.drawable.ic_arrow_drop_down_white);
                     }
 
-                } catch (ParseException e) {
+                    categorizeRecipes();
 
-                    i("LOG: (TP) CATCH", "Bad Date ");
+                    adapterStocks.notifyDataSetChanged();
+
+                } else if (ClickStock.getCategory().equals("SUB")) {
+
+                    int SubIndex = SubCategoryArrayList.indexOf(ClickStock);
+
+                    if (SubCategoryExpand[SubIndex]) {
+
+                        SubCategoryExpand[SubIndex] = false;
+
+                        imgMainCategoryRecycleViewState.setImageResource(R.drawable.ic_arrow_drop_up_white);
+
+                    } else {
+
+                        SubCategoryExpand[SubIndex] = true;
+
+                        imgMainCategoryRecycleViewState.setImageResource(R.drawable.ic_arrow_drop_down_white);
+                    }
+
+                    categorizeRecipes();
+
+                    adapterStocks.notifyDataSetChanged();
                 }
-
             }
 
             //--------------------------------------------------------------------------------------
-            //---   Buy/Sell Tag
+            //---   Long CLick ...
             //--------------------------------------------------------------------------------------
+            @Override
+            public boolean onLongClick(View view) {
 
-            if (currentStock.getWatch() == 2) {
+                //----------------------------------------------------------------------------------
+                //---   SQL File Selection Popup
+                //----------------------------------------------------------------------------------
 
-                childWatch.setImageResource(R.drawable.ic_thumb_up_brown);
-                childWatch.setVisibility(View.VISIBLE);
+//                LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+//                View popupView = layoutInflater.inflate(R.layout.confirm_popup_window,null);
+//
+//                popupWindow = new PopupWindow(popupView,CONFIRM_POPUP_WIDTH,CONFIRM_POPUP_HEIGHT);
+//                popupWindow.showAtLocation(findViewById(R.id.clvMainActivity),
+//                        Gravity.CENTER, CONFIRM_POPUP_GRAVITY_X, CONFIRM_POPUP_GRAVITY_Y);
+//
+//                CategorySpinner = popupView.findViewById(R.id.spnCategory);
+//                CategorySpinner.setOnItemSelectedListener(new SpinnerCustomOnItemSelectedListener());
+//                CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(CategorySpinner.getContext(), MainCategoryArrayList);
+//                CategorySpinner.setAdapter(customSpinnerAdapter);
+//
+//                //----------------------------------------------------------------------------------
+//                //---   Category Update Button
+//                //----------------------------------------------------------------------------------
+//
+//                Button btnConfirmPopUpUpdate = popupView.findViewById(R.id.btnConfirmPopUpUpdate);
+//
+//                btnConfirmPopUpUpdate.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                        String CurrentMainCategory = MainCategoryArray[CategorySpinner.getSelectedItemPosition()];
+//
+//                        Recipe tmpRecipe = RecyclerViewRecipes.get(getAdapterPosition());
+//                        tmpRecipe.setCategory(CurrentMainCategory);
+//
+//                        sqlRecipeHandler.updateRecipe(tmpRecipe);
+//
+//                        categorizeRecipes();
+//
+//                        adapterAllRecipes.notifyDataSetChanged();
+//
+//                        popupWindow.dismiss();
+//                    }
+//                });
+//
+//                //----------------------------------------------------------------------------------
+//                //---   Recipe Delete Button
+//                //----------------------------------------------------------------------------------
+//
+//                Button btnConfirmPopUpDelete = popupView.findViewById(R.id.btnConfirmPopUpDelete);
+//
+//                btnConfirmPopUpDelete.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                        sqlRecipeHandler.deleteRecipe(RecyclerViewRecipes.get(getAdapterPosition()));
+//
+//                        categorizeRecipes();
+//
+//                        adapterAllRecipes.notifyDataSetChanged();
+//
+//                        popupWindow.dismiss();
+//                    }
+//                });
+//
+//                //----------------------------------------------------------------------------------
+//                //---   Swipe and close popUp
+//                //----------------------------------------------------------------------------------
+//
+//                ConstraintLayout viewPutSleep = popupView.findViewById(R.id.clvConfirmPopUp);
+//
+//                viewPutSleep.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
+//
+//                    @Override
+//                    public void onSwipeLeft() {
+//
+//                        popupWindow.dismiss();
+//                    }
+//
+//                    @Override
+//                    public void onSwipeRight() {
+//
+//                        popupWindow.dismiss();
+//                    }
+//                });
+
+                return true;
             }
-
-            //--------------------------------------------------------------------------------------
-            //---   Extended View
-            //--------------------------------------------------------------------------------------
-
-            if (ViewExpand && (ViewExpandPosition == childPosition)) {
-
-                //----------------------------------------------------------------------------------
-                //---   Company Name
-                //----------------------------------------------------------------------------------
-                TextView portfolioListViewVolume = (TextView) childView.findViewById(R.id.portfolioListViewVolume);
-                portfolioListViewVolume.setText(currentStock.getVolume());
-
-                portfolioListViewVolume.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
-                portfolioListViewVolume.setTypeface(null, Typeface.NORMAL);
-
-                //----------------------------------------------------------------------------------
-                //---   Date Stamp
-                //----------------------------------------------------------------------------------
-                TextView portfolioListViewDate = (TextView) childView.findViewById(R.id.portfolioListViewDate);
-                portfolioListViewDate.setText(currentStock.getDate());
-
-                portfolioListViewDate.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
-                portfolioListViewDate.setTypeface(null, Typeface.NORMAL);
-
-                //----------------------------------------------------------------------------------
-                //---   Last Sell Price
-                //----------------------------------------------------------------------------------
-                TextView portfolioListViewLastSell = (TextView) childView.findViewById(R.id.portfolioListViewLastSell);
-                portfolioListViewLastSell.setText(currentStock.getBasis()+"");
-
-                portfolioListViewLastSell.setTextColor(ContextCompat.getColor(PortfolioView.this, R.color.colorGrey1));
-                portfolioListViewLastSell.setTypeface(null, Typeface.NORMAL);
-            }
-
-            return childView;
         }
 
-        //------------------------------------------------------------------------------------------
-        //---
-        //------------------------------------------------------------------------------------------
-        public int getChildrenCount(int groupPosition) {
+        // convenience method for getting data at click position
+        Stock getItem(int id) {
 
-            return SubgroupNames.get(GroupNames.get(groupPosition)).size();
+            return mData.get(id);
         }
 
-        public Object getGroup(int groupPosition) {
+        // allows clicks events to be caught
+//        void setClickListener(ItemClickListener itemClickListener) {
+//            this.mClickListener = itemClickListener;
+//        }
 
-            return GroupNames.get(groupPosition);
-        }
-
-        public int getGroupCount() {
-
-            return GroupNames.size();
-        }
-
-        public long getGroupId(int groupPosition) {
-            return groupPosition;
-        }
-
-        //------------------------------------------------------------------------------------------
-        //---   Group View (stock Info)
-        //------------------------------------------------------------------------------------------
-        public View getGroupView(int groupPosition, boolean isExpanded, View groupView, ViewGroup parent) {
-
-            String GroupName = (String) getGroup(groupPosition);
-
-            if (groupView == null) {
-
-                LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                groupView = infalInflater.inflate(R.layout.group_item,null);
-            }
-
-            RelativeLayout rlhDataBase = (RelativeLayout) groupView.findViewById(R.id.group_item_view);
-            rlhDataBase.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_dark_grey_bg, null));
-
-            TextView GroupHeader = (TextView) groupView.findViewById(R.id.portfolioListViewGroupName);
-
-            //--------------------------------------------------------------------------------------
-            //---   Update Category Header
-            //--------------------------------------------------------------------------------------
-
-            GroupName = (GroupName + " (" + allSubStocks.size() + ")");
-
-            GroupHeader.setTypeface(null, Typeface.BOLD);
-
-            GroupHeader.setText(GroupName);
-
-            return groupView;
-        }
-
-        public boolean hasStableIds() {
-
-            return true;
-        }
-
-        public boolean isChildSelectable(int groupPosition, int childPosition) {
-
-            return true;
-        }
-    }
-
-    //**********************************************************************************************
-    //***   Page Adapter (FragmentStatePagerAdapter caused weirdness in HashMap)
-    //**********************************************************************************************
-    private class CardViewPagerAdapter extends FragmentPagerAdapter {
-
-        //------------------------------------------------------------------------------------------
-        //---   Constructor
-        //------------------------------------------------------------------------------------------
-        public CardViewPagerAdapter(FragmentManager fm) {
-
-            super(fm);
-        }
-
-        //------------------------------------------------------------------------------------------
-        //---
-        //------------------------------------------------------------------------------------------
-        @Override
-        public Fragment getItem(int position) {
-
-            return new PortfolioViewFragment();
-        }
-
-        //------------------------------------------------------------------------------------------
-        //---   How many pages?
-        //------------------------------------------------------------------------------------------
-        @Override
-        public int getCount() {
-
-            return getResources().getStringArray(R.array.categories).length;
-        }
-
-        //------------------------------------------------------------------------------------------
-        //---
-        //------------------------------------------------------------------------------------------
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-
-            Object obj = super.instantiateItem(container, position);
-
-            if (obj instanceof Fragment) {
-
-                Fragment f = (Fragment) obj;
-                String tag = f.getTag();
-                mFragmentTags.put(position, tag);
-            }
-
-            return obj;
-        }
-
-        //------------------------------------------------------------------------------------------
-        //---
-        //------------------------------------------------------------------------------------------
-        public Fragment getFragment(int position) {
-
-            String tag = mFragmentTags.get(position);
-
-            if (tag == null)
-                return null;
-
-            return getSupportFragmentManager().findFragmentByTag(tag);
-        }
+        // parent activity will implement this method to respond to click events
+//        public interface ItemClickListener {
+//            void onItemClick(View view, int position);
+//        }
     }
 
     //**********************************************************************************************
@@ -945,12 +589,12 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 Portfolio_Spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
 
                 ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                        R.array.categories, android.R.layout.simple_spinner_item);
+                        R.array.main_categories, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
                 Portfolio_Spinner.setAdapter(adapter);
-                Portfolio_Spinner.setSelection(Arrays.asList(CategoryArray).indexOf(Category));
+                Portfolio_Spinner.setSelection(Arrays.asList(MainCategoryArray).indexOf(Category));
 
                 //----------------------------------------------------------------------------------
                 //---   Subcategory Spinner
@@ -979,7 +623,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                         newStock.setBasis(Float.parseFloat(edtPortfolioBasis.getText().toString()));
                         newStock.setCommission(Integer.parseInt(edtPortfolioComission.getText().toString()));
 
-                        sqlHandler.addStock(newStock);
+                        sqlStockHandler.addStock(newStock);
 
                         popupWindow.dismiss();
                     }
@@ -1016,19 +660,19 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                     position++;
                 }
 
-                Log.i("LOG: (PF) SHARES", "Count: " + adapterStocks.getCount());
+//                Log.i("LOG: (PF) SHARES", "Count: " + adapterStocks.getCount());
 
                 //------------------------------------------------------------------------------
                 //---   Remove filtered ones from ListView
                 //------------------------------------------------------------------------------
                 heap = 0;
 
-                for (int i : FilterShares) {
-
-                    Stock toRemove = adapterStocks.getItem(i-heap);
-                    adapterStocks.remove(toRemove);
-                    heap++;
-                }
+//                for (int i : FilterShares) {
+//
+//                    Stock toRemove = adapterStocks.getItem(i-heap);
+//                    adapterStocks.remove(toRemove);
+//                    heap++;
+//                }
 
                 break;
 
@@ -1037,35 +681,35 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //--------------------------------------------------------------------------------------
             case R.id.btnPortfolioFilterPerc:
 
-                position = 0;
-
-                ArrayList<Integer> FilterPerc = new ArrayList<Integer>();
-
-                for (Stock stock : allStocks) {
-
-                    if (abs(Float.parseFloat(stock.getChangePerc().replace("%",""))) > 1) {
-
-                        Log.i("LOG: (PF) PERC", "Perc: " + stock.getTicker());
-
-                    } else {
-
-                        FilterPerc.add(position);
-                    }
-                    position++;
-                }
-
-                Log.i("LOG: (PF) PERC", "Count: " + adapterStocks.getCount());
-
-                heap = 0;
-
-                for (int i : FilterPerc) {
-
-                    Log.i("LOG: (PF) PERC", "Perc: " + i + (i-heap));
-
-                    Stock toRemove = adapterStocks.getItem(i-heap);
-                    adapterStocks.remove(toRemove);
-                    heap++;
-                }
+//                position = 0;
+//
+//                ArrayList<Integer> FilterPerc = new ArrayList<Integer>();
+//
+//                for (Stock stock : allStocks) {
+//
+//                    if (abs(Float.parseFloat(stock.getChangePerc().replace("%",""))) > 1) {
+//
+//                        Log.i("LOG: (PF) PERC", "Perc: " + stock.getTicker());
+//
+//                    } else {
+//
+//                        FilterPerc.add(position);
+//                    }
+//                    position++;
+//                }
+//
+//                Log.i("LOG: (PF) PERC", "Count: " + adapterStocks.getCount());
+//
+//                heap = 0;
+//
+//                for (int i : FilterPerc) {
+//
+//                    Log.i("LOG: (PF) PERC", "Perc: " + i + (i-heap));
+//
+//                    Stock toRemove = adapterStocks.getItem(i-heap);
+//                    adapterStocks.remove(toRemove);
+//                    heap++;
+//                }
 
                 break;
         }
@@ -1140,102 +784,102 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     @Override
     public boolean onContextItemSelected(MenuItem item){
 
-        ExpandableListView.ExpandableListContextMenuInfo info =
-                (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
-
-        CharSequence Title = item.getTitle();
-
-        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
-        int groupPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition);
-        int childPosition = ExpandableListView.getPackedPositionChild(info.packedPosition);
-
-//        String SubCategory = GroupNames.get(groupPosition);
-//        allSubStocks = sqlHandler.getStocksBySubcategory(Category,subCategory);
-
-        i("LOG: (PV) Position", "Group: " + groupPosition + " Child: " + childPosition);
-
-        if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-            // do something with parent
-
-        } else if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-            // do someting with child
-
-            String Ticker = subgroupCollection.get(SubcategoryList.get(groupPosition)).get(childPosition);
-
-//            Stock currentStock = allStocks.get(childPosition);
-            Stock currentStock = sqlHandler.getStocksByTicker(Ticker);
-
-            switch (Title.toString()) {
-
-                //--------------------------------------------------------------------------------------
-                //---   EDIT
-                //--------------------------------------------------------------------------------------
-                case "Edit":
-
-                    Intent intent2Info = new Intent(PortfolioView.this, StockInfo.class);
-
-                    intent2Info.putExtra("SQL_STOCK_ID", currentStock.getId());
-
-                    //---   ==> CardView
-                    startActivityForResult(intent2Info, REQUEST_INFO);
-
-                    break;
-
-                //----------------------------------------------------------------------------------
-                //---   CLEAR (Copy Price to Base)
-                //----------------------------------------------------------------------------------
-                case "Clear":
-
-                    currentStock.setShares(0);
-                    currentStock.setCommission(0);
-
-                    sqlHandler.updateStock(currentStock);
-
-                    adapterStocks.notifyDataSetChanged();
-
-                    break;
-
-                //----------------------------------------------------------------------------------
-                //---   Tag for Buy
-                //----------------------------------------------------------------------------------
-                case "Tag Buy":
-
-                    currentStock.setWatch(2);
-
-                    sqlHandler.updateStock(currentStock);
-
+//        ExpandableListView.ExpandableListContextMenuInfo info =
+//                (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
+//
+//        CharSequence Title = item.getTitle();
+//
+//        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
+//        int groupPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+//        int childPosition = ExpandableListView.getPackedPositionChild(info.packedPosition);
+//
+////        String SubCategory = GroupNames.get(groupPosition);
+////        allSubStocks = sqlHandler.getStocksBySubcategory(Category,subCategory);
+//
+//        i("LOG: (PV) Position", "Group: " + groupPosition + " Child: " + childPosition);
+//
+//        if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+//            // do something with parent
+//
+//        } else if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+//            // do someting with child
+//
+//            String Ticker = subgroupCollection.get(SubcategoryList.get(groupPosition)).get(childPosition);
+//
+////            Stock currentStock = allStocks.get(childPosition);
+//            Stock currentStock = sqlHandler.getStocksByTicker(Ticker);
+//
+//            switch (Title.toString()) {
+//
+//                //--------------------------------------------------------------------------------------
+//                //---   EDIT
+//                //--------------------------------------------------------------------------------------
+//                case "Edit":
+//
+//                    Intent intent2Info = new Intent(PortfolioView.this, StockInfo.class);
+//
+//                    intent2Info.putExtra("SQL_STOCK_ID", currentStock.getId());
+//
+//                    //---   ==> CardView
+//                    startActivityForResult(intent2Info, REQUEST_INFO);
+//
+//                    break;
+//
+//                //----------------------------------------------------------------------------------
+//                //---   CLEAR (Copy Price to Base)
+//                //----------------------------------------------------------------------------------
+//                case "Clear":
+//
+//                    currentStock.setShares(0);
+//                    currentStock.setCommission(0);
+//
+//                    sqlHandler.updateStock(currentStock);
+//
 //                    adapterStocks.notifyDataSetChanged();
-
-                    break;
-
-                //----------------------------------------------------------------------------------
-                //---   Tag for Sell
-                //----------------------------------------------------------------------------------
-                case "Tag Sell":
-
-                    currentStock.setWatch(3);
-
-                    sqlHandler.updateStock(currentStock);
-
-                    adapterStocks.notifyDataSetChanged();
-
-                    break;
-
-                //----------------------------------------------------------------------------------
-                //---   Clear Tag
-                //----------------------------------------------------------------------------------
-                case "Clear Tag":
-
-                    currentStock.setWatch(0);
-
-                    sqlHandler.updateStock(currentStock);
-
+//
+//                    break;
+//
+//                //----------------------------------------------------------------------------------
+//                //---   Tag for Buy
+//                //----------------------------------------------------------------------------------
+//                case "Tag Buy":
+//
+//                    currentStock.setWatch(2);
+//
+//                    sqlHandler.updateStock(currentStock);
+//
+////                    adapterStocks.notifyDataSetChanged();
+//
+//                    break;
+//
+//                //----------------------------------------------------------------------------------
+//                //---   Tag for Sell
+//                //----------------------------------------------------------------------------------
+//                case "Tag Sell":
+//
+//                    currentStock.setWatch(3);
+//
+//                    sqlHandler.updateStock(currentStock);
+//
 //                    adapterStocks.notifyDataSetChanged();
-
-                    break;
-            }
-
-        }
+//
+//                    break;
+//
+//                //----------------------------------------------------------------------------------
+//                //---   Clear Tag
+//                //----------------------------------------------------------------------------------
+//                case "Clear Tag":
+//
+//                    currentStock.setWatch(0);
+//
+//                    sqlHandler.updateStock(currentStock);
+//
+////                    adapterStocks.notifyDataSetChanged();
+//
+//                    break;
+//            }
+//
+//        }
 
         return super.onContextItemSelected(item);
     }
@@ -1317,6 +961,121 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     }
 
     //**********************************************************************************************
+    //***   Method: Assign 'type' to each Recycle View row to allow for conditional formatting
+    //**********************************************************************************************
+    private ArrayList<Integer> categorizeRecipes() {
+
+//            ArrayList<Integer> RowType = new ArrayList<>();
+
+        int index = 0;
+
+//        CakesHashMap.clear();
+
+        allStocks = sqlStockHandler.getAllStocks();
+
+        RecyclerViewStocks.clear();
+        RowXMLType.clear();
+
+
+
+        for (String Main: MainCategoryArrayList) {
+
+            Stock StockMainHeader = new Stock();
+            StockMainHeader.setCategory("MAIN");
+//            StockMainHeader.setCompany(Main.toUpperCase().replace("_"," "));
+            StockMainHeader.setCompany(Main);
+
+            RecyclerViewStocks.add(StockMainHeader);
+            RowXMLType.add(index++,MAIN_CATEGORY);
+
+            int SubIndex = 0;
+
+            for (String Sub : SubCategoryArrayList.get(MainCategoryArrayList.indexOf(Main))) {
+
+                if (MainCategoryExpand[MainCategoryArrayList.indexOf(Main)]) {
+
+                    Stock StockSubHeader = new Stock();
+                    StockSubHeader.setCategory("SUB");
+                    StockSubHeader.setCompany(Sub.replace("_", "&"));
+
+                    RecyclerViewStocks.add(StockSubHeader);
+                    RowXMLType.add(index++, SUB_CATEGORY);
+
+                    if (SubCategoryExpand[SubIndex++]) {
+
+                        for (Stock Stock : sqlStockHandler.getStocksByCategory(Main.toUpperCase().replace("_", " "), Sub)) {
+
+                            RecyclerViewStocks.add(Stock);
+                            RowXMLType.add(index++, STOCK_CATEGORY);
+                        }
+                    }
+                }
+            }
+        }
+
+        //------------------------------------------------------------------------------------------
+        //---   Loop through all Recipes and categorize into Subcategories
+        //------------------------------------------------------------------------------------------
+//        for (Recipe tmpRecipe: allRecipes) {
+//
+//            if (tmpRecipe.getCategory().equals("CAKES")) {
+//
+//                CakesHashMap.put(CakesIndex++, tmpRecipe);
+//
+//            } else if (tmpRecipe.getCategory().equals("DESERT")) {
+//
+//                DesertHashMap.put(DesertIndex++, tmpRecipe);
+//
+//            } else if (tmpRecipe.getCategory().equals("BREADS")) {
+//
+//                BreadHashMap.put(BreadIndex++, tmpRecipe);
+//
+//            } else if (tmpRecipe.getCategory().equals("ENTREE")) {
+//
+//                EntreeHashMap.put(EntreeIndex++, tmpRecipe);
+//
+//            } else if (tmpRecipe.getCategory().equals("SIDE")) {
+//
+//                SideHashMap.put(SideIndex++, tmpRecipe);
+//
+//            } else if (tmpRecipe.getCategory().equals("SOUP")) {
+//
+//                SoupHashMap.put(SoupIndex++, tmpRecipe);
+//
+//            } else {
+//
+//                MiscHashMap.put(MiscIndex++, tmpRecipe);
+//            }
+//        }
+
+        //------------------------------------------------------------------------------------------
+        //---   Loop through all Recipes and categorize into Subcategories
+        //------------------------------------------------------------------------------------------
+
+//        Recipe CakesHeader = new Recipe();
+//        CakesHeader.setCategory("MAIN");
+//        CakesHeader.setName("CAKES");
+//
+//        RecyclerViewRecipes.clear();
+//        RowXMLType.clear();
+//
+//        RecyclerViewRecipes.add(CakesHeader);
+//        RowXMLType.add(index++,MAIN_CATEGORY);
+//
+//        if (CategoryToggleStatus.get("CAKES") == EXPANDED) {
+//
+//            for (Recipe value : CakesHashMap.values()) {
+//
+//                RecyclerViewRecipes.add(value);
+//
+//                RowXMLType.add(index++, SUB_CATEGORY);
+//            }
+//        }
+
+        return RowXMLType;
+    }
+
+    //**********************************************************************************************
     //***   Method: Collect all Ticker for single API call
     //**********************************************************************************************
     private ArrayList<String> grabTickers() {
@@ -1333,126 +1092,126 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         return TickerList;
     }
 
-    //**********************************************************************************************
-    //***   onActivityResult (returning from API call)
-    //**********************************************************************************************
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        //--------------------------------------------------------------------------------------
-        //---   Return via finish()
-        //--------------------------------------------------------------------------------------
-        if (resultCode == Activity.RESULT_OK) {
-
-            //------------------------------------------------------------------------------------------
-            //---   Return from Stock Info
-            //------------------------------------------------------------------------------------------
-            if (requestCode == REQUEST_INFO) {
-
-                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-                expListView.setAdapter(expListAdapter);
-                expListAdapter.notifyDataSetChanged();
-            }
-
-            //------------------------------------------------------------------------------------------
-            //---   Return from YAHOO
-            //------------------------------------------------------------------------------------------
-            if (requestCode == REQUEST_YAHOO) {
-
-                if (TickerList.size() > 25) {
-
-                    Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
-                    ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(25, TickerList.size()));
-                    intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
-                    startActivityForResult(intentYahoo, REQUEST_YAHOO2);
-
-                } else {
-
-                    expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-                    expListView.setAdapter(expListAdapter);
-                    expListAdapter.notifyDataSetChanged();
-
-                    expListView.expandGroup(0);
-                }
-            }
-
-            //------------------------------------------------------------------------------------------
-            //---   Return from YAHOO2
-            //------------------------------------------------------------------------------------------
-            if (requestCode == REQUEST_YAHOO2) {
-
-                if (TickerList.size() > 50) {
-
-                    Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
-                    ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(50, TickerList.size()));
-                    intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
-                    startActivityForResult(intentYahoo, REQUEST_YAHOO3);
-
-                } else {
-
-                    expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-                    expListView.setAdapter(expListAdapter);
-                    expListAdapter.notifyDataSetChanged();
-                }
-            }
-
-            //------------------------------------------------------------------------------------------
-            //---   Return from YAHOO3
-            //------------------------------------------------------------------------------------------
-            if (requestCode == REQUEST_YAHOO3) {
-
-                if (TickerList.size() > 75) {
-
-                    Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
-                    ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(75, TickerList.size()));
-                    intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
-                    startActivityForResult(intentYahoo, REQUEST_YAHOO4);
-
-                } else {
-
-                    expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-                    expListView.setAdapter(expListAdapter);
-                    expListAdapter.notifyDataSetChanged();
-                }
-
+//    //**********************************************************************************************
+//    //***   onActivityResult (returning from API call)
+//    //**********************************************************************************************
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//
+//        //--------------------------------------------------------------------------------------
+//        //---   Return via finish()
+//        //--------------------------------------------------------------------------------------
+//        if (resultCode == Activity.RESULT_OK) {
+//
+//            //------------------------------------------------------------------------------------------
+//            //---   Return from Stock Info
+//            //------------------------------------------------------------------------------------------
+//            if (requestCode == REQUEST_INFO) {
+//
 //                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
 //                expListView.setAdapter(expListAdapter);
 //                expListAdapter.notifyDataSetChanged();
-            }
-        }
-    }
+//            }
+//
+//            //------------------------------------------------------------------------------------------
+//            //---   Return from YAHOO
+//            //------------------------------------------------------------------------------------------
+//            if (requestCode == REQUEST_YAHOO) {
+//
+//                if (TickerList.size() > 25) {
+//
+//                    Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
+//                    ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(25, TickerList.size()));
+//                    intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
+//                    startActivityForResult(intentYahoo, REQUEST_YAHOO2);
+//
+//                } else {
+//
+//                    expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
+//                    expListView.setAdapter(expListAdapter);
+//                    expListAdapter.notifyDataSetChanged();
+//
+//                    expListView.expandGroup(0);
+//                }
+//            }
+//
+//            //------------------------------------------------------------------------------------------
+//            //---   Return from YAHOO2
+//            //------------------------------------------------------------------------------------------
+//            if (requestCode == REQUEST_YAHOO2) {
+//
+//                if (TickerList.size() > 50) {
+//
+//                    Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
+//                    ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(50, TickerList.size()));
+//                    intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
+//                    startActivityForResult(intentYahoo, REQUEST_YAHOO3);
+//
+//                } else {
+//
+//                    expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
+//                    expListView.setAdapter(expListAdapter);
+//                    expListAdapter.notifyDataSetChanged();
+//                }
+//            }
+//
+//            //------------------------------------------------------------------------------------------
+//            //---   Return from YAHOO3
+//            //------------------------------------------------------------------------------------------
+//            if (requestCode == REQUEST_YAHOO3) {
+//
+//                if (TickerList.size() > 75) {
+//
+//                    Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
+//                    ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(75, TickerList.size()));
+//                    intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
+//                    startActivityForResult(intentYahoo, REQUEST_YAHOO4);
+//
+//                } else {
+//
+//                    expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
+//                    expListView.setAdapter(expListAdapter);
+//                    expListAdapter.notifyDataSetChanged();
+//                }
+//
+////                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
+////                expListView.setAdapter(expListAdapter);
+////                expListAdapter.notifyDataSetChanged();
+//            }
+//        }
+//    }
 
-    //**********************************************************************************************
-    //***   Method: Refresh Card Layout
-    //**********************************************************************************************
-    private void refreshView(View view) {
-
-        //------------------------------------------------------------------------------------------
-        //---   Update Category Header
-        //------------------------------------------------------------------------------------------
-
-//        TextView txtCategory = (TextView) view.findViewById(R.id.txtCategory);
-//        txtCategory.setText(Category + " (" + allSubStocks.size() + ")");
-
-        //------------------------------------------------------------------------------------------
-        //---   Layout
-        //------------------------------------------------------------------------------------------
-
-        expListView = (ExpandableListView) view.findViewById(R.id.StockExpandList);
-    }
-
-    //**********************************************************************************************
-    //***   Method: Refresh Card Layout
-    //**********************************************************************************************
-    private void refreshCard () {
-
-//        allSubStocks = sqlHandler.getStocksByCategory(Category);
-
-        createSubcategoryList();
-        createSubgroupList();
-
-        expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-        expListView.setAdapter(expListAdapter);
-        expListAdapter.notifyDataSetChanged();
-    }
+//    //**********************************************************************************************
+//    //***   Method: Refresh Card Layout
+//    //**********************************************************************************************
+//    private void refreshView(View view) {
+//
+//        //------------------------------------------------------------------------------------------
+//        //---   Update Category Header
+//        //------------------------------------------------------------------------------------------
+//
+////        TextView txtCategory = (TextView) view.findViewById(R.id.txtCategory);
+////        txtCategory.setText(Category + " (" + allSubStocks.size() + ")");
+//
+//        //------------------------------------------------------------------------------------------
+//        //---   Layout
+//        //------------------------------------------------------------------------------------------
+//
+//        expListView = (ExpandableListView) view.findViewById(R.id.StockExpandList);
+//    }
+//
+//    //**********************************************************************************************
+//    //***   Method: Refresh Card Layout
+//    //**********************************************************************************************
+//    private void refreshCard () {
+//
+////        allSubStocks = sqlHandler.getStocksByCategory(Category);
+//
+//        createSubcategoryList();
+//        createSubgroupList();
+//
+//        expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
+//        expListView.setAdapter(expListAdapter);
+//        expListAdapter.notifyDataSetChanged();
+//    }
 }

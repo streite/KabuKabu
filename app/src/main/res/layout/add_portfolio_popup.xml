@@ -80,7 +80,7 @@
             android:background="@drawable/gradient_dark_red_bg"
             android:dropDownWidth="50dp"
             android:layout_toRightOf="@+id/txtPortfolioCategory"
-            android:entries="@array/categories"
+            android:entries="@array/main_categories"
             android:gravity="center"
             android:padding="10dp"
             android:spinnerMode="dialog" />
@@ -116,7 +116,7 @@
             android:background="@drawable/gradient_dark_red_bg"
             android:dropDownWidth="50dp"
             android:layout_toRightOf="@+id/txtPortfolioSubCategory"
-            android:entries="@array/categories"
+            android:entries="@array/main_categories"
             android:gravity="center"
             android:padding="10dp"
             android:spinnerMode="dialog" />

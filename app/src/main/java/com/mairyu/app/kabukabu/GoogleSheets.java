@@ -12,13 +12,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -30,6 +30,11 @@ import com.google.api.services.sheets.v4.model.ClearValuesRequest;
 import com.google.api.services.sheets.v4.model.ClearValuesResponse;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -291,7 +296,7 @@ public class GoogleSheets extends AppCompatActivity {
 
                     } else if (sheetsMode.equals("WRITE")) {
 
-                        allStocks = sqlHandler.getAllStocks(false);
+                        allStocks = sqlHandler.getAllStocks();
                         Stock currentStock;
                         int stackSize = allStocks.size();
 
@@ -595,7 +600,7 @@ public class GoogleSheets extends AppCompatActivity {
 //        this.deleteDatabase(_appPrefs.getSQLDBName());
 
         ArrayList<Stock> tmpFlashcards = new ArrayList<>();
-        tmpFlashcards = sqlHandler.getAllStocks(false);
+        tmpFlashcards = sqlHandler.getAllStocks();
 
         if (tmpFlashcards.size() > 0) {
 

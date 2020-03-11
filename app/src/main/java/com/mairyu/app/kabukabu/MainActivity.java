@@ -2,11 +2,12 @@ package com.mairyu.app.kabukabu;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     //--------------------------------------------------------------------------------------
                     case R.id.btnPortfolio:
 
-                        Intent intentCategory = new Intent(MainActivity.this, CategoryView.class);
+                        Intent intentCategory = new Intent(MainActivity.this, PortfolioView.class);
                         startActivity(intentCategory);
 
                         break;
@@ -257,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        expListView = (ExpandableListView) findViewById(R.id.StockExpandList);
+//        expListView = (ExpandableListView) findViewById(R.id.StockExpandList);
 
 //        final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(
 //                this, groupList, laptopCollection);
