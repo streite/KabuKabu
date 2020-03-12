@@ -80,6 +80,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     private String[] MainCategoryArray;
     private ArrayList<String> MainCategoryArrayList;
     private ArrayList<ArrayList<String>> SubCategoryArrayList;
+    private ArrayList<String> SubCategoryArrayLookUp;
 
     private String[] SubcategoryArray;
 //    private ArrayList<String> SubCategoryArrayList;
@@ -165,27 +166,27 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   Define Subcategories
         //------------------------------------------------------------------------------------------
 
-        SubcategoryMap.put("IPO","MISC");
-        SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P,RUSSEL,MISC");
-        SubcategoryMap.put("REGION ETF","ASIA,EUROPE,LATIN AMERICA,MISC");
-        SubcategoryMap.put("COMMODITY ETF","METAL,AGRICULTURE,ENERGY,MISC");
-        SubcategoryMap.put("OTHER ETF","REAL ESTATE,TECH,BIOTECH,FINANCE,CURRENCY");
-        SubcategoryMap.put("TECH","SEMICONDUCTOR,WWW,ELECTRONICS,MISC");
-        SubcategoryMap.put("FINANCE","WALL STREET,BANK,PEER,MISC");
-        SubcategoryMap.put("CONSUME","COMMUNICATION,MERCHANDISE,MEDIA,ENTERTAINMENT,FOOD,MISC");
-        SubcategoryMap.put("DEFENSE","MISC");
-        SubcategoryMap.put("HEALTH","DRUGS,INSURANCE,MISC");
-        SubcategoryMap.put("TRANSPORTATION","CAR,AIRLINE,MISC");
-        SubcategoryMap.put("MISC","MISC");
-        SubcategoryMap.put("MUTUAL","GEO,COM,MISC");
+//        SubcategoryMap.put("IPO","MISC");
+//        SubcategoryMap.put("INDEX ETF","DOW,NASDAQ,S&P,RUSSEL,MISC");
+//        SubcategoryMap.put("REGION ETF","ASIA,EUROPE,LATIN AMERICA,MISC");
+//        SubcategoryMap.put("COMMODITY ETF","METAL,AGRICULTURE,ENERGY,MISC");
+//        SubcategoryMap.put("OTHER ETF","REAL ESTATE,TECH,BIOTECH,FINANCE,CURRENCY");
+//        SubcategoryMap.put("TECH","SEMICONDUCTOR,WWW,ELECTRONICS,MISC");
+//        SubcategoryMap.put("FINANCE","WALL STREET,BANK,PEER,MISC");
+//        SubcategoryMap.put("CONSUME","COMMUNICATION,MERCHANDISE,MEDIA,ENTERTAINMENT,FOOD,MISC");
+//        SubcategoryMap.put("DEFENSE","MISC");
+//        SubcategoryMap.put("HEALTH","DRUGS,INSURANCE,MISC");
+//        SubcategoryMap.put("TRANSPORTATION","CAR,AIRLINE,MISC");
+//        SubcategoryMap.put("MISC","MISC");
+//        SubcategoryMap.put("MUTUAL","GEO,COM,MISC");
 
         //------------------------------------------------------------------------------------------
         //---   Get Card Details
         //------------------------------------------------------------------------------------------
 
-        Bundle extras = getIntent().getExtras();
-
-        Category = "IPO";
+//        Bundle extras = getIntent().getExtras();
+//
+//        Category = "IPO";
 
         //------------------------------------------------------------------------------------------
         //---   from 'strings.xml'
@@ -193,6 +194,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         MainCategoryArray = getResources().getStringArray(R.array.main_categories);
         MainCategoryArrayList = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.main_categories)));
+        SubCategoryArrayLookUp = new ArrayList<String>();
 
         ArrayList<String> mainCategoryArray;
         SubCategoryArrayList  = new ArrayList<>();
@@ -203,6 +205,14 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 SubCategoryArrayList.add(new ArrayList<>(Arrays.asList(getResources().getStringArray(getResources().getIdentifier(MainCategory.toLowerCase().replace(" ","_"), "array", getPackageName())))));
             } catch (Resources.NotFoundException e){
                 Log.e(TAG, e.toString());
+            }
+        }
+
+        for(ArrayList<String> SubCategory : SubCategoryArrayList) {
+
+            for(String Company : SubCategory) {
+
+                SubCategoryArrayLookUp.add(Company);
             }
         }
 
@@ -270,7 +280,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     //**********************************************************************************************
     //***   Custom Recycler View Adapter
     //**********************************************************************************************
-    private class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.ViewHolder> {
+    private class CustomRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private LayoutInflater mInflater;
         private ArrayList<Stock> mData;
@@ -286,33 +296,89 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         // inflates the row layout from xml when needed
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-            View RowView;
+//            View RowView;
+//
+//            if (viewType == MAIN_CATEGORY) {
+//
+//                RowView = mInflater.inflate(R.layout.main_category_recycle_view_item, parent, false);
+//
+//            } else if (viewType == SUB_CATEGORY) {
+//
+//                RowView = mInflater.inflate(R.layout.sub_category_recycle_view_item, parent, false);
+//
+//            } else {
+//
+//                RowView = mInflater.inflate(R.layout.portfolio_stock_recycle_view_item, parent, false);
+//            }
+//
+//            return new RecyclerView.ViewHolder(RowView);
 
-            if (viewType == MAIN_CATEGORY) {
+            RecyclerView.ViewHolder viewHolder;
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-                RowView = mInflater.inflate(R.layout.main_category_recycle_view_item, parent, false);
-
-            } else if (viewType == SUB_CATEGORY) {
-
-                RowView = mInflater.inflate(R.layout.sub_category_recycle_view_item, parent, false);
-
-            } else {
-
-                RowView = mInflater.inflate(R.layout.stock_category_recycle_view_item, parent, false);
+            switch (viewType) {
+                case 1:
+                    View v1 = inflater.inflate(R.layout.main_category_recycle_view_item, parent, false);
+                    viewHolder = new ViewHolderCategory(v1);
+                    break;
+                case 2:
+                    View v2 = inflater.inflate(R.layout.sub_category_recycle_view_item, parent, false);
+                    viewHolder = new ViewHolderCategory(v2);
+                    break;
+                default:
+                    View v = inflater.inflate(R.layout.portfolio_stock_recycle_view_item, parent, false);
+                    viewHolder = new ViewHolderStock(v);
+                    break;
             }
-
-            return new ViewHolder(RowView);
+            return viewHolder;
         }
 
         // binds the data to the TextView in each row
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-            Stock animal = mData.get(position);
+//            Stock RecycleStock = mData.get(position);
+//
+//            switch (holder.getItemViewType()) {
+//
+//                case 1:
+//
+//                    holder.myTextView.setText(RecycleStock.getCompany());
+//
+//                    break;
+//
+//                case 2:
+//
+//                    holder.myTextView.setText(RecycleStock.getCompany());
+//
+//                    break;
+//
+//                default:
+//
+//                    break;
+//            }
 
-            holder.myTextView.setText(animal.getCompany());
+            switch (holder.getItemViewType()) {
+
+                case 1:
+
+                    ViewHolderCategory vh1 = (ViewHolderCategory) holder;
+                    configureViewHolder1(vh1, position);
+                    break;
+                case 2:
+                    ViewHolderCategory vh2 = (ViewHolderCategory) holder;
+                    configureViewHolder2(vh2, position);
+                    break;
+                default:
+                    ViewHolderStock vh3 = (ViewHolderStock) holder;
+                    configureViewHolder3(vh3, position);
+
+                    break;
+            }
+
+
         }
 
         // Allow for conditional XMLs for the row views
@@ -336,18 +402,37 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             notifyDataSetChanged();
         }
 
+        private void configureViewHolder1(ViewHolderCategory vh1, int position) {
+
+            Stock RecycleStock = mData.get(position);
+
+            vh1.myTextView.setText(RecycleStock.getCompany());
+        }
+        private void configureViewHolder2(ViewHolderCategory vh2, int position) {
+
+            Stock RecycleStock = mData.get(position);
+
+            vh2.myTextView.setText(RecycleStock.getCompany());
+        }
+        private void configureViewHolder3(ViewHolderStock vh3, int position) {
+
+            Stock RecycleStock = mData.get(position);
+
+            vh3.portfolioListViewTicker.setText(RecycleStock.getTicker());
+        }
+
         //******************************************************************************************
-        //***   [INNER CLASS]
+        //***   [INNER CLASS] - Main/Sub Category
         //******************************************************************************************
         // stores and recycles views as they are scrolled off screen
-        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener  {
+        public class ViewHolderCategory extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener  {
 
             TextView myTextView;
 
             //--------------------------------------------------------------------------------------
             //---   Constructor
             //--------------------------------------------------------------------------------------
-            ViewHolder(View itemView) {
+            ViewHolderCategory(View itemView) {
 
                 super(itemView);
 
@@ -374,8 +459,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 //----------------------------------------------------------------------------------
                 if (ClickStock.getCategory().equals("MAIN")) {
 
-                    String tmpCategory = RecyclerViewStocks.get(getAdapterPosition()).getCompany();
-
                     int MainIndex = MainCategoryArrayList.indexOf(ClickStock.getCompany());
 
                     if (MainCategoryExpand[MainIndex]) {
@@ -397,7 +480,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 } else if (ClickStock.getCategory().equals("SUB")) {
 
-                    int SubIndex = SubCategoryArrayList.indexOf(ClickStock);
+                    int SubIndex = SubCategoryArrayLookUp.indexOf(ClickStock.getCompany());
 
                     if (SubCategoryExpand[SubIndex]) {
 
@@ -510,21 +593,52 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             }
         }
 
+        //******************************************************************************************
+        //***   [INNER CLASS] - Stock Item
+        //******************************************************************************************
+        // stores and recycles views as they are scrolled off screen
+        public class ViewHolderStock extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener  {
+
+            TextView portfolioListViewTicker;
+
+            //--------------------------------------------------------------------------------------
+            //---   Constructor
+            //--------------------------------------------------------------------------------------
+            ViewHolderStock(View itemView) {
+
+                super(itemView);
+
+                portfolioListViewTicker = itemView.findViewById(R.id.portfolioListViewTicker);
+
+//                itemView.setOnCreateContextMenuListener(MainActivity.this);
+
+                itemView.setOnClickListener(this);
+                itemView.setOnLongClickListener(this);
+            }
+
+            //--------------------------------------------------------------------------------------
+            //---   Short Click  ...
+            //--------------------------------------------------------------------------------------
+            @Override
+            public void onClick(View view) {
+
+            }
+
+            //--------------------------------------------------------------------------------------
+            //---   Long CLick ...
+            //--------------------------------------------------------------------------------------
+            @Override
+            public boolean onLongClick(View view) {
+
+                return true;
+            }
+        }
+
         // convenience method for getting data at click position
         Stock getItem(int id) {
 
             return mData.get(id);
         }
-
-        // allows clicks events to be caught
-//        void setClickListener(ItemClickListener itemClickListener) {
-//            this.mClickListener = itemClickListener;
-//        }
-
-        // parent activity will implement this method to respond to click events
-//        public interface ItemClickListener {
-//            void onItemClick(View view, int position);
-//        }
     }
 
     //**********************************************************************************************
