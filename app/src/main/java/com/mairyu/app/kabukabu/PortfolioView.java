@@ -480,7 +480,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                 } else if (ClickStock.getCategory().equals("SUB")) {
 
-                    int SubIndex = SubCategoryArrayLookUp.indexOf(ClickStock.getCompany());
+                    int SubIndex = SubCategoryArrayLookUp.indexOf(ClickStock.getCompany().replace("&", "_"));
 
                     if (SubCategoryExpand[SubIndex]) {
 
@@ -1082,6 +1082,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 //            ArrayList<Integer> RowType = new ArrayList<>();
 
         int index = 0;
+        int SubIndex = 0;
 
 //        CakesHashMap.clear();
 
@@ -1102,7 +1103,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             RecyclerViewStocks.add(StockMainHeader);
             RowXMLType.add(index++,MAIN_CATEGORY);
 
-            int SubIndex = 0;
 
             for (String Sub : SubCategoryArrayList.get(MainCategoryArrayList.indexOf(Main))) {
 
@@ -1117,7 +1117,9 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
                     if (SubCategoryExpand[SubIndex++]) {
 
-                        for (Stock Stock : sqlStockHandler.getStocksByCategory(Main.toUpperCase().replace("_", " "), Sub)) {
+                        ArrayList<Stock> SubStockArray = sqlStockHandler.getStocksByCategory(Main.toUpperCase().replace("_", " "), Sub.replace("_", "&"));
+
+                        for (Stock Stock : SubStockArray) {
 
                             RecyclerViewStocks.add(Stock);
                             RowXMLType.add(index++, STOCK_CATEGORY);
