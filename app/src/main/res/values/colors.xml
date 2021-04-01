@@ -12,11 +12,17 @@
     <color name="colorGreen4">#7BCCB5</color>
     <color name="colorGreenStrong">#4ab916</color>
 
-    <color name="colorRed1">#7D0552</color>
-    <color name="colorRed2">#B38481</color>
-    <color name="colorRed3">#E8ADAA</color>
-    <color name="colorRed4">#E8ADAA</color>
+<!--    <color name="colorRed1">#7D0552</color>-->
+<!--    <color name="colorRed2">#B38481</color>-->
+<!--    <color name="colorRed3">#E8ADAA</color>-->
+<!--    <color name="colorRed4">#E8ADAA</color>-->
     <color name="colorRedStrong">#FF0000</color>
+
+    <color name="colorRed1">#d40e11</color>
+    <color name="colorRed2">#f2101c</color>
+    <color name="colorRed3">#ec645d</color>
+    <color name="colorRed4">#ffd9d7</color>
+
 
     <color name="colorYellow1">#E2A76F</color>
     <color name="colorYellow2">#FFE5B4</color>
@@ -32,9 +38,20 @@
     <color name="colorGrey2">#B6B6B4</color>
     <color name="colorGrey3">#D1D0CE</color>
     <color name="colorGrey4">#E5E4E2</color>
+    <color name="colorGrey5">#F5F4F2</color>
     <color name="colorGreyRed">#f0e4e2</color>
     <color name="colorGreyGreen">#e5f0e2</color>
     <color name="colorGreyBlue">#e5e4f0</color>
+
+    <color name="colorBlack1">#000000</color>
+    <color name="colorBlack2">#101010</color>
+    <color name="colorBlack3">#202020</color>
+    <color name="colorBlack4">#303030</color>
+
+    <color name="colorWhite1">#FFFFFF</color>
+    <color name="colorWhite2">#F7F7F7</color>
+    <color name="colorWhite3">#F0F0F0</color>
+    <color name="colorWhite4">#E7E7E7</color>
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>

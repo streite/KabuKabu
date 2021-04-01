@@ -7,6 +7,21 @@
     <string-array name="main_categories">
         <item>INDEX ETF</item>
         <item>REGION ETF</item>
+        <item>COMMODITY ETF</item>
+        <item>OTHER ETF</item>
+<!--        <item>TECH</item>-->
+<!--        <item>FINANCE</item>-->
+<!--        <item>CONSUME</item>-->
+<!--        <item>DEFENSE</item>-->
+<!--        <item>HEALTH</item>-->
+<!--        <item>TRANSPORTATION</item>-->
+<!--        <item>IPO</item>-->
+<!--        <item>MISC</item>-->
+<!--        <item>MUTUAL</item>-->
+<!--        <item>401K NVDA</item>-->
+<!--        <item>401K SUN</item>-->
+<!--        <item>HSAA</item>-->
+<!--        <item>WSJ_LOSER</item>-->
     </string-array>
 
     <string-array name="index_etf">
@@ -14,15 +29,38 @@
         <item>NASDAQ</item>
         <item>S_P</item>
         <item>RUSSEL</item>
-        <item>MISC</item>
+        <item>MISC INDEX</item>
     </string-array>
 
     <string-array name="region_etf">
         <item>ASIA</item>
         <item>EUROPE</item>
         <item>LATIN AMERICA</item>
-        <item>MISC</item>
+        <item>MISC REGION</item>
     </string-array>
+
+    <string-array name="commodity_etf">
+        <item>METAL</item>
+        <item>AGRICULTURE</item>
+        <item>ENERGY</item>
+        <item>MISC COMMODITY</item>
+    </string-array>
+
+    <string-array name="other_etf">
+        <item>REAL ESTATE</item>
+        <item>TECHNOLOGY</item>
+        <item>BIOTECH</item>
+        <item>FINANCE</item>
+        <item>CURRENCY</item>
+    </string-array>
+
+
+
+
+
+
+
+
 
     <string-array name="navigation">
         <item>Google Sheets</item>

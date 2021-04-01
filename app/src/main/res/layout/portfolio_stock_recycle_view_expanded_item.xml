@@ -15,7 +15,7 @@
         android:paddingBottom="5dp"
         android:text="TICKER"
         android:textColor="@color/colorBlack1"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView1"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +28,7 @@
         android:paddingBottom="5dp"
         android:text="Company"
         android:textColor="@color/colorBlack1"
-        android:textSize="12sp"
+        android:textSize="18sp"
         android:textStyle="italic"
         app:layout_constraintTop_toBottomOf="@+id/txtPortfolioViewTicker"
         app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView1"/>
@@ -45,6 +45,35 @@
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView2"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtPortfolioViewGainLossPerc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="25dp"
+        android:layout_marginRight="25dp"
+        android:paddingRight="15dp"
+        android:text="G/L %%%"
+        android:textColor="@color/colorGrey1"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        app:layout_constraintTop_toBottomOf="@+id/txtPortfolioViewGainLoss"
+        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView2"/>
+
+    <TextView
+        android:id="@+id/txtPortfolioViewVolume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="25dp"
+        android:layout_marginRight="25dp"
+        android:paddingRight="15dp"
+        android:text="Volume"
+        android:textColor="@color/colorGrey1"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        app:layout_constraintTop_toBottomOf="@+id/txtPortfolioViewGainLossPerc"
+        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView2"/>
+
 
     <TextView
         android:id="@+id/txtPortfolioViewPrice"
