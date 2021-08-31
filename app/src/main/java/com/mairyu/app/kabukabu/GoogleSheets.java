@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -49,7 +48,7 @@ public class GoogleSheets extends AppCompatActivity {
 
     ProgressDialog mProgress;
 
-    private PreferenceSettings _appPrefs;
+    private SharedPreferences _appPrefs;
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
@@ -97,7 +96,7 @@ public class GoogleSheets extends AppCompatActivity {
         //---   Preference/Settings
         //------------------------------------------------------------------------------------------
 
-        _appPrefs = new PreferenceSettings(getApplicationContext());
+        _appPrefs = new SharedPreferences(getApplicationContext());
 
         //------------------------------------------------------------------------------------------
         //---   Get Card Details
@@ -562,8 +561,8 @@ public class GoogleSheets extends AppCompatActivity {
 
                     if (accountName != null) {
 
-                        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = settings.edit();
+                        android.content.SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+                        android.content.SharedPreferences.Editor editor = settings.edit();
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
                         googleAccountCredential.setSelectedAccountName(accountName);

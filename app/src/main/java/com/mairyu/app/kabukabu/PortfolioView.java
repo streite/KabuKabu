@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -95,7 +97,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
 //    Spinner PortfolioMainSpinner;
 
-    private PreferenceSettings _appPrefs;
+    private SharedPreferences _appPrefs;
 
     private ViewPager pgrPortfolioView;
     private PagerAdapter PortfolioViewAdapter;
@@ -161,7 +163,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //---   Preference/Settings
         //------------------------------------------------------------------------------------------
 
-        _appPrefs = new PreferenceSettings(getApplicationContext());
+        _appPrefs = new SharedPreferences(getApplicationContext());
 
         //------------------------------------------------------------------------------------------
         //---   Toolbar
@@ -492,42 +494,54 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
             Stock CurrentStock = mData.get(RecyclerViewPosition);
 
-            holder.txtPortfolioViewTicker.setText(CurrentStock.getTicker());
-            holder.txtPortfolioViewCompany.setText(CurrentStock.getCompany());
+            holder.txtPortfolioViewCategory.setText(CurrentStock.getSubcategory());
+
+            holder.edtPortfolioViewTicker.setText(CurrentStock.getTicker());
+            holder.edtPortfolioViewCompany.setText(CurrentStock.getCompany());
 //            holder.txtPortfolioViewGainLoss.setText(CurrentStock.get());
 
 //            holder.txtPortfolioViewPrice.setText("$" + CurrentStock.getBasis());
 //            holder.portfolioListViewChangePerc.setText("$" + CurrentStock.getBasis());
-            holder.txtPortfolioViewTransactionBasis.setText("$" + CurrentStock.getBasis());
-            holder.txtPortfolioViewTransactionDate.setText(CurrentStock.getDate());
+            holder.edtPortfolioViewTransactionBasis.setText("$" + CurrentStock.getBasis());
+            holder.edtPortfolioViewTransactionDate.setText(CurrentStock.getDate());
 
             //--------------------------------------------------------------------------------------
             //---   Subcategory Header ...
             //--------------------------------------------------------------------------------------
             if (CurrentStock.getCategory().equals("MAIN HEADER")) {
 
-                holder.txtPortfolioViewTicker.setVisibility(View.VISIBLE);
-                holder.txtPortfolioViewCompany.setVisibility(View.GONE);
+                holder.txtPortfolioViewCategory.setVisibility(View.VISIBLE);
+
+                holder.edtPortfolioViewTicker.setVisibility(View.GONE);
+                holder.edtPortfolioViewCompany.setVisibility(View.GONE);
                 holder.txtPortfolioViewGainLoss.setVisibility(View.GONE);
                 holder.txtPortfolioViewPrice.setVisibility(View.GONE);
                 holder.portfolioListViewChangePerc.setVisibility(View.GONE);
 
-                holder.txtPortfolioViewTransactionBasis.setVisibility(View.GONE);
-                holder.txtPortfolioViewTransactionDate.setVisibility(View.GONE);
+                holder.edtPortfolioViewTransactionBasis.setVisibility(View.GONE);
+                holder.edtPortfolioViewTransactionDate.setVisibility(View.GONE);
 
-            //--------------------------------------------------------------------------------------
+                holder.imgPortfolioViewAdd.setVisibility(View.VISIBLE);
+
+                holder.clvPortfolioView.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.gradient_grey_border, null));
+
+                //--------------------------------------------------------------------------------------
             //---   Stock Info ...
             //--------------------------------------------------------------------------------------
             } else {
 
-                holder.txtPortfolioViewTicker.setVisibility(View.VISIBLE);
-                holder.txtPortfolioViewCompany.setVisibility(View.VISIBLE);
+                holder.txtPortfolioViewCategory.setVisibility(View.GONE);
+
+                holder.edtPortfolioViewTicker.setVisibility(View.VISIBLE);
+                holder.edtPortfolioViewCompany.setVisibility(View.VISIBLE);
                 holder.txtPortfolioViewGainLoss.setVisibility(View.VISIBLE);
                 holder.txtPortfolioViewPrice.setVisibility(View.VISIBLE);
                 holder.portfolioListViewChangePerc.setVisibility(View.VISIBLE);
 
-                holder.txtPortfolioViewTransactionBasis.setVisibility(View.VISIBLE);
-                holder.txtPortfolioViewTransactionDate.setVisibility(View.VISIBLE);
+                holder.edtPortfolioViewTransactionBasis.setVisibility(View.VISIBLE);
+                holder.edtPortfolioViewTransactionDate.setVisibility(View.VISIBLE);
+
+                holder.imgPortfolioViewAdd.setVisibility(View.GONE);
             }
         }
 
@@ -589,25 +603,61 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         //------------------------------------------------------------------------------------------
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener  {
 
-            TextView txtPortfolioViewTicker;
-            TextView txtPortfolioViewCompany;
+            TextView txtPortfolioViewCategory;
+
+            TextView edtPortfolioViewTicker;
+            TextView edtPortfolioViewCompany;
             TextView txtPortfolioViewGainLoss;
             TextView txtPortfolioViewPrice;
             TextView portfolioListViewChangePerc;
-            TextView txtPortfolioViewTransactionBasis;
-            TextView txtPortfolioViewTransactionDate;
+            TextView edtPortfolioViewTransactionBasis;
+            TextView edtPortfolioViewTransactionDate;
+
+            ImageView imgPortfolioViewAdd;
+
+            ConstraintLayout clvPortfolioView;
 
             ViewHolder(View itemView) {
 
                 super(itemView);
 
-                txtPortfolioViewTicker = itemView.findViewById(R.id.txtPortfolioViewTicker);
-                txtPortfolioViewCompany = itemView.findViewById(R.id.txtPortfolioViewCompany);
+                clvPortfolioView = itemView.findViewById(R.id.clvPortfolioView);
+
+                txtPortfolioViewCategory = itemView.findViewById(R.id.txtPortfolioViewCategory);
+
+                edtPortfolioViewTicker = itemView.findViewById(R.id.edtPortfolioViewTicker);
+                edtPortfolioViewCompany = itemView.findViewById(R.id.edtPortfolioViewCompany);
                 txtPortfolioViewGainLoss = itemView.findViewById(R.id.txtPortfolioViewGainLoss);
                 txtPortfolioViewPrice = itemView.findViewById(R.id.txtPortfolioViewPrice);
                 portfolioListViewChangePerc = itemView.findViewById(R.id.portfolioListViewChangePerc);
-                txtPortfolioViewTransactionBasis = itemView.findViewById(R.id.txtPortfolioViewTransactionBasis);
-                txtPortfolioViewTransactionDate = itemView.findViewById(R.id.txtPortfolioViewTransactionDate);
+                edtPortfolioViewTransactionBasis = itemView.findViewById(R.id.edtPortfolioViewTransactionBasis);
+                edtPortfolioViewTransactionDate = itemView.findViewById(R.id.edtPortfolioViewTransactionDate);
+
+                imgPortfolioViewAdd = itemView.findViewById(R.id.imgPortfolioViewAdd);
+
+                //----------------------------------------------------------------------------------
+                //---   Add new book ...
+                //----------------------------------------------------------------------------------
+
+                imgPortfolioViewAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+//                        int RecyclerViewPosition = getAdapterPosition();
+//
+//                        Log.i("LOG: (AD) - Toggle","Position: " + RecyclerViewPosition);
+//
+//                        String ClickAuthor = RecyclerViewBooks.get(getAdapterPosition()).getAuthor();
+//
+//                        Book ClickBook = new Book();
+//                        ClickBook.setAuthor(ClickAuthor);
+//                        ClickBook.setTitle("Title");
+//
+//                        sqlBookHandler.addBook(ClickBook);
+//
+//                        RefreshRecycler();
+                    }
+                });
 
                 //----------------------------------------------------------------------------------
 

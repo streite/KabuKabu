@@ -2,23 +2,24 @@ package com.mairyu.app.kabukabu;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-public class PreferenceSettings extends AppCompatActivity {
+public class SharedPreferences extends AppCompatActivity {
 
-    public static final String SQL_FILE_NAME = "KabuKabu.db";
-    public static final String SQL_VERSION = "7";
+    static final String SQL_FILE_NAME = "KabuKabu.db";
+    static final String SQL_VERSION = "7";
 
-    private static final String APP_SHARED_PREFS = PreferenceSettings.class.getSimpleName(); //  Name of the file -.xml
+//    private static final String APP_SHARED_PREFS = SharedPreferences.class.getSimpleName(); //  Name of the file -.xml
+    static final String APP_SHARED_PREFS = "com.mairyu.app.kabukabu.PREFERENCE_FILE_KEY"; //  Name of the file -.xml
 
-    private SharedPreferences _sharedPrefs;
-    private SharedPreferences.Editor _prefsEditor;
+    android.content.SharedPreferences _sharedPrefs;
+    android.content.SharedPreferences.Editor _prefsEditor;
 
     //------------------------------------------------------------------------------------------
     //---   Constructor
     //------------------------------------------------------------------------------------------
-    public PreferenceSettings(Context context) {
+    public SharedPreferences(Context context) {
 
         _sharedPrefs = context.getSharedPreferences(APP_SHARED_PREFS, Activity.MODE_PRIVATE);
 
@@ -26,12 +27,12 @@ public class PreferenceSettings extends AppCompatActivity {
     }
 
     //----------------------------------------------------------------------------------------------
-    //---   SQL DB Name
+    //---   Stock SQL DB Name
     //----------------------------------------------------------------------------------------------
 
     public String getSQLStockDBName() {
 
-        return _sharedPrefs.getString(SQL_FILE_NAME, "N_A");
+        return _sharedPrefs.getString(SQL_FILE_NAME, SQL_FILE_NAME);
     }
 
     public void setSQLStockDBName(String text) {
@@ -42,12 +43,12 @@ public class PreferenceSettings extends AppCompatActivity {
     }
 
     //----------------------------------------------------------------------------------------------
-    //---   SQL DB Version
+    //---   Stock SQL DB Version
     //----------------------------------------------------------------------------------------------
 
     public String getSQLStockDBVersion() {
 
-        return _sharedPrefs.getString(SQL_VERSION, "7");
+        return _sharedPrefs.getString(SQL_VERSION, SQL_VERSION);
     }
 
     public void setSQLStockDBVersion(String text) {

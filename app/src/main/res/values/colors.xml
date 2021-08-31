@@ -43,6 +43,16 @@
     <color name="colorGreyGreen">#e5f0e2</color>
     <color name="colorGreyBlue">#e5e4f0</color>
 
+    <color name="colorBlueGrey1">#2B3856</color>
+    <color name="colorBlueGrey2">#2B547E</color>
+    <color name="colorBlueGrey3">#737CA1</color>
+    <color name="colorBlueGrey4">#E5E4E2</color>
+
+    <color name="colorBlueWhite1">#004d99</color>
+    <color name="colorBlueWhite2">#3399ff</color>
+    <color name="colorBlueWhite3">#b3d9ff</color>
+    <color name="colorBlueWhite4">#e6f2ff</color>
+
     <color name="colorBlack1">#000000</color>
     <color name="colorBlack2">#101010</color>
     <color name="colorBlack3">#202020</color>

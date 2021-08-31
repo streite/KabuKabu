@@ -18,7 +18,7 @@ import java.util.HashMap;
 //==================================================================================================
 public class InvestingAPI extends AppCompatActivity {
 
-    private PreferenceSettings _appPrefs;
+    private SharedPreferences _appPrefs;
 
     ArrayList<Index> allIndexItems = new ArrayList<>();
 
@@ -41,7 +41,7 @@ public class InvestingAPI extends AppCompatActivity {
         //---   Preference/Settings
         //------------------------------------------------------------------------------------------
 
-        _appPrefs = new PreferenceSettings(getApplicationContext());
+        _appPrefs = new SharedPreferences(getApplicationContext());
 
         //------------------------------------------------------------------------------------------
         //---   Get Card Details

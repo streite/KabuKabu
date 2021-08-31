@@ -2,26 +2,27 @@
 
 buildscript {
     repositories {
-        jcenter()
+        jcenter()   // seem to be required
         maven {
             url 'https://maven.google.com/'
             name 'Google'
         }
-        google()
+        google()  // Google's Maven repository
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.2'
-        classpath 'com.google.gms:google-services:4.3.3'
+        classpath 'com.google.gms:google-services:4.3.10'
     }
 }
 
 allprojects {
     repositories {
-        jcenter()
+        jcenter()   // seem to be required
         maven {
             url 'https://maven.google.com/'
             name 'Google'
         }
+        google()  // Google's Maven repository
     }
 }
 

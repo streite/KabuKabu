@@ -15,7 +15,7 @@ public class SettingsPage extends AppCompatActivity {
 
     private Toolbar mToolbar;
 
-    private PreferenceSettings _appPrefs;
+    private SharedPreferences _appPrefs;
 
     private TextView txtSQLStockName;
     private TextView edtSQLStockName;
@@ -35,7 +35,7 @@ public class SettingsPage extends AppCompatActivity {
         //---   Preference/Settings
         //------------------------------------------------------------------------------------------
 
-        _appPrefs = new PreferenceSettings(getApplicationContext());
+        _appPrefs = new SharedPreferences(getApplicationContext());
 
         Log.i("LOG: (SP) SQL Filename", _appPrefs.getSQLStockDBName());
 

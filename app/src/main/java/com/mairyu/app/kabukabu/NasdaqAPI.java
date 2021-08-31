@@ -15,7 +15,7 @@ import java.util.ArrayList;
 //==================================================================================================
 public class NasdaqAPI extends AppCompatActivity {
 
-    private PreferenceSettings _appPrefs;
+    private SharedPreferences _appPrefs;
 
     ArrayList<Stock> allStockItems = new ArrayList<>();
     ArrayList<String> TickerList = new ArrayList<>();
@@ -40,7 +40,7 @@ public class NasdaqAPI extends AppCompatActivity {
         //---   Preference/Settings
         //------------------------------------------------------------------------------------------
 
-        _appPrefs = new PreferenceSettings(getApplicationContext());
+        _appPrefs = new SharedPreferences(getApplicationContext());
 
         //------------------------------------------------------------------------------------------
         //---   Get Card Details

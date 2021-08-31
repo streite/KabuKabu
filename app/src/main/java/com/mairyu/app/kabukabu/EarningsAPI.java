@@ -15,7 +15,7 @@ import java.util.ArrayList;
 //==================================================================================================
 public class EarningsAPI extends AppCompatActivity {
 
-    private PreferenceSettings _appPrefs;
+    private SharedPreferences _appPrefs;
 
     ArrayList<Earning> allEarningItems = new ArrayList<>();
 
@@ -45,7 +45,7 @@ public class EarningsAPI extends AppCompatActivity {
         //---   Preference/Settings
         //------------------------------------------------------------------------------------------
 
-        _appPrefs = new PreferenceSettings(getApplicationContext());
+        _appPrefs = new SharedPreferences(getApplicationContext());
 
         //------------------------------------------------------------------------------------------
         //---   Get Card Details

@@ -2,36 +2,63 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relativeLayout2"
+    android:id="@+id/clvPortfolioView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/gradient_very_light_grey">
+    android:background="@drawable/gradient_light_grey_border">
 
     <TextView
-        android:id="@+id/txtPortfolioViewTicker"
+        android:id="@+id/txtPortfolioViewCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingLeft="5dp"
+        android:paddingBottom="5dp"
+        android:text="CATEGORY"
+        android:textColor="@color/colorBlueGrey2"
+        android:textColorHint="@color/colorGrey3"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <EditText
+        android:id="@+id/edtPortfolioViewTicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:text="TICKER"
+        android:background="@null"
         android:textColor="@color/colorBlack1"
+        android:textColorHint="@color/colorGrey3"
         android:textSize="18sp"
-        android:textStyle="italic"
+        android:hint="TICKER"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="false"
         app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView_20"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+    />
 
-    <TextView
-        android:id="@+id/txtPortfolioViewCompany"
+    <EditText
+        android:id="@+id/edtPortfolioViewCompany"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="0dp"
         android:paddingBottom="5dp"
-        android:text="Company"
+        android:background="@null"
         android:textColor="@color/colorBlack1"
+        android:textColorHint="@color/colorGrey3"
         android:textSize="12sp"
         android:textStyle="italic"
-        app:layout_constraintTop_toBottomOf="@+id/txtPortfolioViewTicker"
-        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView_20"/>
+        android:hint="Company"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="false"
+        app:layout_constraintTop_toBottomOf="@+id/edtPortfolioViewTicker"
+        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView_20"
+    />
 
     <TextView
         android:id="@+id/txtPortfolioViewGainLoss"
@@ -43,7 +70,8 @@
         android:textSize="18sp"
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView2"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+    />
 
     <TextView
         android:id="@+id/txtPortfolioViewPrice"
@@ -55,9 +83,9 @@
         android:textSize="18sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toTopOf="@+id/portfolioListViewChangePerc"
-        app:layout_constraintStart_toStartOf="@+id/portfolioListViewChangePerc"
+        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView_Price"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+    />
 
     <TextView
         android:id="@+id/portfolioListViewChangePerc"
@@ -71,48 +99,74 @@
         android:textSize="14sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPortfolioViewPrice" />
+        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView_Price"
+        app:layout_constraintTop_toBottomOf="@+id/txtPortfolioViewPrice"
+    />
 
-    <TextView
-        android:id="@+id/txtPortfolioViewTransactionBasis"
+    <EditText
+        android:id="@+id/edtPortfolioViewTransactionBasis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="0dp"
         android:paddingBottom="5dp"
-        android:text="Basis"
+        android:background="@null"
         android:textColor="@color/colorBlack1"
+        android:textColorHint="@color/colorGrey3"
         android:textSize="12sp"
         android:textStyle="italic"
-        app:layout_constraintTop_toBottomOf="@+id/txtPortfolioViewCompany"
-        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView_20"/>
+        android:hint="Basis"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="false"
+        app:layout_constraintTop_toBottomOf="@+id/edtPortfolioViewCompany"
+        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView_20"
+    />
 
-    <TextView
-        android:id="@+id/txtPortfolioViewTransactionDate"
+    <EditText
+        android:id="@+id/edtPortfolioViewTransactionDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="0dp"
         android:paddingBottom="5dp"
-        android:text="TransDate"
+        android:background="@null"
         android:textColor="@color/colorBlack1"
+        android:textColorHint="@color/colorGrey3"
         android:textSize="12sp"
         android:textStyle="italic"
-        app:layout_constraintTop_toBottomOf="@+id/txtPortfolioViewCompany"
-        app:layout_constraintStart_toEndOf="@+id/gdlPortfolioView_100"/>
+        android:hint="TransDate"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="false"
+        app:layout_constraintTop_toBottomOf="@+id/edtPortfolioViewCompany"
+        app:layout_constraintStart_toEndOf="@+id/gdlPortfolioView_100"
+    />
+
+    <ImageView
+        android:id="@+id/imgPortfolioViewAdd"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_add_new_grey1"
+        android:layout_marginRight="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+    />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gdlPortfolioView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="5dp" />
+        app:layout_constraintGuide_begin="5dp"
+    />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gdlPortfolioView_20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
+        app:layout_constraintGuide_begin="20dp"
+    />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gdlPortfolioView_100"
@@ -120,6 +174,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="100dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdlPortfolioView_Price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="350dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gdlPortfolioView2"

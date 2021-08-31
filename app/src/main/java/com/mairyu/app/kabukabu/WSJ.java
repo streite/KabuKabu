@@ -40,7 +40,7 @@ public class WSJ extends AppCompatActivity implements View.OnClickListener {
 
     private SQLStockHandler sqlHandler;
 
-    private PreferenceSettings _appPrefs;
+    private SharedPreferences _appPrefs;
 
     private TextView txtHTML;
     private Button btnWSJFilterVolume;
@@ -60,7 +60,7 @@ public class WSJ extends AppCompatActivity implements View.OnClickListener {
         //---   Preference/Settings
         //------------------------------------------------------------------------------------------
 
-        _appPrefs = new PreferenceSettings(getApplicationContext());
+        _appPrefs = new SharedPreferences(getApplicationContext());
 
         //------------------------------------------------------------------------------------------
         //---   Layout

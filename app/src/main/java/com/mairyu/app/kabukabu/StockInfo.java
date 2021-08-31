@@ -36,7 +36,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
 
     private Toolbar mToolbar;
 
-    private PreferenceSettings _appPrefs;
+    private SharedPreferences _appPrefs;
 
     SQLStockHandler sqlHandler;
     int SQL_Stock_ID;
@@ -74,7 +74,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
         //---   Preference/Settings
         //------------------------------------------------------------------------------------------
 
-        _appPrefs = new PreferenceSettings(getApplicationContext());
+        _appPrefs = new SharedPreferences(getApplicationContext());
 
         //------------------------------------------------------------------------------------------
         //---   Toolbar

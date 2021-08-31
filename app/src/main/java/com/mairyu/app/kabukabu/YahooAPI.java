@@ -31,7 +31,7 @@ public class YahooAPI extends AppCompatActivity {
 
     String Kanji;
 
-    private PreferenceSettings _appPrefs;
+    private SharedPreferences _appPrefs;
 
     ArrayList<Stock> allStockItems = new ArrayList<>();
     ArrayList<String> TickerList = new ArrayList<>();
@@ -56,7 +56,7 @@ public class YahooAPI extends AppCompatActivity {
         //---   Preference/Settings
         //------------------------------------------------------------------------------------------
 
-        _appPrefs = new PreferenceSettings(getApplicationContext());
+        _appPrefs = new SharedPreferences(getApplicationContext());
 
         //------------------------------------------------------------------------------------------
         //---   Get Card Details
@@ -70,7 +70,7 @@ public class YahooAPI extends AppCompatActivity {
         //---   Preference/Settings
         //------------------------------------------------------------------------------------------
 
-        _appPrefs = new PreferenceSettings(getApplicationContext());
+        _appPrefs = new SharedPreferences(getApplicationContext());
 
         //------------------------------------------------------------------------------------------
         //---   SQLite Setup

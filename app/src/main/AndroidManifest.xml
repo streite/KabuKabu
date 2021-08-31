@@ -32,6 +32,7 @@
             android:label=""
             android:theme="@style/MyMaterialTheme" />
         <activity android:name=".CategoryView" />
+        <activity android:name=".FirebaseAccessStocks" />
         <activity android:name=".GoogleSheets" />
         <activity android:name=".YahooAPI" />
         <activity android:name=".AlpacaAPI" />
