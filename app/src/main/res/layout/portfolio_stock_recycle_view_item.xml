@@ -17,7 +17,7 @@
         android:textColor="@color/colorBlack1"
         android:textSize="18sp"
         android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView1"
+        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView_20"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -31,8 +31,7 @@
         android:textSize="12sp"
         android:textStyle="italic"
         app:layout_constraintTop_toBottomOf="@+id/txtPortfolioViewTicker"
-        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView1"/>
-
+        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView_20"/>
 
     <TextView
         android:id="@+id/txtPortfolioViewGainLoss"
@@ -73,8 +72,33 @@
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/portfolioListViewGainLossPerc"
         app:layout_constraintTop_toBottomOf="@+id/txtPortfolioViewPrice" />
+
+    <TextView
+        android:id="@+id/txtPortfolioViewTransactionBasis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingBottom="5dp"
+        android:text="Basis"
+        android:textColor="@color/colorBlack1"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        app:layout_constraintTop_toBottomOf="@+id/txtPortfolioViewCompany"
+        app:layout_constraintStart_toStartOf="@+id/gdlPortfolioView_20"/>
+
+    <TextView
+        android:id="@+id/txtPortfolioViewTransactionDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingBottom="5dp"
+        android:text="TransDate"
+        android:textColor="@color/colorBlack1"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        app:layout_constraintTop_toBottomOf="@+id/txtPortfolioViewCompany"
+        app:layout_constraintStart_toEndOf="@+id/gdlPortfolioView_100"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gdlPortfolioView1"
@@ -82,6 +106,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="5dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdlPortfolioView_20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdlPortfolioView_100"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="100dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gdlPortfolioView2"

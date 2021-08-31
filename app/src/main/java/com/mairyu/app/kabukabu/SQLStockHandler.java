@@ -9,7 +9,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-public class SQLhandler extends SQLiteOpenHelper {
+public class SQLStockHandler extends SQLiteOpenHelper {
 
     private static final String TABLE_NAME = "words";
     private static final String COLUMN_ID = "id";
@@ -77,7 +77,7 @@ public class SQLhandler extends SQLiteOpenHelper {
     //**********************************************************************************************
     //***   CONSTRUCTOR
     //**********************************************************************************************
-    public SQLhandler(Context context, String DATABASE_NAME, int DATABASE_VERSION) {
+    public SQLStockHandler(Context context, String DATABASE_NAME, int DATABASE_VERSION) {
 
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -87,7 +87,7 @@ public class SQLhandler extends SQLiteOpenHelper {
     //**********************************************************************************************
     public long addStock(Stock stock) {
 
-        SQLiteDatabase database = SQLhandler.this.getWritableDatabase();
+        SQLiteDatabase database = SQLStockHandler.this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(COLUMN_COMPANY, stock.getCompany());
@@ -107,7 +107,7 @@ public class SQLhandler extends SQLiteOpenHelper {
 
         long ID = database.insert(TABLE_NAME, null, values);
 
-        database.close();
+//        database.close();
 
         return (ID);
     }
@@ -390,7 +390,7 @@ public class SQLhandler extends SQLiteOpenHelper {
 
         database.delete(TABLE_NAME, COLUMN_ID + " = ?",new String[]{String.valueOf(stock.getId())});
 
-        database.close();
+//        database.close();
     }
 
     //**********************************************************************************************

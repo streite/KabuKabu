@@ -5,6 +5,7 @@
     <string name="action_search">Search</string>
 
     <string-array name="main_categories">
+        <item>MUTUAL FUNDS</item>
         <item>INDEX ETF</item>
         <item>REGION ETF</item>
         <item>COMMODITY ETF</item>
@@ -17,11 +18,15 @@
 <!--        <item>TRANSPORTATION</item>-->
 <!--        <item>IPO</item>-->
 <!--        <item>MISC</item>-->
-<!--        <item>MUTUAL</item>-->
 <!--        <item>401K NVDA</item>-->
 <!--        <item>401K SUN</item>-->
 <!--        <item>HSAA</item>-->
 <!--        <item>WSJ_LOSER</item>-->
+    </string-array>
+
+    <string-array name="mutual_funds">
+        <item>US LARGE CAP</item>
+        <item>MISC</item>
     </string-array>
 
     <string-array name="index_etf">
@@ -29,21 +34,21 @@
         <item>NASDAQ</item>
         <item>S_P</item>
         <item>RUSSEL</item>
-        <item>MISC INDEX</item>
+        <item>MISC</item>
     </string-array>
 
     <string-array name="region_etf">
         <item>ASIA</item>
         <item>EUROPE</item>
         <item>LATIN AMERICA</item>
-        <item>MISC REGION</item>
+        <item>MISC</item>
     </string-array>
 
     <string-array name="commodity_etf">
         <item>METAL</item>
         <item>AGRICULTURE</item>
         <item>ENERGY</item>
-        <item>MISC COMMODITY</item>
+        <item>MISC</item>
     </string-array>
 
     <string-array name="other_etf">
@@ -54,13 +59,7 @@
         <item>CURRENCY</item>
     </string-array>
 
-
-
-
-
-
-
-
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <string-array name="navigation">
         <item>Google Sheets</item>

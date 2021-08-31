@@ -29,7 +29,7 @@ public class AlpacaAPI extends AppCompatActivity {
     ArrayList<Stock> allStockItems = new ArrayList<>();
     ArrayList<String> TickerList = new ArrayList<>();
 
-    SQLhandler sqlHandler;
+    SQLStockHandler sqlHandler;
 
     private String ALPACA_KEY = "PKAMLB3LMN9DZ2L549I3";
     private String ALPACA_SECRET_KEY = "K81Odtpfbb0McmyJ56dKinHbJxjXNtk1/yf/VUA0";
@@ -105,7 +105,7 @@ public class AlpacaAPI extends AppCompatActivity {
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(AlpacaAPI.this,_appPrefs.getSQLStockDBName(),
+        sqlHandler = new SQLStockHandler(AlpacaAPI.this,_appPrefs.getSQLStockDBName(),
                 Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
 
         //------------------------------------------------------------------------------------------

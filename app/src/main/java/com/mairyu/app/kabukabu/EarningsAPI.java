@@ -24,7 +24,7 @@ public class EarningsAPI extends AppCompatActivity {
     ArrayList<String> TimeList = new ArrayList<String>();;
     ArrayList<String> EPSList = new ArrayList<String>();;
 
-    SQLhandler sqlHandler;
+    SQLStockHandler sqlHandler;
 
     String EarningDate;
 
@@ -60,7 +60,7 @@ public class EarningsAPI extends AppCompatActivity {
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(EarningsAPI.this,_appPrefs.getSQLStockDBName(),
+        sqlHandler = new SQLStockHandler(EarningsAPI.this,_appPrefs.getSQLStockDBName(),
                 Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
 
         //------------------------------------------------------------------------------------------

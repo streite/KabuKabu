@@ -18,7 +18,7 @@ public class PortfolioViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.portfolio_view,container,false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.portfolio_view_fragment,container,false);
 
         return rootView;
     }

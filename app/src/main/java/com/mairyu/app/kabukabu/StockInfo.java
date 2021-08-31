@@ -38,7 +38,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
 
     private PreferenceSettings _appPrefs;
 
-    SQLhandler sqlHandler;
+    SQLStockHandler sqlHandler;
     int SQL_Stock_ID;
 
     DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
@@ -90,7 +90,7 @@ public class StockInfo extends AppCompatActivity implements View.OnClickListener
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(StockInfo.this,_appPrefs.getSQLStockDBName(),
+        sqlHandler = new SQLStockHandler(StockInfo.this,_appPrefs.getSQLStockDBName(),
                 Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
 
         //------------------------------------------------------------------------------------------

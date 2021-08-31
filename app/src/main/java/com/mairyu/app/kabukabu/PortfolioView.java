@@ -19,27 +19,29 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 
 import static android.util.Log.i;
 import static com.mairyu.app.kabukabu.R.id.menu_refresh;
@@ -51,31 +53,36 @@ import static java.lang.StrictMath.abs;
 public class PortfolioView extends AppCompatActivity implements View.OnClickListener {
 
     private ArrayList<Stock> allStocks = new ArrayList<>();
+    ArrayList<Stock> RecyclerViewStocks = new ArrayList<>();
 
-    private ArrayList<Stock> RecyclerViewStockArray = new ArrayList<>();
     private ArrayList<Integer> RecyclerViewItemType = new ArrayList<>();
     private ArrayList<Integer> RecyclerViewCategorySize = new ArrayList<>();
+    HashMap<String, Boolean> SubCategoryToggleStatus = new HashMap<String, Boolean>();
 
     private CustomRecyclerViewAdapter adapterStocks;
-    private RecyclerView rcvPortfolioViewMainCategory;
+    private RecyclerView rcvPortfolio;
     private ArrayAdapter<String> Portfolio_SubCategory_Adapter;
 
     private String[] MainCategoryArray;  // only used in spinner it seems
 
     private ArrayList<String> MainCategoryArrayList;
-    private ArrayList<ArrayList<String>> SubCategoryArrayList;
+    private ArrayList<ArrayList<String>> SubCategoryArrayList = new ArrayList<>();
 
-    private ArrayList<String> SubCategoryArrayLookUp;
+    String CurrentMainCategory;
 
-    private ArrayList<Boolean> MainCategoryExpand = new ArrayList<>();
-    private ArrayList<Boolean> SubCategoryExpand = new ArrayList<>();
+//    private ArrayList<String> SubCategoryArrayLookUp;
 
-    Map<String, String> Sub2MainMap = new HashMap<>();
+//    private ArrayList<Boolean> MainCategoryExpand = new ArrayList<>();
+//    private ArrayList<Boolean> SubCategoryExpand = new ArrayList<>();
+
+//    Map<String, String> Sub2MainMap = new HashMap<>();
 
     EditText edtPortfolioTicker;
     EditText edtPortfolioShares;
     EditText edtPortfolioBasis;
     EditText edtPortfolioComission;
+
+    Button btnPortfolioViewPagerAdd;
 
     private Button btnPortfolioAdd;
     private Button btnDatabaseSave;
@@ -86,31 +93,25 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
     private Toolbar mToolbar;
 
-    private Spinner Portfolio_Spinner;
-    private Spinner Portfolio_SubCategory_Spinner;
+//    Spinner PortfolioMainSpinner;
 
     private PreferenceSettings _appPrefs;
 
-    SQLhandler sqlStockHandler;
+    private ViewPager pgrPortfolioView;
+    private PagerAdapter PortfolioViewAdapter;
+
+    TextView txtMainCategoryRecycleViewName;
+
+    SQLStockHandler sqlStockHandler;
     int SQLDBSize;
     String Category;
     String PortfolioCategory;
     String PortfolioSubCategory;
 
-    ArrayList<String> TickerList;
+    int FragmentCardIndex;
+    int LastFragmentCardIndex;
 
     private boolean ViewExpand = false;
-    private int ViewExpandPosition;
-
-    float Price;
-    int Shares;
-    float GainLoss;
-    float GainLossPerc;
-    String ChangePerc;
-    float Basis;
-    int Comission;
-    String Leverage;
-
 
     private final static String TAG = MainActivity.class.getSimpleName();
 
@@ -145,6 +146,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 //    https://finance.yahoo.com/calendar/earnings?&day=2017-11-14
 //    https://eresearch.fidelity.com/eresearch/conferenceCalls.jhtml?tab=earnings&begindate=11/14/2017
 //    http://www.nasdaq.com/earnings/earnings-calendar.aspx?date=2017-Nov-14
+//    https://www.etrade.wallst.com/v1/stocks/multisnapshot/multisnapshot.asp?symbols=NVDA,%20OPGSX,AWTAX,AMD,AMZN,NFLX,A,QCOM,LULU&peer=false
 
     //**********************************************************************************************
     //***   onCreate
@@ -153,71 +155,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.portfolio_view);
-
-        //------------------------------------------------------------------------------------------
-        //---   Define Subcategories
-        //------------------------------------------------------------------------------------------
-
-
-        //------------------------------------------------------------------------------------------
-        //---   Get Card Details
-        //------------------------------------------------------------------------------------------
-
-//        Bundle extras = getIntent().getExtras();
-//
-//        Category = "IPO";
-
-        //------------------------------------------------------------------------------------------
-        //---   from 'strings.xml'
-        //------------------------------------------------------------------------------------------
-
-        MainCategoryArray = getResources().getStringArray(R.array.main_categories);
-        MainCategoryArrayList = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.main_categories)));
-        SubCategoryArrayLookUp = new ArrayList<String>();
-
-        ArrayList<String> mainCategoryArray;
-        SubCategoryArrayList  = new ArrayList<>();
-
-        for(String MainCategory : MainCategoryArrayList){
-
-            try {
-                SubCategoryArrayList.add(new ArrayList<>(Arrays.asList(getResources().getStringArray(getResources().getIdentifier(MainCategory.toLowerCase().replace(" ","_"), "array", getPackageName())))));
-            } catch (Resources.NotFoundException e){
-                Log.e(TAG, e.toString());
-            }
-        }
-
-        for(ArrayList<String> SubCategory : SubCategoryArrayList) {
-
-            for(String Company : SubCategory) {
-
-                SubCategoryArrayLookUp.add(Company);
-            }
-        }
-
-        //------------------------------------------------------------------------------------------
-        //---   Populate
-        //------------------------------------------------------------------------------------------
-
-        int SubIndexCounter = 0;
-
-//        MainCategoryExpand.clear();
-//        SubCategoryExpand.clear();
-
-        for (int MainIndex = 0; MainIndex < MainCategoryArrayList.size(); MainIndex = MainIndex + 1) {
-
-//            MainCategoryExpand[MainIndex] = true;
-            MainCategoryExpand.add(MainIndex,false);
-
-            for (int SubIndex = 0; SubIndex < SubCategoryArrayList.get(MainIndex).size(); SubIndex = SubIndex + 1) {
-
-//                SubCategoryExpand[SubIndexCounter++] = true;
-                SubCategoryExpand.add(SubIndexCounter,false);
-
-                Sub2MainMap.put(SubCategoryArrayLookUp.get(SubIndex),MainCategoryArrayList.get(MainIndex));
-            }
-        }
+        setContentView(R.layout.portfolio_view_pager);
 
         //------------------------------------------------------------------------------------------
         //---   Preference/Settings
@@ -233,13 +171,90 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+
+        //------------------------------------------------------------------------------------------
+        //---   from 'strings.xml'
+        //------------------------------------------------------------------------------------------
+        //---   MainCategoryArrayList = {"INDEX ETF","REGION ETF"}
+        //---   SubCategoryArrayList = {{"DOW","NASDAQ"...} {...}} -> [0] for"INDEX ETF", [1] for "REGION ETF" ...
+        //------------------------------------------------------------------------------------------
+        //---   Populate Main and Subcategory LUTs
+        //------------------------------------------------------------------------------------------
+
+//        MainCategoryArray = getResources().getStringArray(R.array.main_categories);
+        MainCategoryArrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.main_categories)));
+
+        for(String MainCategory : MainCategoryArrayList){
+
+            try {
+
+                SubCategoryArrayList.add(new ArrayList<>(Arrays.asList(getResources().getStringArray(getResources().getIdentifier(MainCategory.toLowerCase().replace(" ","_"), "array", getPackageName())))));
+
+            } catch (Resources.NotFoundException e){
+
+                Log.e(TAG, e.toString());
+            }
+        }
+
+        //------------------------------------------------------------------------------------------
+        //---   HASH MAP: {"DOW" <-> false} {"NASDAQ" <-> false} ...
+        //------------------------------------------------------------------------------------------
+        //---   Initialize hash map to all collapsed (false)
+        //------------------------------------------------------------------------------------------
+
+        for(ArrayList<String> SubCategory : SubCategoryArrayList) {
+
+            for(String Company : SubCategory) {
+
+//                SubCategoryArrayLookUp.add(Company);
+
+                SubCategoryToggleStatus.put(Company, COLLAPSED);
+
+//                Stock HeaderStock = new Stock();
+//
+//                HeaderStock.setTicker(Company);
+//
+//                RecyclerViewStocks.add(HeaderStock);
+            }
+        }
+
+        //------------------------------------------------------------------------------------------
+        //---   Populate Expand/Collapse LUTs
+        //------------------------------------------------------------------------------------------
+
+//        int SubIndexCounter = 0;
+//
+////        MainCategoryExpand.clear();
+////        SubCategoryExpand.clear();
+//
+//        for (int MainIndex = 0; MainIndex < MainCategoryArrayList.size(); MainIndex = MainIndex + 1) {
+//
+//            MainCategoryExpand.add(MainIndex,false);
+//
+//            for (int SubIndex = 0; SubIndex < SubCategoryArrayList.get(MainIndex).size(); SubIndex = SubIndex + 1) {
+//
+//                SubCategoryExpand.add(SubIndexCounter,false);
+//
+////                Sub2MainMap.put(SubCategoryArrayLookUp.get(SubIndex),MainCategoryArrayList.get(MainIndex));
+//            }
+//        }
 
         //------------------------------------------------------------------------------------------
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlStockHandler = new SQLhandler(PortfolioView.this,_appPrefs.getSQLStockDBName(),
+        sqlStockHandler = new SQLStockHandler(PortfolioView.this,_appPrefs.getSQLStockDBName(),
                 Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
+
+        //------------------------------------------------------------------------------------------
+        //---   ViewPager
+        //------------------------------------------------------------------------------------------
+
+        pgrPortfolioView = findViewById(R.id.pgrPortfolioView);
+        PortfolioViewAdapter = new CardViewPagerAdapter(getSupportFragmentManager());
+        pgrPortfolioView.setAdapter(PortfolioViewAdapter);
+        PortfolioViewAdapter.notifyDataSetChanged();
 
         //----------------------------------------------------------------------------------
         //---   Navigation Drawer
@@ -252,31 +267,193 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         mDrawerList.setOnItemClickListener(new Navigator(this));
 
         //------------------------------------------------------------------------------------------
-        //---   Show initial card
+        //---   Show initial card and setup layout after everything is stable
         //------------------------------------------------------------------------------------------
 
-        prepareRecyclerViewContent();
-
-        rcvPortfolioViewMainCategory = findViewById(R.id.rcvPortfolioViewMainCategory);
-        rcvPortfolioViewMainCategory.setLayoutManager(new LinearLayoutManager(PortfolioView.this));
-
-        findViewById(R.id.clPortfolioView).post(new Runnable() {
+        pgrPortfolioView.post(new Runnable() {
 
             public void run() {
 
-                adapterStocks = new CustomRecyclerViewAdapter(PortfolioView.this, RecyclerViewStockArray);
-                rcvPortfolioViewMainCategory.setAdapter(adapterStocks);
+                btnPortfolioViewPagerAdd = findViewById(R.id.btnPortfolioViewPagerAdd);
+                btnPortfolioViewPagerAdd.setOnClickListener(PortfolioView.this);
+
+                CurrentMainCategory = MainCategoryArrayList.get(0);
+
+                TextView txtCategory = findViewById(R.id.txtCategory);
+
+                txtCategory.setText(CurrentMainCategory);
+
+                RecyclerViewStocks = sqlStockHandler.getStocksByCategory("INDEX ETF","MISC");
+
+                //----------------------------------------------------------------------------------
+                //---   Refresh Input Array for RecyclerView accounting for expand/collapse
+                //----------------------------------------------------------------------------------
+
+                RefreshRecyclerArray();
+
+                //----------------------------------------------------------------------------------
+                //---   Why hardcoded to '0'???
+                //----------------------------------------------------------------------------------
+
+                View Fragmentview = ((CardViewPagerAdapter) pgrPortfolioView.getAdapter()).getFragment(0).getView();
+
+                RefreshView(Fragmentview);
+
+                //----------------------------------------------------------------------------------
+                //---   ViewPager Listener
+                //----------------------------------------------------------------------------------
+
+                pgrPortfolioView.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+                    // triggered many many times when touching and trying to scroll it, once released it finishes with new position
+                    @Override
+                    public void onPageScrolled(int CardPosition, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    //------------------------------------------------------------------------------
+                    //---   Page Slide (left or right)
+                    //------------------------------------------------------------------------------
+                    @Override
+                    public void onPageSelected(int position) {
+
+                        Log.i("LOG: (PV) PageViewer", "Position: " + position);
+
+
+                        //--------------------------------------------------------------------------
+                        //---   Reshuffle
+                        //--------------------------------------------------------------------------
+                        if (LastFragmentCardIndex == -1) {
+
+                            FragmentCardIndex = 0;
+
+                        //--------------------------------------------------------------------------
+                        //---   Slide right (... go left ...)
+                        //--------------------------------------------------------------------------
+                        } else if (LastFragmentCardIndex > position) {
+
+                            FragmentCardIndex--;
+
+                        //--------------------------------------------------------------------------
+                        //---   Slide left (... go right ...)
+                        //--------------------------------------------------------------------------
+                        } else {
+
+                            FragmentCardIndex++;
+                        }
+
+                        LastFragmentCardIndex = position;
+
+                        CurrentMainCategory = MainCategoryArrayList.get(FragmentCardIndex);
+
+                        txtCategory.setText(CurrentMainCategory + " - " + position + " - " + FragmentCardIndex );
+
+                        RefreshRecyclerArray();
+
+                        View Fragmentview = ((CardViewPagerAdapter) pgrPortfolioView.getAdapter()).getFragment(position).getView();
+
+                        RefreshView(Fragmentview);
+
+//                        Category = MainCategoryArrayList.get(position);
+
+//                        txtMainCategoryRecycleViewName.setText(MainCategoryArrayList.get(position));
+
+//                        currentSQLIndex = cardIndexArray.get(position);
+//                        refreshCard(currentSQLIndex);
+//
+//                        txtCardProgress.setText((position+1) + " / " + CardBatchSize);
+
+                    }
+
+                    //SCROLL_STATE_IDLE=0, SCROLL_STATE_DRAGGING=1, SCROLL_STATE_SETTLING=2
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
             }
         });
     }
 
     //**********************************************************************************************
-    //***   Custom Recycler View Adapter
+    //***   Page Adapter (FragmentStatePagerAdapter caused weirdness in HashMap)
     //**********************************************************************************************
-    private class CustomRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private class CardViewPagerAdapter extends FragmentPagerAdapter {
 
-        private LayoutInflater mInflater;
+        HashMap<Integer,String> mFragmentTags = new HashMap<Integer,String>();
+
+        public CardViewPagerAdapter(FragmentManager fm) {
+
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            return new PortfolioViewFragment();
+        }
+
+        @Override
+        public int getCount() {
+
+            return 3;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+
+            Object obj = super.instantiateItem(container, position);
+
+            if (obj instanceof Fragment) {
+
+                Fragment f = (Fragment) obj;
+                String tag = f.getTag();
+                mFragmentTags.put(position, tag);
+            }
+
+            return obj;
+        }
+
+        public Fragment getFragment(int position) {
+
+            String tag = mFragmentTags.get(position);
+
+            if (tag == null)
+                return null;
+
+            return getSupportFragmentManager().findFragmentByTag(tag);
+        }
+    }
+
+    //**********************************************************************************************
+    //***   Method: Refresh Card Layout
+    //**********************************************************************************************
+    private void RefreshView(View view) {
+
+        //------------------------------------------------------------------------------------------
+        //---   Layout
+        //------------------------------------------------------------------------------------------
+
+//        txtMainCategoryRecycleViewName = view.findViewById(R.id.txtMainCategoryRecycleViewName);
+
+        //------------------------------------------------------------------------------------------
+        //---   RecyclerView Setup
+        //------------------------------------------------------------------------------------------
+
+        rcvPortfolio= view.findViewById(R.id.rcvPortfolio);
+        rcvPortfolio.setLayoutManager(new LinearLayoutManager(PortfolioView.this));
+
+        adapterStocks = new CustomRecyclerViewAdapter(PortfolioView.this, RecyclerViewStocks);
+        rcvPortfolio.setAdapter(adapterStocks);
+    }
+
+    //**********************************************************************************************
+    //***   Custom Array Adapter for RecyclerView
+    //**********************************************************************************************
+    private class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.ViewHolder> {
+
         private ArrayList<Stock> mData;
+        private LayoutInflater mInflater;
 
         //------------------------------------------------------------------------------------------
         //---   Constructor
@@ -287,320 +464,152 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             this.mData = data;
         }
 
-        // inflates the row layout from xml when needed
+        //------------------------------------------------------------------------------------------
+        //---   Inflates the row layout from xml when needed
+        //------------------------------------------------------------------------------------------
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-            RecyclerView.ViewHolder viewHolder;
-            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            View view = mInflater.inflate(R.layout.portfolio_stock_recycle_view_item, parent, false);
 
-            switch (viewType) {
-                case 1:
-                    View v1 = inflater.inflate(R.layout.main_category_recycle_view_item, parent, false);
-                    viewHolder = new ViewHolderCategory(v1);
-                    break;
-                case 2:
-                    View v2 = inflater.inflate(R.layout.sub_category_recycle_view_item, parent, false);
-                    viewHolder = new ViewHolderCategory(v2);
-                    break;
-                case 3:
-                    View v3 = inflater.inflate(R.layout.portfolio_stock_recycle_view_item, parent, false);
-                    viewHolder = new ViewHolderBase(v3);
-                    break;
-                default:
-                    View v4 = inflater.inflate(R.layout.portfolio_stock_recycle_view_expanded_item, parent, false);
-                    viewHolder = new ViewHolderBase(v4);
-                    break;
-            }
-            return viewHolder;
+            return new ViewHolder(view);
         }
 
-        // binds the data to the TextView in each row
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-            switch (holder.getItemViewType()) {
-
-                case 1:
-
-                    ViewHolderCategory vh1 = (ViewHolderCategory) holder;
-                    configureViewHolder1(vh1, position);
-                    break;
-                case 2:
-                    ViewHolderCategory vh2 = (ViewHolderCategory) holder;
-                    configureViewHolder2(vh2, position);
-                    break;
-                default:
-                    ViewHolderBase vh3 = (ViewHolderBase) holder;
-                    configureViewHolder3(vh3, position);
-
-                    break;
-            }
-        }
-
-        // Allow for conditional XMLs for the row views
-        @Override
-        public int getItemViewType(int position) {
-
-            return RecyclerViewItemType.get(position);
-        }
-
-        // total number of rows
+        //------------------------------------------------------------------------------------------
+        //---   Number of rows
+        //------------------------------------------------------------------------------------------
         @Override
         public int getItemCount() {
 
             return mData.size();
         }
 
-        public void updateData(ArrayList<Stock> viewModels) {
+        //------------------------------------------------------------------------------------------
+        //---   Binds corresponding data to the TextView in each row
+        //------------------------------------------------------------------------------------------
+        @Override
+        public void onBindViewHolder(ViewHolder holder, final int RecyclerViewPosition) {
 
-            mData.clear();
-            mData.addAll(viewModels);
-            notifyDataSetChanged();
-        }
+            Stock CurrentStock = mData.get(RecyclerViewPosition);
 
-        private void configureViewHolder1(ViewHolderCategory vh1, int position) {
+            holder.txtPortfolioViewTicker.setText(CurrentStock.getTicker());
+            holder.txtPortfolioViewCompany.setText(CurrentStock.getCompany());
+//            holder.txtPortfolioViewGainLoss.setText(CurrentStock.get());
 
-            Stock RecycleStock = mData.get(position);
-
-//            int MainIndex = MainCategoryArrayList.indexOf(RecycleStock.getCompany());
-
-            vh1.myTextView.setText(RecycleStock.getCompany() + " (" + RecyclerViewCategorySize.get(position) + ")");
-        }
-        private void configureViewHolder2(ViewHolderCategory vh2, int position) {
-
-            Stock RecycleStock = mData.get(position);
-
-//            int MainIndex = MainCategoryArrayList.indexOf(RecycleStock.getCompany());
-//            int SubIndex = SubCategoryArrayList.get(MainCategoryArrayList.indexOf(MainIndex)).indexOf(RecycleStock.getCompany());
-
-            vh2.myTextView.setText(RecycleStock.getCompany() + " (" + RecyclerViewCategorySize.get(position) + ")");
-        }
-        private void configureViewHolder3(ViewHolderBase vh3, int position) {
-
-            Stock RecycleStock = mData.get(position);
-
-            vh3.txtPortfolioViewTicker.setText(RecycleStock.getTicker());
-            vh3.txtPortfolioViewCompany.setText(RecycleStock.getCompany());
-            vh3.txtPortfolioViewPrice.setText(RecycleStock.getPrice()+"");
-        }
-
-        //******************************************************************************************
-        //***   [INNER CLASS] - Main/Sub Category
-        //******************************************************************************************
-        // stores and recycles views as they are scrolled off screen
-        public class ViewHolderCategory extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener  {
-
-            TextView myTextView;
-            ImageView imgMainCategoryRecycleViewState;
+//            holder.txtPortfolioViewPrice.setText("$" + CurrentStock.getBasis());
+//            holder.portfolioListViewChangePerc.setText("$" + CurrentStock.getBasis());
+            holder.txtPortfolioViewTransactionBasis.setText("$" + CurrentStock.getBasis());
+            holder.txtPortfolioViewTransactionDate.setText(CurrentStock.getDate());
 
             //--------------------------------------------------------------------------------------
-            //---   Constructor
+            //---   Subcategory Header ...
             //--------------------------------------------------------------------------------------
-            ViewHolderCategory(View itemView) {
+            if (CurrentStock.getCategory().equals("MAIN HEADER")) {
 
-                super(itemView);
+                holder.txtPortfolioViewTicker.setVisibility(View.VISIBLE);
+                holder.txtPortfolioViewCompany.setVisibility(View.GONE);
+                holder.txtPortfolioViewGainLoss.setVisibility(View.GONE);
+                holder.txtPortfolioViewPrice.setVisibility(View.GONE);
+                holder.portfolioListViewChangePerc.setVisibility(View.GONE);
 
-                myTextView = itemView.findViewById(R.id.txtMainCategoryRecycleViewName);
-                imgMainCategoryRecycleViewState = itemView.findViewById(R.id.imgMainCategoryRecycleViewState);
-
-//                itemView.setOnCreateContextMenuListener(MainActivity.this);
-
-//                imgMainCategoryRecycleViewState.setOnClickListener(this);
-
-                imgMainCategoryRecycleViewState.setOnClickListener(new View.OnClickListener() {
-
-                    //------------------------------------------------------------------------------
-                    //---
-                    //------------------------------------------------------------------------------
-                    @Override
-                    public void onClick(View view) {
-
-                        ImageView imgMainCategoryRecycleViewState = view.findViewById(R.id.imgMainCategoryRecycleViewState);
-
-                        Stock ClickStock = RecyclerViewStockArray.get(getAdapterPosition());
-
-                        //----------------------------------------------------------------------------------
-                        //---   Expand / Collapse
-                        //----------------------------------------------------------------------------------
-                        if (ClickStock.getCategory().equals("MAIN")) {
-
-                            int MainIndex = MainCategoryArrayList.indexOf(ClickStock.getCompany());
-
-                            if (MainCategoryExpand.get(MainIndex)) {
-
-                                MainCategoryExpand.set(MainIndex,false);
-
-                                imgMainCategoryRecycleViewState.setImageResource(R.drawable.ic_arrow_drop_up_white);
-
-                            } else {
-
-                                MainCategoryExpand.set(MainIndex,true);
-
-                                imgMainCategoryRecycleViewState.setImageResource(R.drawable.ic_arrow_drop_down_white);
-                            }
-
-                            prepareRecyclerViewContent();
-
-                            adapterStocks.notifyDataSetChanged();
-
-                        } else if (ClickStock.getCategory().equals("SUB")) {
-
-                            int SubIndex = SubCategoryArrayLookUp.indexOf(ClickStock.getCompany().replace("&", "_"));
-
-                            if (SubCategoryExpand.get(SubIndex)) {
-
-                                SubCategoryExpand.set(SubIndex,false);
-
-                                imgMainCategoryRecycleViewState.setImageResource(R.drawable.ic_arrow_drop_up_white);
-
-                            } else {
-
-                                SubCategoryExpand.set(SubIndex,true);
-
-                                imgMainCategoryRecycleViewState.setImageResource(R.drawable.ic_arrow_drop_down_white);
-                            }
-
-                            prepareRecyclerViewContent();
-
-                            adapterStocks.notifyDataSetChanged();
-                        }
-                    }
-                });
-
-                itemView.setOnClickListener(this);
-                itemView.setOnLongClickListener(this);
-            }
+                holder.txtPortfolioViewTransactionBasis.setVisibility(View.GONE);
+                holder.txtPortfolioViewTransactionDate.setVisibility(View.GONE);
 
             //--------------------------------------------------------------------------------------
-            //---   Short Click  ...
+            //---   Stock Info ...
             //--------------------------------------------------------------------------------------
-            @Override
-            public void onClick(View view) {
+            } else {
 
-            }
+                holder.txtPortfolioViewTicker.setVisibility(View.VISIBLE);
+                holder.txtPortfolioViewCompany.setVisibility(View.VISIBLE);
+                holder.txtPortfolioViewGainLoss.setVisibility(View.VISIBLE);
+                holder.txtPortfolioViewPrice.setVisibility(View.VISIBLE);
+                holder.portfolioListViewChangePerc.setVisibility(View.VISIBLE);
 
-            //--------------------------------------------------------------------------------------
-            //---   Long CLick ...
-            //--------------------------------------------------------------------------------------
-            @Override
-            public boolean onLongClick(View view) {
-
-                Intent intent2Info = new Intent(PortfolioView.this, AlpacaAPI.class);
-
-//                intent2Info.putExtra("SQL_STOCK_ID", currentStock.getId());
-
-                //---   ==> CardView
-                startActivityForResult(intent2Info, REQUEST_INFO);
-
-                //----------------------------------------------------------------------------------
-                //---   SQL File Selection Popup
-                //----------------------------------------------------------------------------------
-
-//                LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-//                View popupView = layoutInflater.inflate(R.layout.confirm_popup_window,null);
-//
-//                popupWindow = new PopupWindow(popupView,CONFIRM_POPUP_WIDTH,CONFIRM_POPUP_HEIGHT);
-//                popupWindow.showAtLocation(findViewById(R.id.clvMainActivity),
-//                        Gravity.CENTER, CONFIRM_POPUP_GRAVITY_X, CONFIRM_POPUP_GRAVITY_Y);
-//
-//                CategorySpinner = popupView.findViewById(R.id.spnCategory);
-//                CategorySpinner.setOnItemSelectedListener(new SpinnerCustomOnItemSelectedListener());
-//                CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(CategorySpinner.getContext(), MainCategoryArrayList);
-//                CategorySpinner.setAdapter(customSpinnerAdapter);
-//
-//                //----------------------------------------------------------------------------------
-//                //---   Category Update Button
-//                //----------------------------------------------------------------------------------
-//
-//                Button btnConfirmPopUpUpdate = popupView.findViewById(R.id.btnConfirmPopUpUpdate);
-//
-//                btnConfirmPopUpUpdate.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        String CurrentMainCategory = MainCategoryArray[CategorySpinner.getSelectedItemPosition()];
-//
-//                        Recipe tmpRecipe = RecyclerViewRecipes.get(getAdapterPosition());
-//                        tmpRecipe.setCategory(CurrentMainCategory);
-//
-//                        sqlRecipeHandler.updateRecipe(tmpRecipe);
-//
-//                        categorizeRecipes();
-//
-//                        adapterAllRecipes.notifyDataSetChanged();
-//
-//                        popupWindow.dismiss();
-//                    }
-//                });
-//
-//                //----------------------------------------------------------------------------------
-//                //---   Recipe Delete Button
-//                //----------------------------------------------------------------------------------
-//
-//                Button btnConfirmPopUpDelete = popupView.findViewById(R.id.btnConfirmPopUpDelete);
-//
-//                btnConfirmPopUpDelete.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        sqlRecipeHandler.deleteRecipe(RecyclerViewRecipes.get(getAdapterPosition()));
-//
-//                        categorizeRecipes();
-//
-//                        adapterAllRecipes.notifyDataSetChanged();
-//
-//                        popupWindow.dismiss();
-//                    }
-//                });
-//
-//                //----------------------------------------------------------------------------------
-//                //---   Swipe and close popUp
-//                //----------------------------------------------------------------------------------
-//
-//                ConstraintLayout viewPutSleep = popupView.findViewById(R.id.clvConfirmPopUp);
-//
-//                viewPutSleep.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
-//
-//                    @Override
-//                    public void onSwipeLeft() {
-//
-//                        popupWindow.dismiss();
-//                    }
-//
-//                    @Override
-//                    public void onSwipeRight() {
-//
-//                        popupWindow.dismiss();
-//                    }
-//                });
-
-                return true;
+                holder.txtPortfolioViewTransactionBasis.setVisibility(View.VISIBLE);
+                holder.txtPortfolioViewTransactionDate.setVisibility(View.VISIBLE);
             }
         }
 
+        //------------------------------------------------------------------------------------------
+        //---   Triggered when a row crosses a different row
+        //------------------------------------------------------------------------------------------
+        public void onRowMoved(int fromPosition, int toPosition, ViewHolder myViewHolder) {
+
+        }
+
+        //------------------------------------------------------------------------------------------
+        //---   When a row is long-clicked prior to drag ...
+        //------------------------------------------------------------------------------------------
+        public void onRowSelected(ViewHolder myViewHolder, int ActionState) {
+
+        }
+
+        //------------------------------------------------------------------------------------------
+        //---   When a row is released during drag ...
+        //------------------------------------------------------------------------------------------
+        public void onDragRelease(ViewHolder myViewHolder) {
+
+        }
+
+        //------------------------------------------------------------------------------------------
+        //---   Delete Yes/No Dialogue
+        //------------------------------------------------------------------------------------------
+        public void onPopUpAlert(final ViewHolder myViewHolder, int position) {
+
+//            AlertDialog.Builder SwipeAlert = new AlertDialog.Builder(myViewHolder.itemView.getContext());
+//            SwipeAlert.setTitle("DELETE?");
+//            SwipeAlert.setMessage("Are you sure?");
+//
+//            SwipeAlert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id) {
+//
+//                    int position = myViewHolder.getAdapterPosition();
+//
+//                    sqlBookHandler.deleteBook(RecyclerViewBooks.get(position));
+//
+//                    RefreshRecycler();
+//                }
+//            });
+//
+//            SwipeAlert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id) {
+//
+//                    RefreshRecycler();
+//                }
+//            });
+//
+//            SwipeAlert.show();
+        }
+
         //******************************************************************************************
-        //***   [INNER CLASS] - Stock Item
+        //***   [INNER CLASS]
         //******************************************************************************************
-        // stores and recycles views as they are scrolled off screen
-        public class ViewHolderBase extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener  {
+        //---   Stores, defines and recycles (sub)views as they are scrolled off screen
+        //------------------------------------------------------------------------------------------
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener  {
 
             TextView txtPortfolioViewTicker;
             TextView txtPortfolioViewCompany;
+            TextView txtPortfolioViewGainLoss;
             TextView txtPortfolioViewPrice;
+            TextView portfolioListViewChangePerc;
+            TextView txtPortfolioViewTransactionBasis;
+            TextView txtPortfolioViewTransactionDate;
 
-            //--------------------------------------------------------------------------------------
-            //---   Constructor
-            //--------------------------------------------------------------------------------------
-            ViewHolderBase(View itemView) {
+            ViewHolder(View itemView) {
 
                 super(itemView);
 
                 txtPortfolioViewTicker = itemView.findViewById(R.id.txtPortfolioViewTicker);
                 txtPortfolioViewCompany = itemView.findViewById(R.id.txtPortfolioViewCompany);
+                txtPortfolioViewGainLoss = itemView.findViewById(R.id.txtPortfolioViewGainLoss);
                 txtPortfolioViewPrice = itemView.findViewById(R.id.txtPortfolioViewPrice);
+                portfolioListViewChangePerc = itemView.findViewById(R.id.portfolioListViewChangePerc);
+                txtPortfolioViewTransactionBasis = itemView.findViewById(R.id.txtPortfolioViewTransactionBasis);
+                txtPortfolioViewTransactionDate = itemView.findViewById(R.id.txtPortfolioViewTransactionDate);
 
-//                itemView.setOnCreateContextMenuListener(MainActivity.this);
+                //----------------------------------------------------------------------------------
 
                 itemView.setOnClickListener(this);
                 itemView.setOnLongClickListener(this);
@@ -612,16 +621,42 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             @Override
             public void onClick(View view) {
 
-                if (RecyclerViewItemType.get(getAdapterPosition()) == 3) {
+                Stock CurrentStock =  RecyclerViewStocks.get(getAdapterPosition());
 
-                    RecyclerViewItemType.set(getAdapterPosition(), 4);
+                //----------------------------------------------------------------------------------
+                //---   Expand / Collapse Group
+                //----------------------------------------------------------------------------------
+                if (CurrentStock.getCategory().equals("MAIN HEADER")) {
 
-                } else {
+                    //------------------------------------------------------------------------------
+                    //---   Main Header ...
+                    //------------------------------------------------------------------------------
+//                    if (CurrentStock.getCompany().equals("N/A")) {
 
-                    RecyclerViewItemType.set(getAdapterPosition(), 3);
+                        String ClickSubCategory = CurrentStock.getTicker();
+
+                        if (SubCategoryToggleStatus.get(ClickSubCategory) == COLLAPSED) {
+
+                            SubCategoryToggleStatus.put(ClickSubCategory, EXPANDED);
+
+                        } else {
+
+                            SubCategoryToggleStatus.put(ClickSubCategory, COLLAPSED);
+                        }
+
+//                    //------------------------------------------------------------------------------
+//                    //---   Sub Header ...
+//                    //------------------------------------------------------------------------------
+//                    } else {
+//
+//                    }
+
+                    RefreshRecyclerArray();
+
+                    View Fragmentview = ((CardViewPagerAdapter) pgrPortfolioView.getAdapter()).getFragment(0).getView();
+
+                    RefreshView(Fragmentview);
                 }
-
-                adapterStocks.notifyDataSetChanged();
             }
 
             //--------------------------------------------------------------------------------------
@@ -634,10 +669,44 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             }
         }
 
-        // convenience method for getting data at click position
-        Stock getItem(int id) {
+//        // convenience method for getting data at click position
+//        Stock getItem(int id) {
+//
+//            return mData.get(id);
+//        }
+    }
 
-            return mData.get(id);
+    //**********************************************************************************************
+    //***   Method: Refresh Input Array for RecyclerView accounting for expand/collapse
+    //**********************************************************************************************
+    private void RefreshRecyclerArray() {
+
+        //------------------------------------------------------------------------------------------
+        //---   Reset input array for fresh start ...
+        //------------------------------------------------------------------------------------------
+
+        RecyclerViewStocks.clear();
+
+        //------------------------------------------------------------------------------------------
+        //---   Loop through all subcategories
+        //------------------------------------------------------------------------------------------
+        for (String tmpSubCategory : SubCategoryArrayList.get(FragmentCardIndex)) {
+
+            Stock HeaderStock = new Stock();
+
+            HeaderStock.setTicker(tmpSubCategory);
+            HeaderStock.setCategory("MAIN HEADER");
+            HeaderStock.setSubcategory(tmpSubCategory);
+
+            RecyclerViewStocks.add(HeaderStock);
+
+            for (Stock LoopStock : sqlStockHandler.getStocksByCategory(CurrentMainCategory, tmpSubCategory)) {
+
+                if (SubCategoryToggleStatus.get(tmpSubCategory) == EXPANDED) {
+
+                    RecyclerViewStocks.add(LoopStock);
+                }
+            }
         }
     }
 
@@ -658,7 +727,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
             //--------------------------------------------------------------------------------------
             //---   ADD
             //--------------------------------------------------------------------------------------
-            case R.id.btnPortfolioAdd:
+            case R.id.btnPortfolioViewPagerAdd:
 
                 //----------------------------------------------------------------------------------
                 //---   SQL File Selection Popup
@@ -697,29 +766,34 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
                 imm.showSoftInput(edtPortfolioTicker, InputMethodManager.SHOW_IMPLICIT);
 
                 //----------------------------------------------------------------------------------
-                //---   Category Spinner
+                //---   Main Category Spinner
                 //----------------------------------------------------------------------------------
-                Portfolio_Spinner = (Spinner) popupView.findViewById(R.id.spnPortfolioCategory);
-                Portfolio_Spinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
 
-                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                Spinner PortfolioMainSpinner = popupView.findViewById(R.id.spnPortfolioCategory);
+                PortfolioMainSpinner.setOnItemSelectedListener(new PortfolioMainCategoryOnItemSelectedListener());
+
+                ArrayAdapter<CharSequence> MainCategoryAdapter = ArrayAdapter.createFromResource(this,
                         R.array.main_categories, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
-                Portfolio_Spinner.setAdapter(adapter);
-                Portfolio_Spinner.setSelection(Arrays.asList(MainCategoryArray).indexOf(Category));
+
+                MainCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                PortfolioMainSpinner.setAdapter(MainCategoryAdapter);
+                PortfolioMainSpinner.setSelection(MainCategoryArrayList.indexOf(CurrentMainCategory));
 
                 //----------------------------------------------------------------------------------
-                //---   Subcategory Spinner
+                //---   Sub Category Spinner
                 //----------------------------------------------------------------------------------
-//                Portfolio_SubCategory_Spinner = (Spinner) popupView.findViewById(R.id.spnPortfolioSubCategory);
-//                Portfolio_SubCategory_Spinner.setOnItemSelectedListener(new PortfolioSubCategoryOnItemSelectedListener());
-//
-//                Portfolio_SubCategory_Adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, SubcategoryArray);
-//                Portfolio_SubCategory_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                Portfolio_SubCategory_Spinner.setAdapter(Portfolio_SubCategory_Adapter);
-////                Portfolio_SubCategory_Spinner.setSelection(Arrays.asList(CategoryArray).indexOf(Category));
+
+                Spinner PortfolioSubSpinner = popupView.findViewById(R.id.spnPortfolioSubCategory);
+                PortfolioSubSpinner.setOnItemSelectedListener(new PortfolioSubCategoryOnItemSelectedListener());
+
+                ArrayAdapter<CharSequence> SubcatgoryAdapter =  new ArrayAdapter(this,
+                        android.R.layout.simple_spinner_item, SubCategoryArrayList.get(FragmentCardIndex));
+
+                SubcatgoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                PortfolioSubSpinner.setAdapter(SubcatgoryAdapter);
+                PortfolioSubSpinner.setSelection(0);
 
                 //----------------------------------------------------------------------------------
                 //---
@@ -832,7 +906,7 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     //**********************************************************************************************
     //***   CustomOnItemSelectedListener (for Spinner)
     //**********************************************************************************************
-    public class CustomOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
+    public class PortfolioMainCategoryOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
 
@@ -841,7 +915,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         @Override
         public void onNothingSelected(AdapterView<?> arg0) {
-            // TODO Auto-generated method stub
+
+            Log.i("LOG: (PV) Pull", "NothingMain: " + arg0);;
         }
     }
 
@@ -854,7 +929,8 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         @Override
         public void onNothingSelected(AdapterView<?> arg0) {
-            // TODO Auto-generated method stub
+
+            Log.i("LOG: (PV) Pull", "NothingSub: " + arg0);;
         }
     }
 
@@ -898,102 +974,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     @Override
     public boolean onContextItemSelected(MenuItem item){
 
-//        ExpandableListView.ExpandableListContextMenuInfo info =
-//                (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
-//
-//        CharSequence Title = item.getTitle();
-//
-//        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
-//        int groupPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition);
-//        int childPosition = ExpandableListView.getPackedPositionChild(info.packedPosition);
-//
-////        String SubCategory = GroupNames.get(groupPosition);
-////        allSubStocks = sqlHandler.getStocksBySubcategory(Category,subCategory);
-//
-//        i("LOG: (PV) Position", "Group: " + groupPosition + " Child: " + childPosition);
-//
-//        if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-//            // do something with parent
-//
-//        } else if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-//            // do someting with child
-//
-//            String Ticker = subgroupCollection.get(SubcategoryList.get(groupPosition)).get(childPosition);
-//
-////            Stock currentStock = allStocks.get(childPosition);
-//            Stock currentStock = sqlHandler.getStocksByTicker(Ticker);
-//
-//            switch (Title.toString()) {
-//
-//                //--------------------------------------------------------------------------------------
-//                //---   EDIT
-//                //--------------------------------------------------------------------------------------
-//                case "Edit":
-//
-//                    Intent intent2Info = new Intent(PortfolioView.this, StockInfo.class);
-//
-//                    intent2Info.putExtra("SQL_STOCK_ID", currentStock.getId());
-//
-//                    //---   ==> CardView
-//                    startActivityForResult(intent2Info, REQUEST_INFO);
-//
-//                    break;
-//
-//                //----------------------------------------------------------------------------------
-//                //---   CLEAR (Copy Price to Base)
-//                //----------------------------------------------------------------------------------
-//                case "Clear":
-//
-//                    currentStock.setShares(0);
-//                    currentStock.setCommission(0);
-//
-//                    sqlHandler.updateStock(currentStock);
-//
-//                    adapterStocks.notifyDataSetChanged();
-//
-//                    break;
-//
-//                //----------------------------------------------------------------------------------
-//                //---   Tag for Buy
-//                //----------------------------------------------------------------------------------
-//                case "Tag Buy":
-//
-//                    currentStock.setWatch(2);
-//
-//                    sqlHandler.updateStock(currentStock);
-//
-////                    adapterStocks.notifyDataSetChanged();
-//
-//                    break;
-//
-//                //----------------------------------------------------------------------------------
-//                //---   Tag for Sell
-//                //----------------------------------------------------------------------------------
-//                case "Tag Sell":
-//
-//                    currentStock.setWatch(3);
-//
-//                    sqlHandler.updateStock(currentStock);
-//
-//                    adapterStocks.notifyDataSetChanged();
-//
-//                    break;
-//
-//                //----------------------------------------------------------------------------------
-//                //---   Clear Tag
-//                //----------------------------------------------------------------------------------
-//                case "Clear Tag":
-//
-//                    currentStock.setWatch(0);
-//
-//                    sqlHandler.updateStock(currentStock);
-//
-////                    adapterStocks.notifyDataSetChanged();
-//
-//                    break;
-//            }
-//
-//        }
 
         return super.onContextItemSelected(item);
     }
@@ -1015,14 +995,13 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
         MenuItem menu_edit = menu.findItem(R.id.menu_edit);
         menu_edit.setVisible(false);
 
-        String SQLFileName = "0";
-
         //------------------------------------------------------------------------------------------
         //---   Show active Category
         //------------------------------------------------------------------------------------------
 
         TextView txtCategory = (TextView) findViewById(R.id.txtCategory);
-        txtCategory.setText(Category + " (" + SQLDBSize + ")");
+//        txtCategory.setText(Category + " (" + SQLDBSize + ")");
+//        txtCategory.setText("PORTFOLIO");
         txtCategory.setTextColor(ContextCompat.getColor(this, R.color.colorGrey3));
 
         //------------------------------------------------------------------------------------------
@@ -1075,90 +1054,6 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
     }
 
     //**********************************************************************************************
-    //***   Method: Assign 'type' to each Recycle View row to allow for conditional formatting
-    //**********************************************************************************************
-    private void prepareRecyclerViewContent() {
-
-        int StateIndex = 0;
-        int SizeIndex = 0;
-        int MainIndex = 0;
-        int SubIndex = 0;
-
-        allStocks = sqlStockHandler.getAllStocks();
-
-        RecyclerViewStockArray.clear();
-        RecyclerViewItemType.clear();
-        RecyclerViewCategorySize.clear();
-
-        //------------------------------------------------------------------------------------------
-        //---   Loop through all Main Categories
-        //------------------------------------------------------------------------------------------
-        for (String MainCategory: MainCategoryArrayList) {
-
-            //--------------------------------------------------------------------------------------
-            //---   Create Dummy Stock as placeholder for 'Main' header
-            //--------------------------------------------------------------------------------------
-            Stock StockMainHeader = new Stock();
-            StockMainHeader.setCategory("MAIN");
-//            StockMainHeader.setCompany(Main.toUpperCase().replace("_"," "));
-            StockMainHeader.setCompany(MainCategory);
-
-            int MainSize = SubCategoryArrayList.get(MainCategoryArrayList.indexOf(MainCategory)).size();
-
-            RecyclerViewStockArray.add(StockMainHeader);
-            RecyclerViewItemType.add(StateIndex++,MAIN_CATEGORY);
-            RecyclerViewCategorySize.add(SizeIndex++,MainSize);
-
-            //--------------------------------------------------------------------------------------
-            //---   Loop through all Sub Categories
-            //--------------------------------------------------------------------------------------
-            for (String SubCategory : SubCategoryArrayList.get(MainCategoryArrayList.indexOf(MainCategory))) {
-
-                //----------------------------------------------------------------------------------
-                //---   Main Category is expanded ie. show Sub Categories
-                //----------------------------------------------------------------------------------
-                if (MainCategoryExpand.get(MainIndex)) {
-
-                    //------------------------------------------------------------------------------
-                    //---   Create Dummy Stock as placeholder for 'Sub' header
-                    //------------------------------------------------------------------------------
-                    Stock StockSubHeader = new Stock();
-                    StockSubHeader.setCategory("SUB");
-                    StockSubHeader.setCompany(SubCategory.replace("_", "&"));
-
-                    ArrayList<Stock> SubStockArray = sqlStockHandler.getStocksByCategory(MainCategory.toUpperCase().replace("_", " "), SubCategory.replace("_", "&"));
-
-                    int SubSize = SubStockArray.size();
-
-                    RecyclerViewStockArray.add(StockSubHeader);
-                    RecyclerViewItemType.add(StateIndex++, SUB_CATEGORY);
-                    RecyclerViewCategorySize.add(SizeIndex++,SubSize);
-
-                    //------------------------------------------------------------------------------
-                    //---   Is this Sub Category expanded or collapsed ie. show Base Categories or skip
-                    //------------------------------------------------------------------------------
-                    if (SubCategoryExpand.get(SubIndex)) {
-
-                        //--------------------------------------------------------------------------
-                        //---   Loop through all Base Items (Stocks)
-                        //--------------------------------------------------------------------------
-                        for (Stock StockItem : SubStockArray) {
-
-                            RecyclerViewStockArray.add(StockItem);
-                            RecyclerViewItemType.add(StateIndex++, STOCK_CATEGORY);
-                            RecyclerViewCategorySize.add(SizeIndex++,1);
-                        }
-                    }
-                }
-
-                SubIndex++;
-            }
-
-            MainIndex++;
-        }
-    }
-
-    //**********************************************************************************************
     //***   Method: Collect all Ticker for single API call
     //**********************************************************************************************
     private ArrayList<String> grabTickers() {
@@ -1174,127 +1069,4 @@ public class PortfolioView extends AppCompatActivity implements View.OnClickList
 
         return TickerList;
     }
-
-//    //**********************************************************************************************
-//    //***   onActivityResult (returning from API call)
-//    //**********************************************************************************************
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//        //--------------------------------------------------------------------------------------
-//        //---   Return via finish()
-//        //--------------------------------------------------------------------------------------
-//        if (resultCode == Activity.RESULT_OK) {
-//
-//            //------------------------------------------------------------------------------------------
-//            //---   Return from Stock Info
-//            //------------------------------------------------------------------------------------------
-//            if (requestCode == REQUEST_INFO) {
-//
-//                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-//                expListView.setAdapter(expListAdapter);
-//                expListAdapter.notifyDataSetChanged();
-//            }
-//
-//            //------------------------------------------------------------------------------------------
-//            //---   Return from YAHOO
-//            //------------------------------------------------------------------------------------------
-//            if (requestCode == REQUEST_YAHOO) {
-//
-//                if (TickerList.size() > 25) {
-//
-//                    Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
-//                    ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(25, TickerList.size()));
-//                    intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
-//                    startActivityForResult(intentYahoo, REQUEST_YAHOO2);
-//
-//                } else {
-//
-//                    expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-//                    expListView.setAdapter(expListAdapter);
-//                    expListAdapter.notifyDataSetChanged();
-//
-//                    expListView.expandGroup(0);
-//                }
-//            }
-//
-//            //------------------------------------------------------------------------------------------
-//            //---   Return from YAHOO2
-//            //------------------------------------------------------------------------------------------
-//            if (requestCode == REQUEST_YAHOO2) {
-//
-//                if (TickerList.size() > 50) {
-//
-//                    Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
-//                    ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(50, TickerList.size()));
-//                    intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
-//                    startActivityForResult(intentYahoo, REQUEST_YAHOO3);
-//
-//                } else {
-//
-//                    expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-//                    expListView.setAdapter(expListAdapter);
-//                    expListAdapter.notifyDataSetChanged();
-//                }
-//            }
-//
-//            //------------------------------------------------------------------------------------------
-//            //---   Return from YAHOO3
-//            //------------------------------------------------------------------------------------------
-//            if (requestCode == REQUEST_YAHOO3) {
-//
-//                if (TickerList.size() > 75) {
-//
-//                    Intent intentYahoo = new Intent(PortfolioView.this, NasdaqAPI.class);
-//                    ArrayList<String> TickerPartList = new ArrayList<String>(TickerList.subList(75, TickerList.size()));
-//                    intentYahoo.putStringArrayListExtra("TICKER_INDEX_ARRAY", TickerPartList);
-//                    startActivityForResult(intentYahoo, REQUEST_YAHOO4);
-//
-//                } else {
-//
-//                    expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-//                    expListView.setAdapter(expListAdapter);
-//                    expListAdapter.notifyDataSetChanged();
-//                }
-//
-////                expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-////                expListView.setAdapter(expListAdapter);
-////                expListAdapter.notifyDataSetChanged();
-//            }
-//        }
-//    }
-
-//    //**********************************************************************************************
-//    //***   Method: Refresh Card Layout
-//    //**********************************************************************************************
-//    private void refreshView(View view) {
-//
-//        //------------------------------------------------------------------------------------------
-//        //---   Update Category Header
-//        //------------------------------------------------------------------------------------------
-//
-////        TextView txtCategory = (TextView) view.findViewById(R.id.txtCategory);
-////        txtCategory.setText(Category + " (" + allSubStocks.size() + ")");
-//
-//        //------------------------------------------------------------------------------------------
-//        //---   Layout
-//        //------------------------------------------------------------------------------------------
-//
-//        expListView = (ExpandableListView) view.findViewById(R.id.StockExpandList);
-//    }
-//
-//    //**********************************************************************************************
-//    //***   Method: Refresh Card Layout
-//    //**********************************************************************************************
-//    private void refreshCard () {
-//
-////        allSubStocks = sqlHandler.getStocksByCategory(Category);
-//
-//        createSubcategoryList();
-//        createSubgroupList();
-//
-//        expListAdapter = new ExpandableListAdapter(PortfolioView.this, SubcategoryList, subgroupCollection);
-//        expListView.setAdapter(expListAdapter);
-//        expListAdapter.notifyDataSetChanged();
-//    }
 }

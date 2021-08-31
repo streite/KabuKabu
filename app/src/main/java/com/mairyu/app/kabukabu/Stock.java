@@ -26,7 +26,7 @@ public class Stock  {
     public Stock() {
 
         id = 0;
-        Company = "";
+        Company = "N/A";
         Ticker = "";
         Price = 0;
         Change = "";

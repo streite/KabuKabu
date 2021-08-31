@@ -18,7 +18,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -32,9 +31,6 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,7 +67,7 @@ public class GoogleSheets extends AppCompatActivity {
 
     private ArrayList<Stock> allStocks = new ArrayList<>();
 
-    private SQLhandler sqlHandler;
+    private SQLStockHandler sqlHandler;
 
     // Client ID: 421675712394-0702fv31pk2q2dpsvfqus8n2hi9o4bu9.apps.googleusercontent.com
 
@@ -125,7 +121,7 @@ public class GoogleSheets extends AppCompatActivity {
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(GoogleSheets.this,_appPrefs.getSQLStockDBName(),
+        sqlHandler = new SQLStockHandler(GoogleSheets.this,_appPrefs.getSQLStockDBName(),
                 Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
 
         //------------------------------------------------------------------------------------------

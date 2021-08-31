@@ -38,7 +38,7 @@ public class WSJ extends AppCompatActivity implements View.OnClickListener {
     private ArrayAdapter<Stock> adapterStocks;
     private ListView listViewAllStocks;
 
-    private SQLhandler sqlHandler;
+    private SQLStockHandler sqlHandler;
 
     private PreferenceSettings _appPrefs;
 
@@ -83,7 +83,7 @@ public class WSJ extends AppCompatActivity implements View.OnClickListener {
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(WSJ.this,_appPrefs.getSQLStockDBName(),
+        sqlHandler = new SQLStockHandler(WSJ.this,_appPrefs.getSQLStockDBName(),
                 Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
 
         //------------------------------------------------------------------------------------------

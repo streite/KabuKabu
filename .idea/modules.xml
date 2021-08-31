@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/KabuKabu.iml" filepath="$PROJECT_DIR$/KabuKabu.iml" group="KabuKabu" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="KabuKabu/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/KabuKabu.iml" filepath="$PROJECT_DIR$/.idea/modules/KabuKabu.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/KabuKabu.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/KabuKabu.app.iml" />
     </modules>
   </component>
 </project>

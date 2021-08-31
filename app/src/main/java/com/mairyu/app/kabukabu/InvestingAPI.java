@@ -24,7 +24,7 @@ public class InvestingAPI extends AppCompatActivity {
 
     HashMap<String, String> IndexChangeLUT = new HashMap<>();
 
-    SQLhandler sqlHandler;
+    SQLStockHandler sqlHandler;
 
 //    https://www.investing.com/indices/world-indices
 
@@ -53,7 +53,7 @@ public class InvestingAPI extends AppCompatActivity {
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(InvestingAPI.this,_appPrefs.getSQLStockDBName(),
+        sqlHandler = new SQLStockHandler(InvestingAPI.this,_appPrefs.getSQLStockDBName(),
                 Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
 
         //------------------------------------------------------------------------------------------

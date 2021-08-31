@@ -36,7 +36,7 @@ public class YahooAPI extends AppCompatActivity {
     ArrayList<Stock> allStockItems = new ArrayList<>();
     ArrayList<String> TickerList = new ArrayList<>();
 
-    SQLhandler sqlHandler;
+    SQLStockHandler sqlHandler;
 
     // Quandle API Key:  -zz6UJA1CAmN7KGPa_2L
     // Alpha: YAP5UEWWNGV6AZE6
@@ -76,7 +76,7 @@ public class YahooAPI extends AppCompatActivity {
         //---   SQLite Setup
         //------------------------------------------------------------------------------------------
 
-        sqlHandler = new SQLhandler(YahooAPI.this,_appPrefs.getSQLStockDBName(),
+        sqlHandler = new SQLStockHandler(YahooAPI.this,_appPrefs.getSQLStockDBName(),
                 Integer.parseInt(_appPrefs.getSQLStockDBVersion()));
 
         //------------------------------------------------------------------------------------------
